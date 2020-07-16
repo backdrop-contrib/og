@@ -131,7 +131,7 @@ function og_test_form_alter(&$form, $form_state) {
 
 /**
  * Validate handler; Add state to the field values, if title is "state-pending".
-. */
+ . */
 function og_test_form_behavior_validate($element, &$form_state) {
   if ($form_state['values']['title'] != 'state-pending') {
     return;

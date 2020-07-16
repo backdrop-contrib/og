@@ -19,8 +19,14 @@ class og_handler_field_og_membership_link_delete extends views_handler_field_ent
 
   function option_definition() {
     $options = parent::option_definition();
-    $options['text'] = array('default' => '', 'translatable' => TRUE);
-    $options['destination'] = array('default' => FALSE, 'bool' => TRUE);
+    $options['text'] = array(
+      'default' => '',
+      'translatable' => TRUE,
+    );
+    $options['destination'] = array(
+      'default' => FALSE,
+      'bool' => TRUE,
+    );
     return $options;
   }
 
@@ -73,7 +79,7 @@ class og_handler_field_og_membership_link_delete extends views_handler_field_ent
     unset($this->options['alter']['fragment']);
 
     if (!empty($this->options['destination'])) {
-      $this->options['alter']['query'] = drupal_get_destination();
+      $this->options['alter']['query'] = backdrop_get_destination();
     }
 
     $this->options['alter']['path'] = "group/" . $group_type . "/" . $gid  . "/admin/people/delete-membership/" . $og_membership->id;

@@ -14,14 +14,16 @@ function og_access_uninstall() {
     'og_access_strict_private',
   );
   foreach ($vars as $var) {
+    // TODO This variable was probably removed in Backdrop without replacement.
     variable_del($var);
   }
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   variable_del(OG_ACCESS_PRIVACY_CHANGE_BATCH_PROCESSING);
 }
 
 /**
- * Implements hook_schema();
+ * Implements hook_schema();().
  */
 function og_access_schema() {
   if (db_table_exists('og_access_post')) {
@@ -29,17 +31,8 @@ function og_access_schema() {
   }
 }
 
-/**
- * Upgrade from Organic groups access 6 to 7.
- */
-function og_access_update_7000(&$sandbox) {
-  // Nothing to do, just clear cache.
-}
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_access_update_7000(&$sandbox) { }
 
-/**
- * Set variable to show message about "Rebuilding permissions".
- */
-function og_access_update_7200(&$sandbox) {
-  node_access_needs_rebuild(TRUE);
-  variable_del('group_access_strict_private');
-}
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_access_update_7200(&$sandbox) { }

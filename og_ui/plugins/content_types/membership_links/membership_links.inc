@@ -96,7 +96,10 @@ function og_ui_membership_links_content_type_render($subtype, $conf, $args, $con
   $block = new stdClass();
   $block->module = 'og_ui';
   $block->title = $title;
-  $block->content = array('#theme' => 'item_list', '#items' => $items);
+  $block->content = array(
+    '#theme' => 'item_list',
+    '#items' => $items,
+  );
   return $block;
 }
 
@@ -139,6 +142,10 @@ function og_ui_membership_links_content_type_edit_form_submit($form, &$form_stat
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_ui_membership_links_content_type_admin_title($subtype, $conf, $context) {
   if (empty($conf['membership_types'])) {
     return t('Membership links for all accessible membership types');

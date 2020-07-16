@@ -10,7 +10,9 @@
  */
 function og_ui_admin_settings($form_state) {
   $form = array();
+  $form['#config'] = 'og_ui.settings';
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_group_manager_full_access'] = array(
     '#type' => 'checkbox',
     '#title' => t('Group manager full permissions'),
@@ -18,6 +20,7 @@ function og_ui_admin_settings($form_state) {
     '#default_value' => variable_get('og_group_manager_full_access', TRUE),
   );
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_node_access_strict'] = array(
     '#type' => 'checkbox',
     '#title' => t('Strict node access permissions'),
@@ -30,7 +33,7 @@ function og_ui_admin_settings($form_state) {
     '#title' => t('Admin people View'),
     '#description' => t('Select the View that should be used to show and control the people in the group.'),
     '#options' => views_get_views_as_options(),
-    '#default_value' => variable_get('og_ui_admin_people_view', 'og_members_admin:default'),
+    '#default_value' => config_get('og_ui.settings', 'og_ui_admin_people_view'),
     '#required' => TRUE,
   );
   if ($group_bundles = og_get_all_group_bundle()) {
@@ -45,7 +48,7 @@ function og_ui_admin_settings($form_state) {
       foreach ($bundles as $bundle_name => $bundle_label) {
         $og_roles = og_roles($entity_type, $bundle_name, 0, FALSE, FALSE);
         if (!$og_roles) {
-         continue;
+          continue;
         }
 
         $params = array(
@@ -54,6 +57,7 @@ function og_ui_admin_settings($form_state) {
         );
 
         $name = 'og_group_manager_default_rids_' . $entity_type . '_' . $bundle_name;
+        // TODO This variable was probably removed in Backdrop without replacement.
         $form['og_group_manager_rids'][$name] = array(
           '#type' => 'select',
           '#title' => t('Roles in @entity-label - @bundle-label', $params),
@@ -65,6 +69,7 @@ function og_ui_admin_settings($form_state) {
     }
   }
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_features_ignore_og_fields'] = array(
     '#type' => 'checkbox',
     '#title' => t('Prevent "Features" export piping'),
@@ -73,6 +78,7 @@ function og_ui_admin_settings($form_state) {
     '#access' => module_exists('features'),
   );
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_use_queue'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use queue'),
@@ -80,6 +86,7 @@ function og_ui_admin_settings($form_state) {
     '#default_value' => variable_get('og_use_queue', FALSE),
   );
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_orphans_delete'] = array(
     '#type' => 'checkbox',
     '#title' => t('Delete orphans'),
@@ -96,7 +103,7 @@ function og_ui_admin_settings($form_state) {
   );
 
   // Re-use Entity-reference CSS for indentation.
-  $form['#attached']['css'][] = drupal_get_path('module', 'entityreference') . '/entityreference.admin.css';
+  $form['#attached']['css'][] = backdrop_get_path('module', 'entityreference') . '/entityreference.admin.css';
   return system_settings_form($form);
 }
 
@@ -121,7 +128,10 @@ function og_ui_group_admin_overview($entity_type, $etid) {
     $item['localized_options'] = array();
   }
 
-  $form['admin_block_content'] = array('#theme' => 'admin_block_content', '#content' => $items);
+  $form['admin_block_content'] = array(
+    '#theme' => 'admin_block_content',
+    '#content' => $items,
+  );
   return $form;
 }
 
@@ -132,10 +142,16 @@ function og_ui_add_users($form, &$form_state, $group_type, $gid) {
   og_set_breadcrumb($group_type, $gid, array(l(t('Group'), "$group_type/$gid/group")));
   $group = entity_load_single($group_type, $gid);
   $label = entity_label($group_type, $group);
-  list(,, $bundle) = entity_extract_ids($group_type, $group);
+  list(, , $bundle) = entity_extract_ids($group_type, $group);
 
-  $form['group_type'] = array('#type' => 'value', '#value' => $group_type);
-  $form['gid'] = array('#type' => 'value', '#value' => $gid);
+  $form['group_type'] = array(
+    '#type' => 'value',
+    '#value' => $group_type,
+  );
+  $form['gid'] = array(
+    '#type' => 'value',
+    '#value' => $gid,
+  );
 
   $form['og_user'] = array(
     '#type' => 'fieldset',
@@ -166,7 +182,7 @@ function og_ui_add_users($form, &$form_state, $group_type, $gid) {
   $field_name = !empty($form_state['values']['field_name']) ? $form_state['values']['field_name'] : key($field_names);
 
   if (count($field_names) > 1) {
-   $form['og_user']['field_name'] = array(
+    $form['og_user']['field_name'] = array(
       '#type' => 'select',
       '#title' => t('Field name'),
       '#options' => $field_names,
@@ -202,7 +218,10 @@ function og_ui_add_users($form, &$form_state, $group_type, $gid) {
   field_attach_form('og_membership', $og_membership, $form['membership_fields'], $form_state);
 
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Add users'));
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add users'),
+  );
 
   return $form;
 }
@@ -225,7 +244,7 @@ function og_ui_add_users_validate($form, &$form_state) {
   $group_type = $form_state['values']['group_type'];
   $gid = $form_state['values']['gid'];
   $field_name = $form_state['values']['field_name'];
-  $params = array('%name' => format_username($account));
+  $params = array('%name' => user_format_name($account));
   if (!$account) {
     form_set_error('name', t('You have entered an invalid user name.'));
     return;
@@ -270,7 +289,7 @@ function og_ui_add_users_submit($form, &$form_state) {
   }
 
   $group = entity_load_single($group_type, $gid);
-  drupal_set_message(t('%user has been added to the group %group-title.', array('%user' => format_username($account), '%group-title' => entity_label($group_type, $group))));
+  backdrop_set_message(t('%user has been added to the group %group-title.', array('%user' => user_format_name($account), '%group-title' => entity_label($group_type, $group))));
 }
 
 /**
@@ -281,13 +300,22 @@ function og_ui_edit_membership($form, &$form_state, $group_type, $gid, $og_membe
   $group = entity_load_single($group_type, $gid);
   $label = entity_label($group_type, $group);
   $account = user_load($og_membership->etid);
-  list(,, $bundle) = entity_extract_ids($group_type, $group);
+  list(, , $bundle) = entity_extract_ids($group_type, $group);
   // Get all the non-default roles.
   $og_roles = og_roles($group_type, $bundle, $gid, FALSE, FALSE);
 
-  $form['group_type'] = array('#type' => 'value', '#value' => $group_type);
-  $form['gid'] = array('#type' => 'value', '#value' => $gid);
-  $form['id'] = array('#type' => 'value', '#value' => $og_membership->id);
+  $form['group_type'] = array(
+    '#type' => 'value',
+    '#value' => $group_type,
+  );
+  $form['gid'] = array(
+    '#type' => 'value',
+    '#value' => $gid,
+  );
+  $form['id'] = array(
+    '#type' => 'value',
+    '#value' => $og_membership->id,
+  );
 
   $form['og_user'] = array(
     '#type' => 'fieldset',
@@ -327,7 +355,10 @@ function og_ui_edit_membership($form, &$form_state, $group_type, $gid, $og_membe
   field_attach_form('og_membership', $og_membership, $form['membership_fields'], $form_state);
 
   $form['actions'] = array('#type' => 'actions');
-  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Update membership'));
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update membership'),
+  );
 
   // You can't delete the group manager.
   if (!isset($group->uid) || $group->uid != $account->uid) {
@@ -376,7 +407,7 @@ function og_ui_edit_membership_submit($form, &$form_state) {
   // assign or revoke roles.
   $og_membership->save();
 
-  drupal_set_message(t('The membership has been updated.'));
+  backdrop_set_message(t('The membership has been updated.'));
 }
 
 /**
@@ -390,8 +421,8 @@ function og_ui_delete_membership($form, &$form_state, $group_type, $gid, $og_mem
 
   // You can't delete the group manager.
   if (isset($group->uid) && $group->uid == $account->uid) {
-    drupal_set_message(t("You can't remove membership of the group manager"));
-    drupal_goto('group/' . $group_type . '/' . $gid . '/admin/people');
+    backdrop_set_message(t("You can't remove membership of the group manager"));
+    backdrop_goto('group/' . $group_type . '/' . $gid . '/admin/people');
   }
 
   // Add group membership form. We still don't have the user or state.
@@ -414,7 +445,7 @@ function og_ui_delete_membership_submit($form, &$form_state) {
   $membership->delete();
   $form_state['redirect'] = 'group/' . $membership->group_type . '/' . $membership->gid . '/admin/people';
 
-  drupal_set_message(t('The membership was removed.'));
+  backdrop_set_message(t('The membership was removed.'));
 }
 
 /**
@@ -423,7 +454,7 @@ function og_ui_delete_membership_submit($form, &$form_state) {
 function og_ui_admin_account($group_type, $gid) {
   og_set_breadcrumb($group_type, $gid, array(l(t('Group'), "$group_type/$gid/group")));
   // $view = explode(':', variable_get)
-  list($view_name, $display) = explode(':', variable_get('og_ui_admin_people_view', 'og_members_admin:default'));
+  list($view_name, $display) = explode(':', config_get('og_ui.settings', 'og_ui_admin_people_view'));
   // We can't use views_embed_view() as we have exposed filter, and we need to
   // make sure the path is overriden to the current URL.
   // @see http://drupal.org/node/525592#comment-1968604
@@ -514,7 +545,7 @@ function og_ui_admin_roles($form, $form_state, $group_type = '', $gid = 0, $bund
   else {
     if ($gid) {
       $group = entity_load_single($group_type, $gid);
-      list(,, $bundle) = entity_extract_ids($group_type, $group);
+      list(, , $bundle) = entity_extract_ids($group_type, $group);
     }
 
     // No role ID.
@@ -536,20 +567,32 @@ function og_ui_admin_roles($form, $form_state, $group_type = '', $gid = 0, $bund
 
       // Attach the CSS to the form.
       $form['#attached'] = array(
-        'css' => array (
+        'css' => array(
           'type' => 'file',
-          'data' => drupal_get_path('module', 'og_ui') . '/css/og_ui.css',
+          'data' => backdrop_get_path('module', 'og_ui') . '/css/og_ui.css',
         ),
       );
     }
   }
 
-  $form['group_type'] = array('#type' => 'value', '#value' => $group_type);
-  $form['bundle'] = array('#type' => 'value', '#value' => $bundle);
-  $form['gid'] = array('#type' => 'value', '#value' => $gid);
+  $form['group_type'] = array(
+    '#type' => 'value',
+    '#value' => $group_type,
+  );
+  $form['bundle'] = array(
+    '#type' => 'value',
+    '#value' => $bundle,
+  );
+  $form['gid'] = array(
+    '#type' => 'value',
+    '#value' => $gid,
+  );
 
   $role_names = _og_ui_get_role_names($group_type, $bundle, $gid, $rid);
-  $form['role_names'] = array('#type' => 'value', '#value' => $role_names);
+  $form['role_names'] = array(
+    '#type' => 'value',
+    '#value' => $role_names,
+  );
 
   return $form;
 }
@@ -596,15 +639,15 @@ function og_ui_admin_roles_submit($form, &$form_state) {
   }
   if ($form_state['values']['op'] == t('Save role')) {
     og_role_save($role);
-    drupal_set_message(t('The role has been renamed.'));
+    backdrop_set_message(t('The role has been renamed.'));
   }
   elseif ($form_state['values']['op'] == t('Add role')) {
     og_role_save($role);
-    drupal_set_message(t('The role has been added.'));
+    backdrop_set_message(t('The role has been added.'));
   }
   elseif ($form_state['values']['op'] == t('Delete role')) {
     og_role_delete($form_state['values']['rid']);
-    drupal_set_message(t('The role has been deleted.'));
+    backdrop_set_message(t('The role has been deleted.'));
   }
 
   if ($gid) {
@@ -625,7 +668,10 @@ function og_ui_admin_roles_submit($form, &$form_state) {
  */
 function theme_og_ui_admin_new_role($variables) {
   $form = $variables['form'];
-  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => 2));
+  $header = array(t('Name'), array(
+      'data' => t('Operations'),
+      'colspan' => 2,
+    ));
 
   $group_type = $form['group_type']['#value'];
   $gid = $form['gid']['#value'];
@@ -653,10 +699,14 @@ function theme_og_ui_admin_new_role($variables) {
     }
   }
 
-  $rows[] = array(array('data' => drupal_render($form['name']) . drupal_render($form['add']), 'colspan' => 4, 'class' => 'edit-name'));
+  $rows[] = array(array(
+      'data' => backdrop_render($form['name']) . backdrop_render($form['add']),
+      'colspan' => 4,
+      'class' => 'edit-name',
+    ));
 
   hide($form['actions']);
-  $output = drupal_render_children($form);
+  $output = backdrop_render_children($form);
   $output .= theme('table', array('header' => $header, 'rows' => $rows));
   $output .= render($form['actions']);
 
@@ -682,7 +732,7 @@ function _og_ui_get_role_names($group_type, $bundle, $gid, $rid) {
   if ($gid) {
     $group = entity_load_single($group_type, $gid);
 
-    list(,,$bundle) = entity_extract_ids($group_type, $group);
+    list(, , $bundle) = entity_extract_ids($group_type, $group);
     $gid = og_is_group_default_access($group_type, $group) ? 0 : $gid;
   }
 
@@ -723,9 +773,18 @@ function og_ui_admin_permissions($form, $form_state, $group_type = '', $gid = 0,
     list(, , $bundle) = entity_extract_ids($group_type, entity_load_single($group_type, $gid));
   }
 
-  $form['group_type'] = array('#type' => 'value', '#value' => $group_type);
-  $form['bundle'] = array('#type' => 'value', '#value' => $bundle);
-  $form['gid'] = array('#type' => 'value', '#value' => $gid);
+  $form['group_type'] = array(
+    '#type' => 'value',
+    '#value' => $group_type,
+  );
+  $form['bundle'] = array(
+    '#type' => 'value',
+    '#value' => $bundle,
+  );
+  $form['gid'] = array(
+    '#type' => 'value',
+    '#value' => $gid,
+  );
 
   $role_names = _og_ui_get_role_names($group_type, $bundle, $gid, $rid);
 
@@ -801,7 +860,10 @@ function og_ui_admin_permissions($form, $form_state, $group_type = '', $gid = 0,
       '#default_value' => isset($status[$rid]) ? $status[$rid] : array(),
       '#attributes' => array('class' => array('rid-' . $rid)),
     );
-    $form['role_names'][$rid] = array('#markup' => check_plain($name), '#tree' => TRUE);
+    $form['role_names'][$rid] = array(
+      '#markup' => check_plain($name),
+      '#tree' => TRUE,
+    );
   }
 
 
@@ -845,7 +907,7 @@ function og_ui_admin_permissions_after_build($form) {
   $auth_rids = array_keys($roles);
 
   foreach (og_get_permissions() as $key => $perm) {
-    $perm['roles'] = drupal_map_assoc($perm['roles']);
+    $perm['roles'] = backdrop_map_assoc($perm['roles']);
 
     if ($disable || (empty($perm['roles']) || empty($perm['roles'][OG_ANONYMOUS_ROLE]))) {
       if (in_array($anon_rid, array_keys($role_names))) {
@@ -874,7 +936,7 @@ function og_ui_admin_permissions_submit($form, &$form_state) {
     og_role_change_permissions($rid, $form_state['values'][$rid]);
   }
 
-  drupal_set_message(t('The changes have been saved.'));
+  backdrop_set_message(t('The changes have been saved.'));
 }
 
 /**
@@ -890,30 +952,41 @@ function theme_og_ui_admin_permissions($variables) {
     $row = array();
     // Module name.
     if (is_numeric($key)) {
-      $row[] = array('data' => drupal_render($form['permission'][$key]), 'class' => array('module'), 'id' => 'module-' . $form['permission'][$key]['#id'], 'colspan' => count($form['role_names']['#value']) + 1);
+      $row[] = array(
+        'data' => backdrop_render($form['permission'][$key]),
+        'class' => array('module'),
+        'id' => 'module-' . $form['permission'][$key]['#id'],
+        'colspan' => count($form['role_names']['#value']) + 1,
+      );
     }
     else {
       // Permission row.
       $row[] = array(
-        'data' => drupal_render($form['permission'][$key]),
+        'data' => backdrop_render($form['permission'][$key]),
         'class' => array('permission'),
       );
 
       foreach (element_children($form['checkboxes']) as $rid) {
         $form['checkboxes'][$rid][$key]['#title'] = $role_names[$rid] . ': ' . $form['permission'][$key]['#markup'];
         $form['checkboxes'][$rid][$key]['#title_display'] = 'invisible';
-        $row[] = array('data' => drupal_render($form['checkboxes'][$rid][$key]), 'class' => array('checkbox'));
+        $row[] = array(
+          'data' => backdrop_render($form['checkboxes'][$rid][$key]),
+          'class' => array('checkbox'),
+        );
       }
     }
     $rows[] = $row;
   }
   $header[] = (t('Permission'));
   foreach (element_children($form['role_names']) as $rid) {
-    $header[] = array('data' => drupal_render($form['role_names'][$rid]), 'class' => array('checkbox'));
+    $header[] = array(
+      'data' => backdrop_render($form['role_names'][$rid]),
+      'class' => array('checkbox'),
+    );
   }
   $output = '';
   $output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'permissions')));
-  $output .= drupal_render_children($form);
+  $output .= backdrop_render_children($form);
   return $output;
 }
 
@@ -929,7 +1002,7 @@ function og_ui_field_settings($form, &$form_state) {
     if (empty($entity_info['fieldable'])) {
       continue;
     }
-    foreach($entity_info['bundles'] as $bundle_name => $bundle) {
+    foreach ($entity_info['bundles'] as $bundle_name => $bundle) {
       // Prefix the bundle name with the entity type.
       $entity_name = check_plain("$entity_info[label] ($entity_type)");
       $options[$entity_name][$entity_type . ':' . $bundle_name] = filter_xss($bundle['label']);
@@ -1120,10 +1193,10 @@ function og_ui_field_settings_submit($form, &$form_state) {
   );
 
   if ($field_name == $field_type) {
-    drupal_set_message(t('Added field @field-type to @bundle.', $params));
+    backdrop_set_message(t('Added field @field-type to @bundle.', $params));
   }
   else {
-    drupal_set_message(t('Added field @field-type (@field-name) to @bundle.', $params));
+    backdrop_set_message(t('Added field @field-type (@field-name) to @bundle.', $params));
   }
 }
 
@@ -1143,6 +1216,10 @@ function og_ui_field_delete_form($form, &$form_state, $instance) {
 }
 
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_ui_field_delete_form_submit($form, &$form_state) {
   module_load_include('inc', 'field_ui', 'field_ui.admin');
   field_ui_field_delete_form_submit($form, $form_state);

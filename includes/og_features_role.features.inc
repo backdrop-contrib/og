@@ -150,7 +150,7 @@ function _og_features_role_exists($name, $group_type, $bundle) {
  *   A string representing a module name implementing given role or FALSE.
  */
 function _og_features_role_dependencies($role_name) {
-  $roles = &drupal_static(__FUNCTION__, array());
+  $roles = &backdrop_static(__FUNCTION__, array());
 
   if (empty($roles)) {
     foreach (module_implements('og_default_roles') as $module) {

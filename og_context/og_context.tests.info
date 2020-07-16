@@ -1,0 +1,6 @@
+[OgContextTestCase]
+name = OG context
+description = Check if context is returning only if user has right permissions.
+group = Organic groups context
+file = og_context.test
+

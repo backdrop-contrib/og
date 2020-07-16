@@ -24,12 +24,12 @@ class OgMembership extends Entity {
     }
 
     $entity = !empty($this->entity) ? $this->entity : entity_load_single($entity_type, $etid);
-    list(,, $bundle) = entity_extract_ids($entity_type, $entity);
+    list(, , $bundle) = entity_extract_ids($entity_type, $entity);
 
     $group_type = $this->group_type;
     $gid = $this->gid;
     $group = entity_load_single($group_type, $gid);
-    list(,,$group_bundle) = entity_extract_ids($group_type, $group);
+    list(, , $group_bundle) = entity_extract_ids($group_type, $group);
 
     $field_name = $this->field_name;
 
@@ -77,7 +77,7 @@ class OgMembership extends Entity {
     parent::save();
     og_invalidate_cache();
     // Clear the group content entity field cache.
-    cache_clear_all('field:'. $entity_type . ':' . $etid, 'cache_field');
+    cache_clear_all('field:' . $entity_type . ':' . $etid, 'cache_field');
 
     // Supporting the entity cache module.
     if (module_exists('entitycache') && db_table_exists('cache_entity_' . $this->entity_type)) {
@@ -90,7 +90,7 @@ class OgMembership extends Entity {
 
     og_invalidate_cache();
     // Clear the group content entity field cache.
-    cache_clear_all('field:'. $this->entity_type . ':' . $this->etid, 'cache_field');
+    cache_clear_all('field:' . $this->entity_type . ':' . $this->etid, 'cache_field');
 
     // Supporting the entity cache module.
     if (module_exists('entitycache') && db_table_exists('cache_entity_' . $this->entity_type)) {

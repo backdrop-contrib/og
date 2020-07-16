@@ -1,0 +1,6 @@
+[OgFieldAccessTestCase]
+name = Organic groups field access
+description = Test the access control on fields.
+group = Organic groups field access
+file = og_field_access.test
+

@@ -61,7 +61,7 @@ function og_membership_type_form($form, &$form_state, $og_membership_type, $op =
       '#value' => t('Delete og_membership type'),
       '#weight' => 45,
       '#limit_validation_errors' => array(),
-      '#submit' => array('og_membership_type_form_submit_delete')
+      '#submit' => array('og_membership_type_form_submit_delete'),
     );
   }
   return $form;

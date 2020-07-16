@@ -26,7 +26,7 @@ class OgMembershipViewsController extends EntityDefaultViewsController {
       'field' => array(
         'handler' => 'views_handler_field_numeric',
         'click sortable' => TRUE,
-       ),
+      ),
       'sort' => array(
         'handler' => 'views_handler_sort',
       ),
@@ -76,8 +76,8 @@ class OgMembershipViewsController extends EntityDefaultViewsController {
             'left_field' => 'rid',
             'field' => 'rid',
           ),
-        )
-      )
+        ),
+      ),
     );
     $data['og_role']['name'] = array(
       'title' => t('Role Name'),
@@ -217,7 +217,7 @@ function og_views_plugins() {
       'og' => array(
         'title' => t('OG group'),
         'handler' => 'og_plugin_argument_validate_group',
-        'path' => drupal_get_path('module', 'og') . '/includes/views/handlers',
+        'path' => backdrop_get_path('module', 'og') . '/includes/views/handlers',
       ),
     ),
     'argument default' => array(

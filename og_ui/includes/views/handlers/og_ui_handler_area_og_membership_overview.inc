@@ -121,8 +121,8 @@ class og_ui_handler_area_og_membership_overview extends views_handler_area {
       $items[] = array('data' => t('Total members: @count', array('@count' => $count)));
     }
 
-   if ($this->options['total_content']) {
-     // Total nodes.
+    if ($this->options['total_content']) {
+      // Total nodes.
       $query = clone $base_query;
       $count = $query
         ->propertyCondition('entity_type', 'node', '=')

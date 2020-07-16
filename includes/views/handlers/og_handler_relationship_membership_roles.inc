@@ -33,7 +33,7 @@ class og_users_roles_join extends views_join {
     // parent and then add our conditions to the SelectQuery directly.
     parent::build_join($select_query, $table, $view_query);
 
-    $tables =& $select_query->getTables();
+    $tables = &$select_query->getTables();
 
     $left_table = $view_query->get_table_info($this->left_table);
 

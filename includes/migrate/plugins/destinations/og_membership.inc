@@ -70,8 +70,8 @@ class MigrateDestinationOGMembership extends MigrateDestination {
       throw new MigrateException('Missing entity ID.');
     }
 
-     // Set state, make sure legacy states from OG6 are converted to
-     // pending.
+    // Set state, make sure legacy states from OG6 are converted to
+    // pending.
     if (isset($entity->state)) {
       $state = $entity->state ? OG_STATE_ACTIVE : OG_STATE_PENDING;
     }
@@ -88,7 +88,7 @@ class MigrateDestinationOGMembership extends MigrateDestination {
     $og_membership = og_group($entity->group_type, $entity->gid, $values);
 
     if ($entity->entity_type == 'user') {
-      $cache = &drupal_static(__FUNCTION__, array());
+      $cache = &backdrop_static(__FUNCTION__, array());
       if (isset($cache["$entity->group_type:$entity->gid"])) {
         $og_roles = $cache["$entity->group_type:$entity->gid"];
       }

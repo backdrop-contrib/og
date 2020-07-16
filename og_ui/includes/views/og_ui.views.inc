@@ -6,7 +6,7 @@
  */
 
 /**
- * Implements hook_views_data()
+ * Implements hook_views_data().
  */
 function og_ui_views_data() {
   $data = array();

@@ -46,6 +46,6 @@ class OgUiPopulateField extends Migration {
    * Construct the machine name from the bundle.
    */
   protected function generateMachineName($class_name = NULL) {
-    return drupal_strtolower('OgUiPopulateField' . ucfirst($this->arguments['bundle']));
+    return backdrop_strtolower('OgUiPopulateField' . ucfirst($this->arguments['bundle']));
   }
 }

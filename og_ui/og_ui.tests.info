@@ -1,0 +1,36 @@
+[OgUiUserPermissionsTestCase]
+name = OG UI role permissions
+description = Verify that role permissions can be added and removed via the permissions page of the group.
+group = Organic groups UI
+file = og_ui.test
+
+[OgUiAdminPermissionsTestCase]
+name = OG UI admin section
+description = Verify that only users with group admin permissions can see the admin tabs.
+group = Organic groups UI
+file = og_ui.test
+
+[OgUiSubscribeTestCase]
+name = OG UI subscribe
+description = Verify the subscribe and unsubsribe functionality.
+group = Organic groups UI
+file = og_ui.test
+
+[OgUiManagePeopleTestCase]
+name = OG UI manage people
+description = Verify the people management functionality.
+group = Organic groups UI
+file = og_ui.test
+
+[OgUiMigrate7000TestCase]
+name = OG UI upgrade path
+description = Tests the upgrade path of Organic groups UI.
+group = Organic groups UI
+file = og_ui.test
+
+[OgUiPrivateGroupStatus]
+name = Subscribe to private groups
+description = Testing the automatic approval of a membership request for a private group.
+group = Organic groups UI
+file = og_ui.test
+

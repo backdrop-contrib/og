@@ -20,3 +20,12 @@ function og_example_ctools_plugin_directory($module, $plugin) {
 function og_example_default_rules_configuration_alter(&$configs) {
   unset($configs['rules_og_new_content']);
 }
+
+/**
+ * Implements hook_autoload_info().
+ */
+function og_example_autoload_info() {
+  return array(
+    'OgExampleSelectionHandler' => 'plugins/entityreference/selection/OgExampleSelectionHandler.class.php',
+  );
+}

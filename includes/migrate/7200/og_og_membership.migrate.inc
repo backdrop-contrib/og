@@ -78,7 +78,7 @@ class OgMigrateMembership extends OgEntityMigration {
     $group_content = entity_load_single($entity_type, $etid);
     $group = entity_load_single($group_type, $gid);
 
-    list(,, $group_bundle) = entity_extract_ids($group_type, $group);
+    list(, , $group_bundle) = entity_extract_ids($group_type, $group);
     if (!$field_name = og_get_best_group_audience_field($entity_type, $group_content, $group_type, $group_bundle, TRUE)) {
       // Create a new field. Pick an unused name, if the settings don't match.
       // To maintain some backwards compatibility, if the group type is a node,
@@ -88,7 +88,7 @@ class OgMigrateMembership extends OgEntityMigration {
 
       $og_field = og_fields_info(OG_AUDIENCE_FIELD);
       $og_field['field']['settings']['target_type'] = $group_type;
-      list(,, $bundle) = entity_extract_ids($entity_type, $group_content);
+      list(, , $bundle) = entity_extract_ids($entity_type, $group_content);
 
       while ($field = field_info_field($field_name)) {
         if ($field['settings']['target_type'] == $group_type && empty($field['settings']['handler_settings']['target_bundles']) || in_array($bundle, $field['settings']['handler_settings']['target_bundles'])) {

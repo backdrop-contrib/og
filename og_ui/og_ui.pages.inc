@@ -22,13 +22,13 @@ function og_ui_subscribe($entity_type, $etid, $field_name = NULL) {
   $entity_info = entity_get_info($entity_type);
   if (!$entity_type || !$entity_info) {
     // Not a valid entity type.
-    drupal_not_found();
+    backdrop_not_found();
     return;
   }
   $entity = entity_load_single($entity_type, $etid);
   if (!$entity || !og_is_group($entity_type, $entity)) {
     // Not a valid entity, or not a group.
-    drupal_not_found();
+    backdrop_not_found();
     return;
   }
 
@@ -39,7 +39,7 @@ function og_ui_subscribe($entity_type, $etid, $field_name = NULL) {
     $field_name = og_get_best_group_audience_field('user', $account, $entity_type, $bundle, TRUE);
     if (empty($field_name)) {
       // User entity has no group audience field.
-      drupal_not_found();
+      backdrop_not_found();
       return;
     }
   }
@@ -49,33 +49,33 @@ function og_ui_subscribe($entity_type, $etid, $field_name = NULL) {
 
   if (empty($instance) || !field_access('view', $field, 'user', $account)) {
     // Field name given is incorrect, or user doesn't have access to the field.
-    drupal_not_found();
+    backdrop_not_found();
     return;
   }
 
   if (!$user->uid) {
     // Anonymous user can't request membership.
-    $dest = drupal_get_destination();
-    if (variable_get('user_register', 1)) {
-      drupal_set_message(t('In order to join any group, you must <a href="!login">login</a>. After you have successfully done so, you will need to request membership again.', array('!login' => url("user/login", array('query' => $dest)))));
+    $dest = backdrop_get_destination();
+    if (config_get('system.performance', 'user_register')) {
+      backdrop_set_message(t('In order to join any group, you must <a href="!login">login</a>. After you have successfully done so, you will need to request membership again.', array('!login' => url("user/login", array('query' => $dest)))));
     }
     else {
-      drupal_set_message(t('In order to join any group, you must <a href="!login">login</a> or <a href="!register">register</a> a new account. After you have successfully done so, you will need to request membership again.', array('!register' => url("user/register", array('query' => $dest)), '!login' => url("user/login", array('query' => $dest)))));
+      backdrop_set_message(t('In order to join any group, you must <a href="!login">login</a> or <a href="!register">register</a> a new account. After you have successfully done so, you will need to request membership again.', array('!register' => url("user/register", array('query' => $dest)), '!login' => url("user/login", array('query' => $dest)))));
     }
-    drupal_goto('user');
+    backdrop_goto('user');
   }
 
   $redirect = FALSE;
   $message = '';
 
   $params = array();
-  $params['@user'] = format_username($user);
+  $params['@user'] = user_format_name($user);
   // Show the group name only if user has access to it.
   $params['@group'] = entity_access('view', $entity_type, $entity) ?  entity_label($entity_type, $entity) : t('Private group');
 
   if (og_is_member($entity_type, $id, 'user', $user, array(OG_STATE_BLOCKED))) {
     // User is blocked, access denied.
-    drupal_access_denied();
+    backdrop_access_denied();
     return;
   }
   if (og_is_member($entity_type, $id, 'user', $user, array(OG_STATE_PENDING))) {
@@ -107,16 +107,16 @@ function og_ui_subscribe($entity_type, $etid, $field_name = NULL) {
   }
 
   if ($redirect) {
-    drupal_set_message($message, 'warning');
+    backdrop_set_message($message, 'warning');
     $url = entity_uri($entity_type, $entity);
-    drupal_goto($url['path'], $url['options']);
+    backdrop_goto($url['path'], $url['options']);
   }
 
   if (og_user_access($entity_type, $id, 'subscribe', $user) || og_user_access($entity_type, $id, 'subscribe without approval', $user)) {
     // Show the user a subscription confirmation.
-    return drupal_get_form('og_ui_confirm_subscribe', $entity_type, $id, $user, $field_name);
+    return backdrop_get_form('og_ui_confirm_subscribe', $entity_type, $id, $user, $field_name);
   }
-  drupal_access_denied();
+  backdrop_access_denied();
 }
 
 /**
@@ -136,7 +136,7 @@ function og_ui_confirm_subscribe($form, &$form_state, $group_type, $gid, $accoun
     if ($state == OG_STATE_ACTIVE) {
       // Determine if a user can subscribe to a private group, when OG-access
       // module is enabled, and the group is set to private.
-      $state = variable_get('og_ui_deny_subscribe_without_approval', TRUE) ? OG_STATE_PENDING : OG_STATE_ACTIVE;
+      $state = config_get('og_ui.settings', 'og_ui_deny_subscribe_without_approval') ? OG_STATE_PENDING : OG_STATE_ACTIVE;
     }
   }
 
@@ -150,9 +150,18 @@ function og_ui_confirm_subscribe($form, &$form_state, $group_type, $gid, $accoun
     $form[OG_MEMBERSHIP_REQUEST_FIELD]['#access'] = FALSE;
   }
 
-  $form['group_type'] = array('#type' => 'value', '#value' => $group_type);
-  $form['gid'] = array('#type' => 'value', '#value' => $gid);
-  $form['field_name'] = array('#type' => 'value', '#value' => $field_name);
+  $form['group_type'] = array(
+    '#type' => 'value',
+    '#value' => $group_type,
+  );
+  $form['gid'] = array(
+    '#type' => 'value',
+    '#value' => $gid,
+  );
+  $form['field_name'] = array(
+    '#type' => 'value',
+    '#value' => $field_name,
+  );
 
   return confirm_form($form, t('Are you sure you want to join the group %title?', array('%title' => $label)), $wrapper->url->value(), ' ', t('Join'), t('Cancel'));
 }
@@ -186,7 +195,7 @@ function og_ui_confirm_subscribe_submit($form, &$form_state) {
     // User doesn't have access to the group entity, so redirect to front page,
     // with a message.
     $redirect = '';
-    drupal_set_message(t('Your subscription request was sent.'));
+    backdrop_set_message(t('Your subscription request was sent.'));
   }
 
   $form_state['redirect'] = $redirect;
@@ -206,7 +215,7 @@ function og_ui_unsubscribe($group_type, $gid) {
   $group = entity_load_single($group_type, $gid);
   if (!$group || !og_is_group($group_type, $group)) {
     // Not a valid entity, or not a group.
-    drupal_not_found();
+    backdrop_not_found();
     return;
   }
 
@@ -214,17 +223,17 @@ function og_ui_unsubscribe($group_type, $gid) {
   if ($group->uid != $user->uid) {
     if (og_is_member($group_type, $gid, 'user', $account, array(OG_STATE_ACTIVE, OG_STATE_PENDING))) {
       // Show the user a subscription confirmation.
-      return drupal_get_form('og_ui_confirm_unsubscribe', $group_type, $group);
+      return backdrop_get_form('og_ui_confirm_unsubscribe', $group_type, $group);
     }
-    drupal_access_denied();
+    backdrop_access_denied();
     return;
   }
   else {
     $label = entity_label($group_type, $group);
-    drupal_set_message(t('As the manager of %group, you can not leave the group.', array('%group' => $label)));
+    backdrop_set_message(t('As the manager of %group, you can not leave the group.', array('%group' => $label)));
 
     $url = entity_uri($group_type, $group);
-    drupal_goto($url['path'], $url['options']);
+    backdrop_goto($url['path'], $url['options']);
   }
 }
 
@@ -232,8 +241,14 @@ function og_ui_unsubscribe($group_type, $gid) {
  * Confirm unsubscribe form.
  */
 function og_ui_confirm_unsubscribe($form, &$form_state, $group_type, $group) {
-  $form['group_type'] = array('#type' => 'value', '#value' => $group_type);
-  $form['group'] = array('#type' => 'value', '#value' => $group);
+  $form['group_type'] = array(
+    '#type' => 'value',
+    '#value' => $group_type,
+  );
+  $form['group'] = array(
+    '#type' => 'value',
+    '#value' => $group,
+  );
 
   $label = entity_label($group_type, $group);
   $url = entity_uri($group_type, $group);

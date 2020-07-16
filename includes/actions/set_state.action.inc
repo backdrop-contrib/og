@@ -5,14 +5,22 @@
  * Action to set the state of a user in a group.
  */
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_set_state_action_info() {
   return array('og_set_state_action' => array(
-    'type' => 'og_membership',
-    'label' => t('Modify membership status'),
-    'configurable' => TRUE,
-  ));
+      'type' => 'og_membership',
+      'label' => t('Modify membership status'),
+      'configurable' => TRUE,
+    ));
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_set_state_action_form($context) {
   $form['state'] = array(
     '#type' => 'select',
@@ -25,10 +33,18 @@ function og_set_state_action_form($context) {
   return $form;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_set_state_action_submit($form, $form_state) {
   return array('state' => $form_state['values']['state']);
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_set_state_action($og_membership, $context) {
   $state = $context['state'];
 

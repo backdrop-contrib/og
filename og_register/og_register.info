@@ -3,4 +3,5 @@ name = Organic groups register
 description = "Allow subscribing to groups during the user registration."
 package = "Organic groups"
 dependencies[] = og
-core = 7.x
+backdrop = 1.x
+type = module

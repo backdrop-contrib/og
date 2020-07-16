@@ -15,6 +15,30 @@ function og_context_uninstall() {
     'og_context_providers_weight_group_context',
   );
   foreach ($vars as $var) {
+    // TODO This variable was probably removed in Backdrop without replacement.
     variable_del($var);
   }
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function og_context_update_1000() {
+  $config = config('og_context.settings');
+  $config->set('og_context_negotiation_type', update_variable_get('og_context_negotiation_type', 'dynamic variable in file /og/og_context/og_context.admin.inc line 49'));
+  $config->set('og_context_providers_weight_type', update_variable_get('og_context_providers_weight_type', 'dynamic variable in file /og/og_context/og_context.admin.inc line 50'));
+  $config->set('og_context_negotiation_group_context', update_variable_get('og_context_negotiation_group_context', 'dynamic value in file /og/og_context/og_context.module line 410'));
+  update_variable_del('og_context_negotiation_type');
+  update_variable_del('og_context_providers_weight_type');
+  update_variable_del('og_context_negotiation_group_context');
+}
+
+/**
+ * Implements hook_install().
+ */
+function og_context_install() {
+  // Dynamically generated variable data was detected.
+  // /og/og_context/og_context.admin.inc line 49
+  // /og/og_context/og_context.admin.inc line 50
+  // /og/og_context/og_context.module line 410
 }

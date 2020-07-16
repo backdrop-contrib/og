@@ -132,7 +132,7 @@ function og_access_node_access_records($node) {
 
   foreach ($gids as $group_type => $values) {
     foreach ($values as $gid) {
-      $grants[] = array (
+      $grants[] = array(
         'realm' => OG_ACCESS_REALM . ':' . $group_type,
         'gid' => $gid,
         'grant_view' => 1,
@@ -147,12 +147,12 @@ function og_access_node_access_records($node) {
 }
 
 /**
- * Implement hook_og_fields_info().
+ * Implements hook_og_fields_info().
  */
 function og_access_og_fields_info() {
   $allowed_values = array(
     0 => 'Public - accessible to all site users',
-    1 =>  'Private - accessible only to group members',
+    1 => 'Private - accessible only to group members',
   );
   $items[OG_ACCESS_FIELD] = array(
     'type' => array('group'),
@@ -164,7 +164,10 @@ function og_access_og_fields_info() {
       'no_ui' => TRUE,
       'type' => 'list_boolean',
       'cardinality' => 1,
-      'settings' => array('allowed_values' => $allowed_values, 'allowed_values_function' => ''),
+      'settings' => array(
+        'allowed_values' => $allowed_values,
+        'allowed_values_function' => '',
+      ),
     ),
     'instance' => array(
       'label' => t('Group visibility'),
@@ -189,7 +192,6 @@ function og_access_og_fields_info() {
     0 => 'Use group defaults',
     1 => 'Public - accessible to all site users',
     2 => 'Private - accessible only to group members',
-
   );
   $items[OG_CONTENT_ACCESS_FIELD] = array(
     'type' => array('group content'),
@@ -201,7 +203,10 @@ function og_access_og_fields_info() {
       'no_ui' => TRUE,
       'type' => 'list_integer',
       'cardinality' => 1,
-      'settings' => array('allowed_values' => $allowed_values, 'allowed_values_function' => ''),
+      'settings' => array(
+        'allowed_values' => $allowed_values,
+        'allowed_values_function' => '',
+      ),
     ),
     'instance' => array(
       'label' => t('Group content visibility'),
@@ -298,6 +303,7 @@ function og_access_og_access_invoke_node_access_acquire_grants($context) {
  */
 function og_access_check_node_access_grants_is_needed($entity, $entity_type) {
   // Check whether group privacy change batch processing is needed.
+  // TODO This variable was probably removed in Backdrop without replacement.
   if (!variable_get(OG_ACCESS_PRIVACY_CHANGE_BATCH_PROCESSING, TRUE)) {
     return FALSE;
   }
@@ -314,7 +320,7 @@ function og_access_check_node_access_grants_is_needed($entity, $entity_type) {
   );
   $result = module_invoke_all('og_access_invoke_node_access_acquire_grants', $context);
 
-  drupal_alter('og_access_invoke_node_access_acquire_grants', $result, $context);
+  backdrop_alter('og_access_invoke_node_access_acquire_grants', $result, $context);
 
   return in_array(TRUE, $result);
 }
@@ -421,10 +427,19 @@ function og_access_invoke_node_access_acquire_grants($group_type, $group_id, &$c
  * Implements hook_form_FORM_ID_alter().
  */
 function og_access_form_og_ui_admin_settings_alter(&$form, &$form_state) {
+  // TODO This variable was probably removed in Backdrop without replacement.
   $form[OG_ACCESS_PRIVACY_CHANGE_BATCH_PROCESSING] = array(
     '#type' => 'checkbox',
     '#title' => t('Update group content privacy'),
     '#description' => t('Upon group privacy change, create batch operation to update group content.'),
     '#default_value' => variable_get(OG_ACCESS_PRIVACY_CHANGE_BATCH_PROCESSING, TRUE),
+  );
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function og_access_autoload_info() {
+  return array(
   );
 }

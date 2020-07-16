@@ -15,15 +15,37 @@ function og_ui_uninstall() {
     'og_ui_deny_subscribe_without_approval',
   );
   foreach ($vars as $var) {
+    // TODO This variable was probably removed in Backdrop without replacement.
     variable_del($var);
   }
 }
 
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_ui_update_7200(&$sandbox) { }
+
 /**
- * Enable VBO module.
+ * Implements hook_update_last_removed().
  */
-function og_ui_update_7200(&$sandbox) {
-  if (!module_enable(array('views_bulk_operations'))) {
-    throw new DrupalUpdateException('This version of OG UI requires Views bulk operation (VBO), but it could not be enabled.');
-  }
+function og_ui_update_last_removed() {
+  return 7200;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function og_ui_update_1000() {
+  $config = config('og_ui.settings');
+  $config->set('og_ui_7000_add_field', update_variable_get('og_ui_7000_add_field', 'FALSE'));
+  $config->set('og_ui_admin_people_view', update_variable_get('og_ui_admin_people_view', 'og_members_admin:default'));
+  $config->set('og_ui_deny_subscribe_without_approval', update_variable_get('og_ui_deny_subscribe_without_approval', 'TRUE'));
+  update_variable_del('og_ui_7000_add_field');
+  update_variable_del('og_ui_admin_people_view');
+  update_variable_del('og_ui_deny_subscribe_without_approval');
+}
+
+/**
+ * Implements hook_install().
+ */
+function og_ui_install() {
+  // Dynamically generated variable data was detected.
 }

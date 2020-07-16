@@ -35,6 +35,11 @@ function og_install() {
     );
     field_create_instance($instance);
   }
+  // Dynamically generated variable data was detected on the following lines.
+  // /og/includes/migrate/7000/og_add_fields.inc line 27
+  // /og/includes/migrate/7000/og_ogur_roles.migrate.inc line 37
+  // /og/og.module line 1839
+  // /og/og.module line 2617
 }
 
 /**
@@ -60,6 +65,7 @@ function og_uninstall() {
     'og_maintain_overridden_roles',
   );
   foreach ($vars as $var) {
+    // TODO This variable was probably removed in Backdrop without replacement.
     variable_del($var);
   }
 
@@ -140,11 +146,11 @@ function og_schema() {
         'not null' => TRUE,
         'description' => 'Primary Key: Unique role ID.',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'group_type' => array(
         'type' => 'varchar',
@@ -191,11 +197,11 @@ function og_schema() {
         'default' => 0,
         'description' => 'Primary Key: {og_role}.rid for role.',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'group_type' => array(
         'type' => 'varchar',
@@ -249,7 +255,7 @@ function og_schema() {
         'type' => 'int',
         'not null' => TRUE,
         // This is equivilent to ENTITY_CUSTOM.
-        'default' =>  0x01,
+        'default' => 0x01,
         'size' => 'tiny',
         'description' => 'The exportable status of the entity.',
       ),
@@ -259,7 +265,6 @@ function og_schema() {
         'length' => 255,
         'not null' => FALSE,
       ),
-
       'language' => array(
         'description' => 'The {languages}.language of this membership type.',
         'type' => 'varchar',
@@ -304,11 +309,11 @@ function og_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'group_type' => array(
         'description' => "The group's entity type (e.g. node, comment, etc').",
@@ -365,7 +370,7 @@ function og_schema() {
   );
 
   // Cache bins for Entity-cache module.
-  $cache_schema = drupal_get_schema_unprocessed('system', 'cache');
+  $cache_schema = backdrop_get_schema_unprocessed('system', 'cache');
   $types = array(
     'og_membership_type',
     'og_membership',
@@ -386,8 +391,8 @@ function og_schema_7000_info() {
   $schema = array();
 
   $schema['og'] = array(
-    'description'     => 'Store information related to the groups.',
-    'fields'          => array(
+    'description' => 'Store information related to the groups.',
+    'fields' => array(
       'gid' => array(
         'description' => "The group's unique ID.",
         'type' => 'serial',
@@ -476,11 +481,11 @@ function og_schema_7000_info() {
         'not null' => TRUE,
         'description' => 'Primary Key: Unique role ID.',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'name' => array(
         'type' => 'varchar',
@@ -510,11 +515,11 @@ function og_schema_7000_info() {
         'default' => 0,
         'description' => 'Primary Key: {og_role}.rid for role.',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
     ),
     'primary key' => array('uid', 'rid', 'gid'),
@@ -561,7 +566,7 @@ function og_schema_7000_info() {
         'type' => 'int',
         'not null' => TRUE,
         // This is equivilent to ENTITY_CUSTOM.
-        'default' =>  0x01,
+        'default' => 0x01,
         'size' => 'tiny',
         'description' => 'The exportable status of the entity.',
       ),
@@ -608,11 +613,11 @@ function og_schema_7000_info() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'state' => array(
         'description' => 'The state of the group content.',
@@ -677,7 +682,7 @@ function og_schema_7001_info() {
         'type' => 'int',
         'not null' => TRUE,
         // This is equivilent to ENTITY_CUSTOM.
-        'default' =>  0x01,
+        'default' => 0x01,
         'size' => 'tiny',
         'description' => 'The exportable status of the entity.',
       ),
@@ -724,11 +729,11 @@ function og_schema_7001_info() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'state' => array(
         'description' => 'The state of the group content.',
@@ -788,11 +793,11 @@ function og_schema_7200_info() {
         'default' => 0,
         'description' => 'Primary Key: {og_role}.rid for role.',
       ),
-      'gid'               => array(
-        'description'     => "The group's unique ID.",
-        'type'            => 'int',
-        'size'            => 'normal',
-        'not null'        => TRUE,
+      'gid' => array(
+        'description' => "The group's unique ID.",
+        'type' => 'int',
+        'size' => 'normal',
+        'not null' => TRUE,
       ),
       'group_type' => array(
         'type' => 'varchar',
@@ -862,338 +867,73 @@ function og_field_schema($field) {
   );
 }
 
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7000(&$sandbox) { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7001(&$sandbox) { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7100(&$sandbox) { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7101() { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7200() { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7201(&$sandbox) { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7202() { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7203() { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7204() { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7205() { }
+
+// TODO The old hook_update_N functions cannot be applied to Backdrop.
+function og_update_7206() { }
+
 /**
- * Upgrade from Organic groups 6 to 7.
+ * Implements hook_update_last_removed().
  */
-function og_update_7000(&$sandbox) {
-  if (db_field_exists('og', 'nid') && !db_table_exists('d6_og')) {
-    // Rename the old table, so we can populate the new {og} table using API
-    // functions, that assume the new DB structure.
-    db_rename_table('og', 'd6_og');
-    db_rename_table('og_ancestry', 'd6_og_ancestry');
-    db_rename_table('og_uid', 'd6_og_uid');
-
-    // The tables that will need to be processed.
-    $tables = array('d6_og', 'd6_og_ancestry', 'd6_og_uid');
-
-    // If OG user roles module was installed in the past, make a copy of
-    // its table.
-    if (db_table_exists('og_users_roles')) {
-      db_rename_table('og_users_roles', 'd6_og_users_roles');
-      $tables[] = 'd6_og_users_roles';
-    }
-
-    $schema = og_schema_7000_info();
-    foreach (array('og', 'og_role_permission', 'og_role', 'og_users_roles') as $table) {
-      db_create_table($table, $schema[$table]);
-    }
-
-    // Temporary variable to indicate we need to add OG related fields.
-    variable_set('og_7000_add_field', TRUE);
-    variable_set('og_ui_7000_add_field', TRUE);
-    return t('Renamed Organic groups 6 tables. Enable "Migrate-UI" module to continue the migration of data. Once migration is done you may disable "Migrate" module');
-  }
-  return t('No change needed in Organic groups schema.');
+function og_update_last_removed() {
+  return 7206;
 }
 
 /**
- * Add group membership entities instead of field data.
+ * Implements hook_update_N().
  */
-function og_update_7001(&$sandbox) {
-  // Due to changes in the upgrade path (e.g. moving data migration to
-  // og-migrate) some users already have the tables, so be careful about
-  // the creation of these tables.
-  $schema = og_schema_7001_info();
-  if (!db_table_exists('og_membership')) {
-    db_create_table('og_membership', $schema['og_membership']);
-  }
-
-  if (!db_table_exists('og_membership_type')) {
-    db_create_table('og_membership_type', $schema['og_membership_type']);
-  }
-}
-
-/**
- * Add indexes to og and og_membership tables.
- */
-function og_update_7100(&$sandbox) {
-  // Make sure we don't try to re-add an index that was added in previous
-  // updates.
-  if (!db_index_exists('og_membership', 'entity')) {
-    db_add_index('og_membership', 'entity', array('etid', 'entity_type'));
-  }
-  if (!db_index_exists('og_membership', 'gid')) {
-    db_add_index('og_membership', 'gid', array('gid'));
-  }
-  return t('Added table indexes to {og_membership} table.');
-}
-
-/**
- * Rename the 'name' column to 'type' in {OG membership}.
- */
-function og_update_7101() {
-  if (db_field_exists('og_membership', 'type')) {
-    // Return early if field already created in og_update_7000().
-    return;
-  }
-  $column = array(
-    'description' => 'Reference to a group membership type.',
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-  );
-  db_change_field('og_membership', 'name', 'type', $column);
-}
-
-/**
- * Deprecate OG group entity, and add per-bundle roles.
- */
-function og_update_7200() {
-  // Delete the old group-audience field. The OG membership is not
-  // affected by this.
-  foreach (field_info_instances() as $entity_type => $bundles) {
-    foreach ($bundles as $bundle => $field_names) {
-      if (!empty($field_names['group_audience'])) {
-        field_delete_instance($field_names['group_audience']);
-      }
-    }
-  }
-
-  if (!module_enable(array('entityreference'))) {
-    throw new DrupalUpdateException('This version of OG requires Entity reference, but it could not be enabled.');
-  }
-
-  $column = array(
-    'description' => "The group's entity type (e.g. node, comment, etc').",
-    'type' => 'varchar',
-    'length' => '32',
-    'not null' => TRUE,
-    'default' => '',
-  );
-
-  db_add_field('og_membership', 'group_type', $column);
-
-  // Re-add index.
-  db_drop_index('og_membership', 'gid');
-  db_add_index('og_membership', 'group', array('gid', 'group_type'));
-
-  $column = array(
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-    'description' => "The group's entity type.",
-  );
-
-  db_add_field('og_role', 'group_type', $column);
-
-
-  // Rename {og_users_roles} to allow easier migration.
-  // Re-create a clean {og_users_roles}.
-  db_rename_table('og_users_roles', 'temp_og_users_roles');
-
-  $schema = og_schema_7200_info();
-  db_create_table('og_users_roles', $schema['og_users_roles']);
-
-
-  $column = array(
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-    'description' => "The group's bundle name.",
-  );
-  db_add_field('og_role', 'group_bundle', $column);
-
-  $column = array(
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-    'description' => "The name of the field holding the group ID, the OG memebership is associated with.",
-  );
-  db_add_field('og_membership', 'field_name', $column);
-
-  // Delete OG-migrate's table.
-  db_drop_table('og_migrate');
-
-  // Variable cleanup.
-  variable_del('og_skip_access');
-
-  // Clear entity cache.
-  // See http://drupal.org/node/996236
-  entity_info_cache_clear();
-
-  // Temporary variable to indicate we need to migrate OGUR data.
-  variable_set('og_7200_ogur_roles', TRUE);
-
-  return t('Enable "Migrate-UI" module to continue the migration of data. Once migration is done you may disable "Migrate" module');
-}
-
-/**
- * Add "language" column to all OG membership's related entities.
- */
-function og_update_7201(&$sandbox) {
-  //Update the existing entities, with the default language.
-  $langcode = language_default()->language;
-
-  $tables = array(
-    'og_membership_type',
-    'og_membership',
-  );
-
-  if (!isset($sandbox['total'])) {
-    foreach ($tables as $key => $table) {
-      $name = str_replace('_', ' ', $table);
-      $column = array(
-        'description' => "The {languages}.language of this $name.",
-        'type' => 'varchar',
-        'length' => 12,
-        'not null' => TRUE,
-        'default' => $langcode,
-      );
-      db_add_field($table, 'language', $column);
-
-      if ($table == 'og_membership') {
-        // We don't want to time out when updating og_membership, so we will
-        // process it using batches.
-        $query = db_select($table);
-        $sandbox['last'] = 0;
-        $sandbox['total'] = $query->countQuery()->execute()->fetchField();
-        $sandbox['#finished'] = 0;
-      }
-      else {
-        db_update($table)
-          ->fields(array(
-            'language' => $langcode,
-          ))
-          ->execute();
-      }
-    }
-  }
-  elseif ($sandbox['last'] <= $sandbox['total']  && $sandbox['total'] > 0) {
-    // Update og_memberships.
-    $batch_size = 200;
-    db_update('og_membership')
-      ->fields(array(
-        'language' => $langcode,
-      ))
-      ->condition('id', $sandbox['last'], '>')
-      ->execute();
-
-    $sandbox['last'] += $batch_size;
-    $sandbox['#finished'] = min(0.99, $sandbox['last'] / $sandbox['total']);
-  }
-  else {
-    // Finished processing.
-    $sandbox['#finished'] = 1;
-  }
-}
-
-/**
- * Extend the length of permission field in og_role_permission.
- */
-function og_update_7202() {
-  $column = array(
-    'type' => 'varchar',
-    'length' => 128,
-    'not null' => TRUE,
-    'default' => '',
-    'description' => 'A single permission granted to the role identified by rid.',
-  );
-
-  db_change_field('og_role_permission', 'permission', 'permission', $column);
-  return t('Updated column definition for {og_role_permission} table.');
-}
-
-/**
- * Update group-audience field to use "OG group" widget type.
- */
-function og_update_7203() {
-  if (!module_exists('field_sql_storage')) {
-    return;
-  }
-
-  // List of secondary group-audience fields.
-  $secondary_fields = array();
-
-  foreach (field_info_fields() as $field_name => $field) {
-    if ($field['type'] != 'entityreference' || $field['settings']['handler'] != 'og') {
-      continue;
-    }
-
-    if (!empty($field['settings']['handler_settings']['primary_field'])) {
-      field_delete_field($field_name);
-      $secondary_fields[] = $field_name;
-      continue;
-    }
-
-    foreach ($field['bundles'] as $entity_type => $bundles) {
-      foreach ($bundles as $bundle) {
-        $instance = field_info_instance($entity_type, $field_name, $bundle);
-        $instance['settings']['behaviors']['og_widget'] = array(
-          'status' => TRUE,
-          'default' => array(
-            'widget_type' => 'options_select',
-          ),
-          'admin' => array(
-            'widget_type' => 'entityreference_autocomplete',
-          ),
-        );
-
-        $instance['widget'] = array(
-          'type' => 'og_complex',
-          'module' => 'og',
-          'settings' => array(),
-        );
-
-        field_update_instance($instance);
-      }
-    }
-  }
-
-  if ($secondary_fields) {
-    $output = t('The following "secondary" fields were deleted, as they are no longer in use:');
-    $output .= theme('item_list', array('items' => $secondary_fields));
-  }
-  else {
-    $output = t('All group-audience fields were updated');
-  }
-
-  return $output;
-}
-
-/**
- * Create cache bins for Entity-cache module.
- */
-function og_update_7204() {
-  $cache_schema = drupal_get_schema_unprocessed('system', 'cache');
-  $types = array(
-    'og_membership_type',
-    'og_membership',
-  );
-
-  foreach ($types as $type) {
-    $schema["cache_entity_$type"] = $cache_schema;
-    $schema["cache_entity_$type"]['description'] = "Cache table used to store $type entity records.";
-  }
-
-  foreach ($schema as $name => $table) {
-    db_create_table($name, $table);
-  }
-}
-
-/**
- * Add an index to {og_membership} on group_type.
- */
-function og_update_7205() {
-  db_add_index('og_membership', 'group_type', array('group_type'));
-}
-
-/**
- * Add an index to {og_role} on group_type, group_bundle and gid to improve speed of og_roles().
- */
-function og_update_7206() {
-  db_add_index('og_role', 'lookup', array('group_type', 'group_bundle', 'gid'));
+function og_update_1000() {
+  $config = config('og.settings');
+  $config->set('og_7000_add_field', update_variable_get('og_7000_add_field', 'FALSE'));
+  $config->set('og_content_type_usage_typetype', update_variable_get('og_content_type_usage_typetype', 'dynamic variable in file /og/includes/migrate/7000/og_add_fields.inc line 27'));
+  $config->set('og_7200_ogur_roles', update_variable_get('og_7200_ogur_roles', 'FALSE'));
+  $config->set('og_user_roles_roles_typetype', update_variable_get('og_user_roles_roles_typetype', 'dynamic variable in file /og/includes/migrate/7000/og_ogur_roles.migrate.inc line 37'));
+  $config->set('og_node_access_strict', update_variable_get('og_node_access_strict', 'TRUE'));
+  $config->set('og_use_queue', update_variable_get('og_use_queue', 'FALSE'));
+  $config->set('og_orphans_delete', update_variable_get('og_orphans_delete', 'FALSE'));
+  $config->set('og_is_group__entity_type__bundle', update_variable_get('og_is_group__entity_type__bundle', 'dynamic variable in file /og/og.module line 1839'));
+  $config->set('og_group_manager_full_access', update_variable_get('og_group_manager_full_access', 'TRUE'));
+  $config->set('og_is_group_default_access__group_type__bundle', update_variable_get('og_is_group_default_access__group_type__bundle', 'dynamic variable in file /og/og.module line 2617'));
+  $config->set('og_maintain_overridden_roles', update_variable_get('og_maintain_overridden_roles', 'TRUE'));
+  $config->set('og_features_ignore_og_fields', update_variable_get('og_features_ignore_og_fields', 'FALSE'));
+  update_variable_del('og_7000_add_field');
+  update_variable_del('og_content_type_usage_typetype');
+  update_variable_del('og_7200_ogur_roles');
+  update_variable_del('og_user_roles_roles_typetype');
+  update_variable_del('og_node_access_strict');
+  update_variable_del('og_use_queue');
+  update_variable_del('og_orphans_delete');
+  update_variable_del('og_is_group__entity_type__bundle');
+  update_variable_del('og_group_manager_full_access');
+  update_variable_del('og_is_group_default_access__group_type__bundle');
+  update_variable_del('og_maintain_overridden_roles');
+  update_variable_del('og_features_ignore_og_fields');
 }

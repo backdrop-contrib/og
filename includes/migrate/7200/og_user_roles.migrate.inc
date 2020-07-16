@@ -74,7 +74,7 @@ class OgMigrateUserRoles extends OgEntityMigration {
       return;
     }
     // Get the bundle from the entity.
-    list(,, $bundle) = entity_extract_ids($group_type, $group);
+    list(, , $bundle) = entity_extract_ids($group_type, $group);
 
     // Get the per-bundle roles, and replace the role ID, with the
     // per-bundle role ID.

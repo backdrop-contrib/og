@@ -1,0 +1,6 @@
+{
+    "_config_name": "og_context.settings",
+    "og_context_negotiation_type": "dynamic variable in file /og/og_context/og_context.admin.inc line 49",
+    "og_context_providers_weight_type": "dynamic variable in file /og/og_context/og_context.admin.inc line 50",
+    "og_context_negotiation_group_context": "dynamic value in file /og/og_context/og_context.module line 410"
+}

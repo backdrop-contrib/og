@@ -39,7 +39,10 @@ class og_plugin_argument_default_user_groups extends views_plugin_argument_defau
       '#type' => 'select',
       '#title' => t('Concatenator'),
       '#description' => t('Select the concatenator used to merge multiple group IDs. Remember to turn on the "Allow multiple values" option in the "more" settings for this contextual filter.'),
-      '#options' => array('+' => '+', ',' => ','),
+      '#options' => array(
+        '+' => '+',
+        ',' => ',',
+      ),
       '#default_value' => $this->options['glue'],
     );
   }

@@ -6,7 +6,10 @@
 class og_handler_field_group_permissions extends og_handler_field_prerender_list {
   function construct() {
     parent::construct();
-    $this->additional_fields['uid'] = array('table' => 'users', 'field' => 'uid');
+    $this->additional_fields['uid'] = array(
+      'table' => 'users',
+      'field' => 'uid',
+    );
   }
 
   function pre_render(&$values) {
@@ -49,9 +52,7 @@ class og_handler_field_group_permissions extends og_handler_field_prerender_list
   }
 
   // TODO:
-  function document_self_tokens(&$tokens) {
-  }
+  function document_self_tokens(&$tokens) { }
 
-  function add_self_tokens(&$tokens, $item) {
-  }
+  function add_self_tokens(&$tokens, $item) { }
 }

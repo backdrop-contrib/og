@@ -58,7 +58,7 @@ class OgUiSetRoles extends Migration {
         );
         break;
 
-      // Moderated.
+        // Moderated.
       case 1:
         $anon_permissions = array(
           'subscribe' => TRUE,
@@ -66,7 +66,7 @@ class OgUiSetRoles extends Migration {
         );
         break;
 
-      // Invite only.
+        // Invite only.
       case 2:
         $anon_permissions = array(
           'subscribe' => FALSE,
@@ -74,7 +74,7 @@ class OgUiSetRoles extends Migration {
         );
         break;
 
-      // Closed.
+        // Closed.
       case 3:
         $anon_permissions = array(
           'subscribe' => FALSE,

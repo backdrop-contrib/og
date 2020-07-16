@@ -1,0 +1,15 @@
+{
+    "_config_name": "og.settings",
+    "og_7000_add_field": "FALSE",
+    "og_content_type_usage_typetype": "dynamic variable in file /og/includes/migrate/7000/og_add_fields.inc line 27",
+    "og_7200_ogur_roles": "FALSE",
+    "og_user_roles_roles_typetype": "dynamic variable in file /og/includes/migrate/7000/og_ogur_roles.migrate.inc line 37",
+    "og_node_access_strict": "TRUE",
+    "og_use_queue": "FALSE",
+    "og_orphans_delete": "FALSE",
+    "og_is_group__entity_type__bundle": "dynamic variable in file /og/og.module line 1839",
+    "og_group_manager_full_access": "TRUE",
+    "og_is_group_default_access__group_type__bundle": "dynamic variable in file /og/og.module line 2617",
+    "og_maintain_overridden_roles": "TRUE",
+    "og_features_ignore_og_fields": "FALSE"
+}

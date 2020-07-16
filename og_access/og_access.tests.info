@@ -1,0 +1,18 @@
+[OgAccessTestCase]
+name = OG access
+description = Test the visibility of nodes that are handled by OG access.
+group = Organic groups access
+file = og_access.test
+
+[OgAccessUseGroupDefaultsTestCase]
+name = Use group defaults
+description = Verify for an exception when OG access field is missing from the group, but exists on the group content.
+group = Organic groups access
+file = og_access.test
+
+[OgAccessModeratedGroup]
+name = OG moderated group membership
+description = Test groups that require membership approval.
+group = Organic groups access
+file = og_access.test
+

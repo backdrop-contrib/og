@@ -31,6 +31,7 @@ function og_context_configure_form() {
  * Helper function to build a group context provider table.
  */
 function _og_context_configure_form_table(&$form) {
+  $config = config('og_context.settings');
   $type = 'group_context';
 
   $table_form = array(
@@ -45,9 +46,12 @@ function _og_context_configure_form_table(&$form) {
 
   $group_context_providers = $form['#group_context_providers'];
   // Enable url and node context handlers by default.
-  $defaults = array('url' => -5, 'node' => -4);
-  $enabled_providers = variable_get("og_context_negotiation_$type", $defaults);
-  $providers_weight = variable_get("og_context_providers_weight_$type", $defaults);
+  $defaults = array(
+    'url' => -5,
+    'node' => -4,
+  );
+  $enabled_providers = $config->get("og_context_negotiation_$type");
+  $providers_weight = $config->get("og_context_providers_weight_$type");
 
   // Add missing data to the providers lists.
   foreach ($group_context_providers as $id => $provider) {
@@ -73,12 +77,19 @@ function _og_context_configure_form_table(&$form) {
     );
 
     $table_form['title'][$id] = array('#markup' => check_plain($provider['name']));
-    $table_form['enabled'][$id] = array('#type' => 'checkbox', '#default_value' => $enabled);
+    $table_form['enabled'][$id] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $enabled,
+    );
     $table_form['description'][$id] = array('#markup' => filter_xss_admin($provider['description']));
 
     $config_op = array();
     if (isset($provider['config'])) {
-      $config_op = array('#type' => 'link', '#title' => t('Configure'), '#href' => $provider['config']);
+      $config_op = array(
+        '#type' => 'link',
+        '#title' => t('Configure'),
+        '#href' => $provider['config'],
+      );
       // If there is at least one operation enabled show the operation column.
       $table_form['#show_operations'] = TRUE;
     }
@@ -111,15 +122,15 @@ function theme_og_context_configure_form($variables) {
     if (is_array($element) && element_child($id)) {
       $row = array(
         'data' => array(
-          '<strong>' . drupal_render($form[$type]['title'][$id]) . '</strong>',
-          drupal_render($form[$type]['description'][$id]),
-          drupal_render($form[$type]['enabled'][$id]),
-          drupal_render($form[$type]['weight'][$id]),
+          '<strong>' . backdrop_render($form[$type]['title'][$id]) . '</strong>',
+          backdrop_render($form[$type]['description'][$id]),
+          backdrop_render($form[$type]['enabled'][$id]),
+          backdrop_render($form[$type]['weight'][$id]),
         ),
         'class' => array('draggable'),
       );
       if ($form[$type]['#show_operations']) {
-        $row['data'][] = drupal_render($form[$type]['operation'][$id]);
+        $row['data'][] = backdrop_render($form[$type]['operation'][$id]);
       }
       $rows[] = $row;
     }
@@ -143,13 +154,13 @@ function theme_og_context_configure_form($variables) {
     'attributes' => array('id' => "group_context-negotiation-providers-$type"),
   );
   $table  = theme('table', $variables);
-  $table .= drupal_render_children($form[$type]);
+  $table .= backdrop_render_children($form[$type]);
 
-  drupal_add_tabledrag("group_context-negotiation-providers-$type", 'order', 'sibling', "group_context-provider-weight-$type");
+  backdrop_add_tabledrag("group_context-negotiation-providers-$type", 'order', 'sibling', "group_context-provider-weight-$type");
 
   $output .= '<div class="form-item">' . $title . $description . $table . '</div>';
 
-  $output .= drupal_render_children($form);
+  $output .= backdrop_render_children($form);
   return $output;
 }
 
@@ -172,8 +183,8 @@ function og_context_configure_form_submit($form, &$form_state) {
   }
 
   og_context_negotiation_set($negotiation);
-  variable_set("og_context_providers_weight_$type", $providers_weight);
+  config_set('og_context.settings', "og_context_providers_weight_$type", $providers_weight);
 
   $form_state['redirect'] = 'admin/config/group/context';
-  drupal_set_message(t('Group context negotiation configuration saved.'));
+  backdrop_set_message(t('Group context negotiation configuration saved.'));
 }

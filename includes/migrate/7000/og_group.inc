@@ -48,6 +48,6 @@ class OgMigrateGroup extends Migration {
    * Construct the machine name from the bundle.
    */
   protected function generateMachineName($class_name = NULL) {
-    return drupal_strtolower('OgMigrateGroup' . ucfirst($this->arguments['bundle']));
+    return backdrop_strtolower('OgMigrateGroup' . ucfirst($this->arguments['bundle']));
   }
 }

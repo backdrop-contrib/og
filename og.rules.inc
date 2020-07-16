@@ -9,7 +9,7 @@
  */
 
 /**
- * Implementation of hook_rules_event_info().
+ * Implements hook_rules_event_info().
  *
  * Adds some additional event that make reacting on user subscriptions easier.
  */
@@ -84,7 +84,10 @@ function og_rules_action_info() {
       // @todo: Add option to filter by member-state?
     ),
     'provides' => array(
-      'group_members' => array('type' => 'list<user>', 'label' => t('List of group members')),
+      'group_members' => array(
+        'type' => 'list<user>',
+        'label' => t('List of group members'),
+      ),
     ),
     'base' => 'og_rules_get_members',
     'access callback' => 'og_rules_integration_access',
@@ -101,7 +104,10 @@ function og_rules_action_info() {
       ),
     ),
     'provides' => array(
-      'group_managers' => array('type' => 'list<user>', 'label' => t('List of group managers')),
+      'group_managers' => array(
+        'type' => 'list<user>',
+        'label' => t('List of group managers'),
+      ),
     ),
     'base' => 'og_rules_get_managers',
     'access callback' => 'og_rules_integration_access',
@@ -125,7 +131,10 @@ function og_rules_action_info() {
       ),
     ),
     'provides' => array(
-      'group_content' => array('type' => 'list<entity>', 'label' => t('Group content')),
+      'group_content' => array(
+        'type' => 'list<entity>',
+        'label' => t('Group content'),
+      ),
     ),
     'base' => 'og_rules_get_group_content',
     'access callback' => 'og_rules_integration_access',
@@ -315,7 +324,7 @@ function og_rules_get_managers($group_content) {
   $return = array();
   foreach ($group_content->og_membership->value() as $og_membership) {
     $group = entity_load_single($og_membership->group_type, $og_membership->gid);
-    if(!empty($group->uid)){
+    if (!empty($group->uid)) {
       $return[] = $group->uid;
     }
   }
@@ -328,7 +337,7 @@ function og_rules_get_managers($group_content) {
 /**
  * Action: Fetch group content of a certain entity type.
  */
-function og_rules_get_group_content(EntityDrupalWrapper $group, $entity_type) {
+function og_rules_get_group_content(EntityBackdropWrapper $group, $entity_type) {
   $memberships = og_membership_load_multiple(FALSE, array('gid' => $group->getIdentifier(), 'entity_type' => $entity_type));
   $entities = array();
   foreach ($memberships as $membership) {
@@ -350,7 +359,7 @@ function og_rules_get_group_content_info_alter(&$element_info, $element) {
 /**
  * Action: Add entity to group.
  */
-function og_rules_add_entity_to_group(EntityDrupalWrapper $entity, EntityDrupalWrapper $group) {
+function og_rules_add_entity_to_group(EntityBackdropWrapper $entity, EntityBackdropWrapper $group) {
   // TODO: Add field-name.
   $values = array(
     'entity_type' => $entity->type(),
@@ -362,14 +371,14 @@ function og_rules_add_entity_to_group(EntityDrupalWrapper $entity, EntityDrupalW
 /**
  * Action: Remove entity from group.
  */
-function og_rules_remove_entity_from_group(EntityDrupalWrapper $entity, EntityDrupalWrapper $group) {
+function og_rules_remove_entity_from_group(EntityBackdropWrapper $entity, EntityBackdropWrapper $group) {
   og_ungroup($group->type(), $group->getIdentifier(), $entity->type(), $entity->value());
 }
 
 /**
  * Action: Grant OG role.
  */
-function og_rules_grant_og_role(EntityDrupalWrapper $account, EntityDrupalWrapper $group, $roles) {
+function og_rules_grant_og_role(EntityBackdropWrapper $account, EntityBackdropWrapper $group, $roles) {
   $group_roles = og_roles($group->type(), NULL, $group->getIdentifier());
   foreach ($roles as $role) {
     $rid = array_search($role, $group_roles);
@@ -382,7 +391,7 @@ function og_rules_grant_og_role(EntityDrupalWrapper $account, EntityDrupalWrappe
 /**
  * Action: Revoke OG role.
  */
-function og_rules_revoke_og_role(EntityDrupalWrapper $account, EntityDrupalWrapper $group, $roles) {
+function og_rules_revoke_og_role(EntityBackdropWrapper $account, EntityBackdropWrapper $group, $roles) {
   $group_roles = og_roles($group->type(), NULL, $group->getIdentifier());
   foreach ($roles as $role) {
     $rid = array_search($role, $group_roles);
@@ -548,7 +557,7 @@ function og_rules_condition_info() {
 /**
  * Condition: User has group permisison.
  */
-function og_rules_user_has_permission($permission, EntityDrupalWrapper $group, $account) {
+function og_rules_user_has_permission($permission, EntityBackdropWrapper $group, $account) {
   return og_user_access($group->type(), $group->getIdentifier(), $permission, $account);
 }
 
@@ -568,14 +577,14 @@ function og_rules_user_has_permission_options_list() {
 /**
  * Condition: Entity is in group.
  */
-function og_rules_condition_entity_in_group(EntityDrupalWrapper $entity, EntityDrupalWrapper $group) {
+function og_rules_condition_entity_in_group(EntityBackdropWrapper $entity, EntityBackdropWrapper $group) {
   return og_is_member($group->type(), $group->getIdentifier(), $entity->type(), $entity->value());
 }
 
 /**
  * Condition: User is in group.
  */
-function og_rules_condition_user_in_group(EntityDrupalWrapper $entity, EntityDrupalWrapper $group, $states = array(OG_STATE_ACTIVE)) {
+function og_rules_condition_user_in_group(EntityBackdropWrapper $entity, EntityBackdropWrapper $group, $states = array(OG_STATE_ACTIVE)) {
   return og_is_member($group->type(), $group->getIdentifier(), $entity->type(), $entity->value(), $states);
 }
 
@@ -589,7 +598,7 @@ function og_rules_condition_user_in_group_help() {
 /**
  * Condition: Entity is group.
  */
-function og_rules_entity_is_group(EntityDrupalWrapper $entity) {
+function og_rules_entity_is_group(EntityBackdropWrapper $entity) {
   return (bool) og_is_group($entity->type(), $entity->getIdentifier());
 }
 
@@ -603,7 +612,7 @@ function og_rules_entity_is_group_help() {
 /**
  * Condition: Entity is group content.
  */
-function og_rules_entity_is_group_content(EntityDrupalWrapper $entity) {
+function og_rules_entity_is_group_content(EntityBackdropWrapper $entity) {
   return (bool) og_is_group_content_type($entity->type(), $entity->getBundle());
 }
 
@@ -617,7 +626,7 @@ function og_rules_entity_is_group_content_help() {
 /**
  * Condition: User has group role.
  */
-function og_rules_condition_user_has_role(EntityDrupalWrapper $account, EntityDrupalWrapper $group, $roles) {
+function og_rules_condition_user_has_role(EntityBackdropWrapper $account, EntityBackdropWrapper $group, $roles) {
   $user_roles = og_get_user_roles($group->type(), $group->getIdentifier(), $account->getIdentifier());
   return !array_diff($roles, $user_roles);
 }

@@ -97,7 +97,7 @@ class OgMigrateRoles extends OgEntityMigration {
       // they exist.
       return;
     }
-    list(,, $bundle) = entity_extract_ids($group_type, $group);
+    list(, , $bundle) = entity_extract_ids($group_type, $group);
 
     $entity->group_type = $group_type;
     $entity->gid = $gid;

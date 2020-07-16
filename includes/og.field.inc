@@ -37,8 +37,8 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
   }
 
   // Cache the processed entity, to make sure we call the widget only once.
-  $cache = &drupal_static(__FUNCTION__, array());
-  list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
+  $cache = &backdrop_static(__FUNCTION__, array());
+  list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
   $field_name = $field['field_name'];
 
   $identifier = $field_name . ':' . $entity_type . ':' . $bundle . ':' . $id;
@@ -233,7 +233,7 @@ function _og_field_widget_replace_autocomplete_path(&$element, $field_mode) {
  * @see OgBehaviorHandler::validate()
  */
 function og_field_widget_register_errors($field_name = NULL, $errors = NULL) {
-  $cache = &drupal_static(__FUNCTION__, array());
+  $cache = &backdrop_static(__FUNCTION__, array());
 
   if (!empty($field_name)) {
     $cache[$field_name] = $errors;
@@ -263,7 +263,7 @@ function og_get_mocked_instance($instance, $field_mode) {
   // Set the widget's module.
   $widget_info = field_info_widget_types($widget_type);
   $mocked_instance['widget']['module'] = $widget_info['module'];
-  $mocked_instance['widget']['settings'] = drupal_array_merge_deep($mocked_instance['widget']['settings'], $widget_info['settings']);
+  $mocked_instance['widget']['settings'] = backdrop_array_merge_deep($mocked_instance['widget']['settings'], $widget_info['settings']);
 
   // See OgSelectionHandler::buildEntityFieldQuery().
   $mocked_instance['field_mode'] = $field_mode;
@@ -274,7 +274,7 @@ function og_get_mocked_instance($instance, $field_mode) {
  * Rebuild the element's values, using the default and admin if exists.
  */
 function og_complex_widget_element_validate($element, &$form_state, $form) {
-  $subform = drupal_array_get_nested_value($form_state['values'], $element['#array_parents']);
+  $subform = backdrop_array_get_nested_value($form_state['values'], $element['#array_parents']);
   $ids = array();
   foreach (array('default', 'admin') as $field_mode) {
     if (empty($subform[$field_mode])) {
@@ -295,15 +295,15 @@ function og_complex_widget_element_validate($element, &$form_state, $form) {
 
   $ids = array_merge($ids, $element['#other_groups_ids']);
 
-  // Set the form values by directly using drupal_array_set_nested_values(),
+  // Set the form values by directly using backdrop_array_set_nested_values(),
   // which allows us to control the element parents. In this case we cut off the
   // last element that contains the delta 0, as $ids is already keyed with
   // deltas.
-  drupal_array_set_nested_value($form_state['values'], array_slice($element['#parents'], 0, -1), $ids, TRUE);
+  backdrop_array_set_nested_value($form_state['values'], array_slice($element['#parents'], 0, -1), $ids, TRUE);
 
   // If the element is required, ensure that at least one group has been chosen.
   if ($element['#required']) {
-    $subform = drupal_array_get_nested_value($form_state['values'], $element['#array_parents']);
+    $subform = backdrop_array_get_nested_value($form_state['values'], $element['#array_parents']);
     if (empty($subform)) {
       form_error($element, t('!name field is required.', array('!name' => $element['#title'])));
     }

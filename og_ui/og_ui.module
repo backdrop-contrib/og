@@ -19,9 +19,8 @@ function og_ui_menu() {
     // already a member of the group" to group members, however it is not
     // possible to give authenticated group members the "subscribe" permissions.
     'access callback' => 'user_is_logged_in',
-
     // We don't add the group name, as it might be private.
-    'title' => 'Join group'
+    'title' => 'Join group',
   );
 
   $items['group/%/%/unsubscribe'] = array(
@@ -35,7 +34,7 @@ function og_ui_menu() {
   );
 
   $items['group/%/%/admin/people/add-user'] = array(
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'title' => 'Add members',
     'page arguments' => array('og_ui_add_users', 1, 2),
     'type' => MENU_LOCAL_TASK,
@@ -63,7 +62,7 @@ function og_ui_menu() {
     'title callback' => 'og_ui_menu_title_callback',
     'title arguments' => array('Edit membership in group @group', 1, 2),
     'type' => MENU_CALLBACK,
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_edit_membership', 1, 2, 6),
     'access callback' => 'og_ui_user_access_group',
     'access arguments' => array('manage members', 1, 2),
@@ -74,7 +73,7 @@ function og_ui_menu() {
   $items['group/%/%/admin/people/delete-membership/%og_membership'] = array(
     'title' => 'Delete',
     'type' => MENU_CALLBACK,
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_delete_membership', 1, 2, 6),
     'access callback' => 'og_ui_user_access_group',
     'access arguments' => array('manage members', 1, 2),
@@ -86,7 +85,7 @@ function og_ui_menu() {
     'title callback' => 'og_ui_menu_title_callback',
     'title arguments' => array('Roles for group @group', 1, 2),
     'description' => 'List, edit, or add user roles.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_new_role', 1, 2),
     'access callback' => 'og_ui_user_access_group',
     'access arguments' => array('manage roles', 1, 2),
@@ -99,7 +98,7 @@ function og_ui_menu() {
   $items['group/%/%/admin/role/%/edit'] = array(
     'title' => 'Edit role',
     'description' => 'List, edit, or add user roles.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     // Passing empty bundle name to og_ui_admin_roles. The bundle will be
     // loaded from the role.
     'page arguments' => array('og_ui_admin_roles', 1, 2, '', 5),
@@ -114,7 +113,7 @@ function og_ui_menu() {
     'title callback' => 'og_ui_menu_title_callback',
     'title arguments' => array('Permissions for group @group', 1, 2),
     'description' => 'Determine access to features by selecting permissions for roles.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_permissions', 1, 2),
     'access callback' => 'og_ui_user_access_group',
     'access arguments' => array('manage permissions', 1, 2),
@@ -127,7 +126,7 @@ function og_ui_menu() {
   $items['group/%/%/admin/permission/%/edit'] = array(
     'title' => "Edit role's permissions",
     'description' => 'Determine access to features by selecting permissions for role.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     // Passing empty bundle name to og_ui_admin_permissions. The bundle will be
     // loaded from the role.
     'page arguments' => array('og_ui_admin_permissions', 1, 2, '', 5),
@@ -167,13 +166,13 @@ function og_ui_menu() {
     'page callback' => 'system_admin_menu_block_page',
     'access arguments' => array('administer group'),
     'file' => 'system.admin.inc',
-    'file path' => drupal_get_path('module', 'system'),
+    'file path' => backdrop_get_path('module', 'system'),
   );
 
   $items['admin/config/group/settings'] = array(
     'title' => 'OG settings',
     'description' => 'Administer OG settings.',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_settings'),
     'access arguments' => array('administer group'),
     'file' => 'og_ui.admin.inc',
@@ -194,7 +193,7 @@ function og_ui_menu() {
     $entity_info = entity_get_info($entity_type);
     foreach ($bundles as $bundle_name => $bundle_label) {
       $items["admin/config/group/permissions/$entity_type/$bundle_name"] = array(
-        'page callback' => 'drupal_get_form',
+        'page callback' => 'backdrop_get_form',
         'page arguments' => array('og_ui_admin_global_permissions', $entity_type, '0', $bundle_name),
         'title callback' => 'og_ui_menu_bundle_roles_title_callback',
         'title arguments' => array('OG @type - @bundle permissions', $entity_type, $bundle_name),
@@ -207,7 +206,7 @@ function og_ui_menu() {
   }
 
   $items['admin/config/group/permission/%/edit'] = array(
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_permissions', '', '0', '', 4),
     'title callback' => 'og_ui_menu_bundle_roles_title_callback',
     'title arguments' => array('OG @type - @bundle - @role permissions', '', '', 4),
@@ -232,7 +231,7 @@ function og_ui_menu() {
     $entity_info = entity_get_info($entity_type);
     foreach ($bundles as $bundle_name => $bundle_label) {
       $items["admin/config/group/roles/$entity_type/$bundle_name"] = array(
-        'page callback' => 'drupal_get_form',
+        'page callback' => 'backdrop_get_form',
         'page arguments' => array('og_ui_admin_new_role', $entity_type, '0', $bundle_name),
         'title callback' => 'og_ui_menu_bundle_roles_title_callback',
         'title arguments' => array('OG @type - @bundle roles', $entity_type, $bundle_name),
@@ -245,7 +244,7 @@ function og_ui_menu() {
   }
 
   $items['admin/config/group/role/%/edit'] = array(
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_roles', '', '0', '', 4),
     'title callback' => 'og_ui_menu_bundle_roles_title_callback',
     'title arguments' => array('OG @type - @bundle - @role', '', '', 4),
@@ -256,7 +255,7 @@ function og_ui_menu() {
   );
 
   $items['admin/config/group/fields'] = array(
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_field_settings'),
     'title' => 'OG field settings',
     'access arguments' => array('administer group'),
@@ -266,7 +265,7 @@ function og_ui_menu() {
   );
 
   $items['admin/config/group/fields/%/%/%field_ui_menu/delete'] = array(
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_field_delete_form', 6),
     'load arguments' => array(4, 5, 5, '%map'),
     'title' => 'Delete',
@@ -293,6 +292,7 @@ function og_ui_field_create_instance($instance) {
     return;
   }
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   variable_set('menu_rebuild_needed', TRUE);
 }
 
@@ -309,6 +309,7 @@ function og_ui_field_delete_instance($instance) {
     return;
   }
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   variable_set('menu_rebuild_needed', TRUE);
 }
 
@@ -322,7 +323,7 @@ function og_ui_user_access_group($perm, $group_type, $gid) {
   }
 
   // Extract the group's bundle.
-  list(,,$bundle) = entity_extract_ids($group_type, $group);
+  list(, , $bundle) = entity_extract_ids($group_type, $group);
   // Verify the bundle has roles
   if (!og_roles($group_type, $bundle, $gid)) {
     return FALSE;
@@ -400,7 +401,7 @@ function og_ui_access_bundle_role($rid) {
   }
 
   $role = og_role_load($rid);
-  return (boolean)$role;
+  return (boolean) $role;
 }
 
 /**
@@ -449,7 +450,7 @@ function og_ui_access_entity_role($perm, $group_type, $gid, $rid) {
 function og_ui_views_api() {
   return array(
     'api' => 3,
-    'path' => drupal_get_path('module', 'og_ui') . '/includes/views',
+    'path' => backdrop_get_path('module', 'og_ui') . '/includes/views',
   );
 }
 
@@ -510,7 +511,7 @@ function og_ui_menu_bundle_roles_title_callback($title, $group_type, $bundle, $r
 }
 
 /**
- * Implement hook_theme().
+ * Implements hook_theme().
  */
 function og_ui_theme() {
   return array(
@@ -559,7 +560,7 @@ function og_ui_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
 }
 
 /**
- * Implement hook_field_formatter_info().
+ * Implements hook_field_formatter_info().
  */
 function og_ui_field_formatter_info() {
   return array(
@@ -597,14 +598,17 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
         $element[0] = array(
           '#type' => 'html_tag',
           '#tag' => 'span',
-          '#attributes' => array('title' => t('You are the group manager'), 'class' => 'group manager'),
+          '#attributes' => array(
+            'title' => t('You are the group manager'),
+            'class' => 'group manager',
+          ),
           '#value' => t('You are the group manager'),
         );
 
         return $element;
       }
 
-      list($id,, $bundle) = entity_extract_ids($entity_type, $entity);
+      list($id, , $bundle) = entity_extract_ids($entity_type, $entity);
       if (og_is_member($entity_type, $id, 'user', $account, array(OG_STATE_ACTIVE, OG_STATE_PENDING))) {
         if (og_user_access($entity_type, $id, 'unsubscribe', $account)) {
           $links['title'] = t('Unsubscribe from group');
@@ -643,7 +647,10 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
           $element[0] = array(
             '#type' => 'html_tag',
             '#tag' => 'span',
-            '#attributes' => array('title' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'), 'class' => 'group other'),
+            '#attributes' => array(
+              'title' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'),
+              'class' => 'group other',
+            ),
             '#value' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'),
           );
           return $element;
@@ -680,7 +687,10 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
           $element[0] = array(
             '#type' => 'html_tag',
             '#tag' => 'span',
-            '#attributes' => array('title' => t('This is a closed group. Only a group administrator can add you.'), 'class' => 'group closed'),
+            '#attributes' => array(
+              'title' => t('This is a closed group. Only a group administrator can add you.'),
+              'class' => 'group closed',
+            ),
             '#value' => t('This is a closed group. Only a group administrator can add you.'),
           );
 
@@ -689,7 +699,10 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
       }
 
       if (!empty($links['title'])) {
-        $links += array('options' => array('attributes' => array('title' => $links['title'], 'class' => array($links['class']))));
+        $links += array('options' => array('attributes' => array(
+              'title' => $links['title'],
+              'class' => array($links['class']),
+            )));
         $element[0] = array(
           '#type' => 'link',
           '#title' => $links['title'],
@@ -866,7 +879,7 @@ function og_ui_og_user_access_alter(&$perms, $context) {
 }
 
 /**
- * Implement hook_forms().
+ * Implements hook_forms().
  */
 function og_ui_forms() {
   $forms['og_ui_admin_new_role']['callback'] = 'og_ui_admin_roles';
@@ -878,7 +891,7 @@ function og_ui_forms() {
 }
 
 /**
- * Implement hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter().
  */
 function og_ui_form_node_type_form_alter(&$form, &$form_state) {
   $node_type = $form['#node_type']->type;
@@ -924,7 +937,7 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
   $form['og']['og_group_content_type'] = array(
     '#type' => 'checkbox',
     '#title' => t('Group content'),
-    '#default_value' =>  $is_group_content,
+    '#default_value' => $is_group_content,
     '#description' => $description,
     '#disabled' => !$group_content_options || $is_group_content,
   );
@@ -1010,13 +1023,17 @@ function og_ui_node_type_update($info) {
  *   The content type name.
  */
 function og_ui_node_type_save($bundle_name) {
+  // TODO This variable was probably removed in Backdrop without replacement.
   if (variable_get('og_group_type_' . $bundle_name, FALSE)) {
     og_create_field(OG_GROUP_FIELD, 'node', $bundle_name);
   }
 
+  // TODO This variable was probably removed in Backdrop without replacement.
   if (variable_get('og_group_content_type_' . $bundle_name, FALSE) && !og_is_group_content_type('node', $bundle_name)) {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
+    // TODO This variable was probably removed in Backdrop without replacement.
     $og_field['field']['target_type'] = variable_get('target_type_' . $bundle_name);
+    // TODO This variable was probably removed in Backdrop without replacement.
     $og_field['field']['settings']['handler_settings']['target_bundles'] = variable_get('target_bundles_' . $bundle_name);
     og_create_field(OG_AUDIENCE_FIELD, 'node', $bundle_name, $og_field);
   }
@@ -1029,12 +1046,13 @@ function og_ui_node_type_save($bundle_name) {
     'target_bundles',
   );
   foreach ($vars as $var) {
+    // TODO This variable was probably removed in Backdrop without replacement.
     variable_del($var . '_' . $bundle_name);
   }
 }
 
 /**
- * Implement hook_og_permission().
+ * Implements hook_og_permission().
  */
 function og_ui_og_permission() {
   $items = array();
@@ -1101,7 +1119,7 @@ function og_ui_og_permission() {
 function og_ui_get_group_admin($entity_type, $etid) {
   // We cache the values, as this function is also used as an access
   // callback, so we don't want to trigger it many times.
-  $cache = &drupal_static(__FUNCTION__);
+  $cache = &backdrop_static(__FUNCTION__);
   if (isset($cache["$entity_type:$etid"])) {
     return $cache["$entity_type:$etid"];
   }
@@ -1127,21 +1145,21 @@ function og_ui_get_group_admin($entity_type, $etid) {
   $data = module_invoke_all('og_ui_get_group_admin', $entity_type, $etid);
 
   // Sort the results.
-  uasort($data, 'drupal_sort_title');
+  uasort($data, 'backdrop_sort_title');
 
   // Allow other modules to alter the menu items.
   $context = array(
     'entity_type' => $entity_type,
     'etid' => $etid,
   );
-  drupal_alter('og_ui_get_group_admin', $data, $context);
+  backdrop_alter('og_ui_get_group_admin', $data, $context);
 
   $cache["$entity_type:$etid"] = $data;
   return $data;
 }
 
 /**
- * Implements hook_og_ui_get_group_admin()
+ * Implements hook_og_ui_get_group_admin().
  */
 function og_ui_og_ui_get_group_admin($group_type, $gid) {
   $items = array();
@@ -1206,4 +1224,16 @@ function og_ui_migrate_api() {
     'migrations' => $migrations,
   );
   return $api;
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function og_ui_autoload_info() {
+  return array(
+    'OgUiMigrateAddField' => 'includes/migrate/7000/add_field.inc',
+    'OgUiPopulateField' => 'includes/migrate/7000/populate_field.inc',
+    'OgUiSetRoles' => 'includes/migrate/7000/set_roles.inc',
+    'og_ui_handler_area_og_membership_overview' => 'includes/views/handlers/og_ui_handler_area_og_membership_overview.inc',
+  );
 }

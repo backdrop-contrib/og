@@ -14,7 +14,7 @@ class OgMigrateAddFields extends MigrationBase {
   }
 
   public function isComplete() {
-    return !variable_get('og_7000_add_field', FALSE);
+    return !config_get('og.settings', 'og_7000_add_field');
   }
 
   /**
@@ -24,7 +24,7 @@ class OgMigrateAddFields extends MigrationBase {
     og_create_field(OG_AUDIENCE_FIELD, 'user', 'user');
     foreach (node_type_get_types() as $type) {
       // Check if the variable exists.
-      if ($type_usage = variable_get('og_content_type_usage_' . $type->type)) {
+      if ($type_usage = config_get('og.settings', 'og_content_type_usage_' . $type->type)) {
         switch ($type_usage) {
           case 'group':
             $content_type['group'][] = $type->type;
@@ -77,7 +77,7 @@ class OgMigrateAddFields extends MigrationBase {
               field_create_instance($instance);
 
               // Delete the OG6 variable.
-              variable_del('og_content_type_usage_' . $type);
+              config_clear('og.settings', 'og_content_type_usage_' . $type);
             }
           }
         }
@@ -85,7 +85,7 @@ class OgMigrateAddFields extends MigrationBase {
     }
 
     // Delete the field that indicates we still need to add fields.
-    variable_del('og_7000_add_field');
+    config_clear('og.settings', 'og_7000_add_field');
 
     return MigrationBase::RESULT_COMPLETED;
   }

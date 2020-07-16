@@ -5,4 +5,4 @@
  * Provide a separate Exception so it can be caught separately.
  */
 
-class OgException extends Exception {}
+class OgException extends Exception { }

@@ -17,7 +17,10 @@ class og_context_plugin_argument_default_group_context extends views_plugin_argu
   function option_definition() {
     $options = parent::option_definition();
     $options['group_type'] = array('default' => 'node');
-    $options['check_access'] = array('default' => TRUE, 'bool' => TRUE);
+    $options['check_access'] = array(
+      'default' => TRUE,
+      'bool' => TRUE,
+    );
 
     return $options;
   }
@@ -31,7 +34,7 @@ class og_context_plugin_argument_default_group_context extends views_plugin_argu
       '#options' => og_get_all_group_entity(),
       '#title' => t('Group type'),
       '#default_value' => $this->options['group_type'],
-      '#description' => t('Determine what entity type that group should be of.')
+      '#description' => t('Determine what entity type that group should be of.'),
     );
     $form['check_access'] = array(
       '#type' => 'checkbox',

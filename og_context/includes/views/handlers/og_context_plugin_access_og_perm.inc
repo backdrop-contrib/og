@@ -41,14 +41,14 @@ class og_context_plugin_access_og_perm extends views_plugin_access {
       '#options' => $perms,
       '#title' => t('OG permission'),
       '#default_value' => $this->options['perm'],
-      '#description' => t('Only users with the selected permission flag in a group retrieved from context will be able to access this display.')
+      '#description' => t('Only users with the selected permission flag in a group retrieved from context will be able to access this display.'),
     );
     $form['group_type'] = array(
       '#type' => 'select',
       '#options' => og_get_all_group_entity(),
       '#title' => t('Group type'),
       '#default_value' => $this->options['group_type'],
-      '#description' => t('Determine what entity type that group should be of.')
+      '#description' => t('Determine what entity type that group should be of.'),
     );
 
     $current_display = $this->view->current_display;

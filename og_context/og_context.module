@@ -14,7 +14,7 @@ function og_context_menu() {
   $items['admin/config/group/context'] = array(
     'title' => 'OG context',
     'description' => 'OG context detection and selection',
-    'page callback' => 'drupal_get_form',
+    'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_context_configure_form'),
     'access arguments' => array('administer group'),
     'file' => 'og_context.admin.inc',
@@ -35,7 +35,7 @@ function og_context_theme() {
 }
 
 /**
- * Implement hook_init().
+ * Implements hook_init().
  */
 function og_context_init() {
   og_context();
@@ -83,7 +83,7 @@ function og_context_get_properties($data = array(), array $options, $name, $type
 }
 
 /**
- * Implement hook_preprocess_html().
+ * Implements hook_preprocess_html().
  *
  * HTML preprocess; Add context related templates and CSS.
  */
@@ -95,7 +95,7 @@ function og_context_preprocess_html(&$variables) {
     $variables['theme_hook_suggestions'][] = 'page__og_context__' . $context['group_type'] . '__' . $context['gid'];
 
     // Add CSS.
-    $clean_html = drupal_html_class('og-context-' . $context['group_type']);
+    $clean_html = backdrop_html_class('og-context-' . $context['group_type']);
     $variables['classes_array'][] = 'og-context';
     $variables['classes_array'][] = $clean_html;
     $variables['classes_array'][] = $clean_html . '-' . $context['gid'];
@@ -154,7 +154,7 @@ function og_context_og_context_negotiation_info() {
 function og_context_views_api() {
   return array(
     'api' => 2,
-    'path' => drupal_get_path('module', 'og_context') . '/includes/views',
+    'path' => backdrop_get_path('module', 'og_context') . '/includes/views',
   );
 }
 
@@ -168,7 +168,7 @@ function og_context_og_invalidate_cache($gids = array()) {
   );
 
   foreach ($caches as $cache) {
-    drupal_static_reset($cache);
+    backdrop_static_reset($cache);
   }
 
   if ($gids && !empty($_SESSION['og_context']) && in_array($_SESSION['og_context'], $gids)) {
@@ -190,7 +190,7 @@ function og_context_og_invalidate_cache($gids = array()) {
  *  Returns TRUE if function was already executed.
  */
 function og_context_is_init($called = FALSE) {
-  $return = &drupal_static(__FUNCTION__, FALSE);
+  $return = &backdrop_static(__FUNCTION__, FALSE);
 
   if ($called) {
     $return = $called;
@@ -234,7 +234,7 @@ function og_context($group_type = 'node', $group = NULL, $account = NULL, $check
   );
   $cache_key = implode(':', $cache_keys);
 
-  $context = &drupal_static(__FUNCTION__, array());
+  $context = &backdrop_static(__FUNCTION__, array());
 
   if (!array_key_exists($cache_key, $context)) {
     // Mark that this context hasn't been checked yet.
@@ -274,16 +274,25 @@ function og_context($group_type = 'node', $group = NULL, $account = NULL, $check
     }
 
     list($id) = entity_extract_ids($group_type, $group);
-    $context[$cache_key] = array('group_type' => $group_type, 'gid' => $id);
+    $context[$cache_key] = array(
+      'group_type' => $group_type,
+      'gid' => $id,
+    );
   }
   // Get context from context handlers.
   elseif ($gid = og_context_determine_context($group_type, NULL, $check_access)) {
     // Set og_context_is_init to TRUE to define that function was already executed.
     og_context_is_init(TRUE);
-    $context[$cache_key] = array('group_type' => $group_type, 'gid' => $gid);
+    $context[$cache_key] = array(
+      'group_type' => $group_type,
+      'gid' => $gid,
+    );
     if ($user->uid) {
       // Save the group ID in the authenticated user's session.
-      $_SESSION['og_context'] = array('group_type' => $group_type, 'gid' => $gid);
+      $_SESSION['og_context'] = array(
+        'group_type' => $group_type,
+        'gid' => $gid,
+      );
     }
   }
 
@@ -291,17 +300,17 @@ function og_context($group_type = 'node', $group = NULL, $account = NULL, $check
 }
 
 /**
- * Add the group entity of the context to the Drupal javascript entity.
+ * Add the group entity of the context to the Backdrop javascript entity.
  *
  * @param $context
  *   The context array.
  */
 function og_context_add_js($context) {
   // Static variable to indicate if group was already added to javascript.
-  $js = &drupal_static(__FUNCTION__, FALSE);
+  $js = &backdrop_static(__FUNCTION__, FALSE);
 
   if (!$js) {
-    drupal_add_js(array('ogContext' => array('groupType' => $context['group_type'], 'gid' => $context['gid'])), 'setting');
+    backdrop_add_js(array('ogContext' => array('groupType' => $context['group_type'], 'gid' => $context['gid'])), 'setting');
     $js = TRUE;
   }
 }
@@ -313,14 +322,14 @@ function og_context_add_js($context) {
  *   An array of group context providers.
  */
 function og_context_negotiation_info() {
-  $group_context_providers = &drupal_static(__FUNCTION__);
+  $group_context_providers = &backdrop_static(__FUNCTION__);
 
   if (!isset($group_context_providers)) {
     // Collect all the module-defined og_context negotiation providers.
     $group_context_providers = module_invoke_all('og_context_negotiation_info');
 
     // Let other modules alter the list of og_context providers.
-    drupal_alter('og_context_negotiation_info', $group_context_providers);
+    backdrop_alter('og_context_negotiation_info', $group_context_providers);
   }
 
   // Assign default values.
@@ -373,7 +382,7 @@ function og_context_negotiation_set($group_context_providers) {
     }
   }
 
-  variable_set("og_context_negotiation_$type", $negotiation);
+  config_set('og_context.settings', "og_context_negotiation_$type", $negotiation);
 }
 
 /**
@@ -388,6 +397,16 @@ function og_context_negotiation_set($group_context_providers) {
 function og_context_provider_weight($provider) {
   $default = is_numeric($provider) ? $provider : 0;
   return isset($provider['weight']) && is_numeric($provider['weight']) ? $provider['weight'] : $default;
+}
+
+/**
+ * Implements hook_config_info().
+ */
+function og_context_config_info() {
+  $prefixes['og_context.settings'] = array(
+    'label' => t('Module name settings'),
+    'group' => t('Configuration'),
+  );
 }
 
 /**
@@ -406,8 +425,11 @@ function og_context_provider_weight($provider) {
  */
 function og_context_determine_context($group_type, $item = NULL, $check_access = TRUE) {
   // Enable url and node context handlers by default.
-  $defaults = array('url' => -5, 'node' => -4);
-  if (!$enabled_providers = variable_get('og_context_negotiation_group_context', $defaults)) {
+  $defaults = array(
+    'url' => -5,
+    'node' => -4,
+  );
+  if (!$enabled_providers = config_get('og_context.settings', 'og_context_negotiation_group_context')) {
     return;
   }
 
@@ -674,4 +696,14 @@ function _og_context_views_page_access($group_type, $perm, $group_id_arg = FALSE
     // Try to get context.
     return og_user_access($group_type, $group['gid'], $perm);
   }
+}
+
+/**
+ * Implements hook_autoload_info().
+ */
+function og_context_autoload_info() {
+  return array(
+    'og_context_plugin_access_og_perm' => 'includes/views/handlers/og_context_plugin_access_og_perm.inc',
+    'og_context_plugin_argument_default_group_context' => 'includes/views/handlers/og_context_plugin_argument_default_group_context.inc',
+  );
 }

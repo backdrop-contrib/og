@@ -22,7 +22,7 @@ class OgUiMigrateAddField extends MigrationBase {
   }
 
   public function isComplete() {
-    return !variable_get('og_ui_7000_add_field', FALSE);
+    return !config_get('og_ui.settings', 'og_ui_7000_add_field');
   }
 
   /**
@@ -38,7 +38,7 @@ class OgUiMigrateAddField extends MigrationBase {
     }
 
     // Delete the field that indicates we still need to add fields.
-    variable_del('og_ui_7000_add_field');
+    config_clear('og_ui.settings', 'og_ui_7000_add_field');
 
     return MigrationBase::RESULT_COMPLETED;
   }

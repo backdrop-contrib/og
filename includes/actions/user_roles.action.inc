@@ -1,13 +1,21 @@
 <?php
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_user_roles_action_info() {
   return array('og_user_roles_action' => array(
-    'type' => 'og_membership',
-    'label' => t('Modify OG user roles'),
-    'configurable' => TRUE,
-  ));
+      'type' => 'og_membership',
+      'label' => t('Modify OG user roles'),
+      'configurable' => TRUE,
+    ));
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_user_roles_action_form($context) {
   $gid = '';
   $group_type = '';
@@ -33,7 +41,7 @@ function og_user_roles_action_form($context) {
   if (!$group || !og_is_group($group_type, $group)) {
     return;
   }
-  list(,, $bundle) = entity_extract_ids($group_type, $group);
+  list(, , $bundle) = entity_extract_ids($group_type, $group);
   $og_roles = og_roles($group_type, $bundle, $gid, FALSE, FALSE);
 
   $form['add_roles'] = array(
@@ -42,7 +50,7 @@ function og_user_roles_action_form($context) {
     '#title' => t('Add roles'),
     '#description' => t('Choose one or more roles you would like to assign to the selected users.'),
     '#options' => $og_roles,
-    '#size' => 5
+    '#size' => 5,
   );
   $form['remove_roles'] = array(
     '#type' => 'select',
@@ -50,17 +58,25 @@ function og_user_roles_action_form($context) {
     '#title' => t('Remove roles'),
     '#description' => t('Choose one or more roles you would like to remove from the selected users.'),
     '#options' => $og_roles,
-    '#size' => 5
+    '#size' => 5,
   );
   return $form;
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_user_roles_action_validate($form, $form_state) {
   if (!$form_state['values']['add_roles'] && !$form_state['values']['remove_roles']) {
     form_set_error('add_roles', t('You have not chosen any role to add or remove. Please select something to do.'));
   }
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_user_roles_action_submit($form, $form_state) {
   return array(
     'add_roles' => array_filter($form_state['values']['add_roles']),
@@ -68,6 +84,10 @@ function og_user_roles_action_submit($form, $form_state) {
   );
 }
 
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
 function og_user_roles_action($og_membership, $context) {
   if ($og_membership->entity_type != 'user') {
     return;

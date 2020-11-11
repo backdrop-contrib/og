@@ -317,7 +317,7 @@ function og_ui_field_delete_instance($instance) {
  * Menu access; Check if entity is a group, and user has permission.
  */
 function og_ui_user_access_group($perm, $group_type, $gid) {
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   if (!$group || !og_is_group($group_type, $group)) {
     return FALSE;
   }
@@ -348,7 +348,7 @@ function og_ui_access_group_permissions($group_type, $bundle, $gid = 0, $rid = 0
   if ($group_type && !entity_get_info($group_type)) {
     return FALSE;
   }
-  if ($gid && !entity_load_single($group_type, $gid)) {
+  if ($gid && !entity_load($group_type, $gid)) {
     return FALSE;
   }
 
@@ -424,7 +424,7 @@ function og_ui_access_entity_role($perm, $group_type, $gid, $rid) {
     return FALSE;
   }
 
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   if (!$group || !og_is_group($group_type, $group)) {
     return FALSE;
   }
@@ -1129,7 +1129,7 @@ function og_ui_get_group_admin($entity_type, $etid) {
     return array();
   }
   // ensure we are invoking this on something worth doing it on
-  $entity = entity_load_single($entity_type, $etid);
+  $entity = entity_load($entity_type, $etid);
   if (!$entity) {
     // It is a non-existing group Id, giving up.
     return FALSE;

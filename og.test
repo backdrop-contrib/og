@@ -1399,7 +1399,7 @@ class OgMigrate7200TestCase extends UpdatePathTestCase {
     $this->assertEqual(array_values(og_roles('node', 'school', 2)), $roles, 'Returned expected roles group second group.');
 
     // Assert field name was registered in the OG membership.
-    $og_membership = entity_load_single('og_membership', 1);
+    $og_membership = entity_load('og_membership', 1);
     $this->assertTrue($og_membership->field_name, 'Field name was registered in the OG membership.');
   }
 }

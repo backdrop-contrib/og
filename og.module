@@ -1332,7 +1332,7 @@ function og_membership_create($group_type, $gid, $entity_type, $etid, $field_nam
  *   Else an array containing all types is returned.
  */
 function og_membership_load($id) {
-  return entity_load_single('og_membership', $id);
+  return entity_load('og_membership', $id);
 }
 
 /**
@@ -1857,7 +1857,7 @@ function og_membership_access($op, $entity, $account = NULL, $entity_type = 'og_
  */
 function og_is_group($entity_type, $entity) {
   if (is_numeric($entity)) {
-    $entity = entity_load_single($entity_type, $entity);
+    $entity = entity_load($entity_type, $entity);
   }
   if (!$entity) {
     // The entity does not exist.
@@ -2045,7 +2045,7 @@ function og_group($group_type, $gid, $values = array(), $save_created = TRUE) {
 
   }
   else {
-    $group = entity_load_single($group_type, $gid);
+    $group = entity_load($group_type, $gid);
   }
 
   // the group ID might be the entity, so re-popualte it.
@@ -2199,7 +2199,7 @@ function og_user_access($group_type, $gid, $string, $account = NULL, $skip_alter
 
   // Group manager has all privileges (if variable is TRUE).
   if (!empty($account->uid) && config_get('og.settings', 'og_group_manager_full_access')) {
-    $group = entity_load_single($group_type, $gid);
+    $group = entity_load($group_type, $gid);
     if (!empty($group->uid) && $group->uid == $account->uid) {
       return TRUE;
     }
@@ -2228,7 +2228,7 @@ function og_user_access($group_type, $gid, $string, $account = NULL, $skip_alter
   if (!$skip_alter && empty($perm_alter[$identifier][$account->uid][$string])) {
     // Let modules alter the permissions. since $perm is static we create
     // a clone of it.
-    $group = !empty($group) ? $group : entity_load_single($group_type, $gid);
+    $group = !empty($group) ? $group : entity_load($group_type, $gid);
     $temp_perm = $perm[$identifier][$account->uid];
     $context = array(
       'string' => $string,
@@ -2291,7 +2291,7 @@ function og_user_access_entity($perm, $entity_type, $entity, $account = NULL, $s
     return $result;
   }
   elseif (is_numeric($entity)) {
-    $entity = entity_load_single($entity_type, $entity);
+    $entity = entity_load($entity_type, $entity);
   }
 
   list($id, $vid, $bundle_name) = entity_extract_ids($entity_type, $entity);
@@ -2828,7 +2828,7 @@ function og_get_user_roles($group_type, $gid, $uid = NULL, $include = TRUE, $che
 
 
   $rids = array();
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   // Get the bundle of the group.
   list(, , $bundle) = entity_extract_ids($group_type, $group);
 
@@ -3108,7 +3108,7 @@ function og_roles_override($group_type, $bundle, $gid) {
  */
 function og_role_grant($group_type, $gid, $uid, $rid) {
   // Make sure the role is valid.
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   list(, , $bundle) = entity_extract_ids($group_type, $group);
   $og_roles = og_roles($group_type, $bundle, $gid, FALSE, FALSE);
   if (empty($og_roles[$rid])) {
@@ -3376,7 +3376,7 @@ function og_fields_info($field_name = NULL) {
  *   (optional) The path to append to the breadcrumb.
  */
 function og_set_breadcrumb($entity_type, $etid, $path = array()) {
-  $entity = entity_load_single($entity_type, $etid);
+  $entity = entity_load($entity_type, $etid);
   $label = entity_label($entity_type, $entity);
   $uri = entity_uri($entity_type, $entity);
   backdrop_set_breadcrumb(array_merge(array(l(t('Home'), '<front>')), array(l($label, $uri['path'])), $path));

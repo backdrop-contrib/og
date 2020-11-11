@@ -25,7 +25,7 @@ function og_ui_subscribe($entity_type, $etid, $field_name = NULL) {
     backdrop_not_found();
     return;
   }
-  $entity = entity_load_single($entity_type, $etid);
+  $entity = entity_load($entity_type, $etid);
   if (!$entity || !og_is_group($entity_type, $entity)) {
     // Not a valid entity, or not a group.
     backdrop_not_found();
@@ -186,7 +186,7 @@ function og_ui_confirm_subscribe_submit($form, &$form_state) {
 
   $group_type = $form_state['values']['group_type'];
   $gid = $form_state['values']['gid'];
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
 
   if (entity_access('view', $group_type, $group)) {
     $redirect = entity_uri($group_type, $group);
@@ -212,7 +212,7 @@ function og_ui_confirm_subscribe_submit($form, &$form_state) {
 function og_ui_unsubscribe($group_type, $gid) {
   global $user;
   $account = clone $user;
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   if (!$group || !og_is_group($group_type, $group)) {
     // Not a valid entity, or not a group.
     backdrop_not_found();

@@ -64,7 +64,7 @@ class og_handler_field_og_membership_link_delete extends views_handler_field_ent
     $og_membership = $this->get_value($values);
     $group_type = $og_membership->group_type;
     $gid = $og_membership->gid;
-    $group = entity_load_single($group_type, $gid);
+    $group = entity_load($group_type, $gid);
 
     if (!og_user_access($group_type, $gid, 'manage members')) {
       // User is a group manager, and may not be removed.

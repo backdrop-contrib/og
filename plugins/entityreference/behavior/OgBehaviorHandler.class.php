@@ -169,7 +169,7 @@ class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
         // Membership was deleted.
         if ($og_membership->entity_type == 'user') {
           // Make sure this is not the group manager, if exists.
-          $group = entity_load_single($og_membership->group_type, $og_membership->gid);
+          $group = entity_load($og_membership->group_type, $og_membership->gid);
           if (!empty($group->uid) && $group->uid == $og_membership->etid) {
             continue;
           }

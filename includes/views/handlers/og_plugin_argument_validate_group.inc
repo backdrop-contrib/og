@@ -39,7 +39,7 @@ class og_plugin_argument_validate_group extends views_plugin_argument_validate {
       return;
     }
     $group_type = $this->options['group_type'];
-    $entity = entity_load_single($group_type, $argument);
+    $entity = entity_load($group_type, $argument);
     if (!$entity || !og_is_group($group_type, $entity)) {
       return FALSE;
     }

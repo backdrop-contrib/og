@@ -73,7 +73,7 @@ class og_ui_handler_area_og_membership_overview extends views_handler_area {
       return;
     }
 
-    $group = entity_load_single($group_type, $gid);
+    $group = entity_load($group_type, $gid);
     if (!$group || !og_is_group($group_type, $group)) {
       // Arguments are not a valid group.
       return;

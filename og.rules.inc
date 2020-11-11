@@ -323,7 +323,7 @@ function og_rules_get_managers($group_content) {
 
   $return = array();
   foreach ($group_content->og_membership->value() as $og_membership) {
-    $group = entity_load_single($og_membership->group_type, $og_membership->gid);
+    $group = entity_load($og_membership->group_type, $og_membership->gid);
     if (!empty($group->uid)) {
       $return[] = $group->uid;
     }

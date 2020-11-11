@@ -68,7 +68,7 @@ class OgMigrateUserRoles extends OgEntityMigration {
     $group_type = $row->group_type;
     $gid = $row->gid;
 
-    if (!$group = entity_load_single($group_type, $gid)) {
+    if (!$group = entity_load($group_type, $gid)) {
       // Some installations might have missing entities, so we don't assume
       // they exist.
       return;

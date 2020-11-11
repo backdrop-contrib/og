@@ -37,7 +37,7 @@ function og_user_roles_action_form($context) {
     return;
   }
 
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   if (!$group || !og_is_group($group_type, $group)) {
     return;
   }

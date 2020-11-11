@@ -78,7 +78,7 @@ function og_context_get_properties($data = array(), array $options, $name, $type
   // Get the entity type form the property name.
   $group_type = str_replace('og_context__', '', $name);
   if ($context = og_context($group_type)) {
-    return entity_load_single($group_type, $context['gid']);
+    return entity_load($group_type, $context['gid']);
   }
 }
 
@@ -473,7 +473,7 @@ function og_context_determine_context($group_type, $item = NULL, $check_access =
       }
 
       // Check if user has access to the group.
-      $group = entity_load_single($group_type, $check_gid);
+      $group = entity_load($group_type, $check_gid);
       if (!$check_access || entity_access('view', $group_type, $group)) {
         // We found an accessible context, so we can break.
         $gid = $check_gid;

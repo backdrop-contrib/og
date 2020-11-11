@@ -23,12 +23,12 @@ class OgMembership extends Entity {
       throw new OgException('OG membership can not be created for anonymous user.');
     }
 
-    $entity = !empty($this->entity) ? $this->entity : entity_load_single($entity_type, $etid);
+    $entity = !empty($this->entity) ? $this->entity : entity_load($entity_type, $etid);
     list(, , $bundle) = entity_extract_ids($entity_type, $entity);
 
     $group_type = $this->group_type;
     $gid = $this->gid;
-    $group = entity_load_single($group_type, $gid);
+    $group = entity_load($group_type, $gid);
     list(, , $group_bundle) = entity_extract_ids($group_type, $group);
 
     $field_name = $this->field_name;
@@ -102,7 +102,7 @@ class OgMembership extends Entity {
    * Return the group assocaited with the OG membership.
    */
   public function group() {
-    return entity_load_single($this->group_type, $this->gid);
+    return entity_load($this->group_type, $this->gid);
   }
 
   /**

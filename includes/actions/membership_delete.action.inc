@@ -27,7 +27,7 @@ function og_membership_delete_action($og_membership, $context) {
   $gid = $og_membership->gid;
 
   // Don't process the group manager, if exists.
-  $group = entity_load_single($group_type, $gid);
+  $group = entity_load($group_type, $gid);
   if (!empty($group->uid) && $group->uid == $og_membership->etid && $og_membership->entity_type == 'user') {
     return;
   }

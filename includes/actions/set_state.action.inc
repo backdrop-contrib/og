@@ -53,7 +53,7 @@ function og_set_state_action($og_membership, $context) {
   }
 
   // Don't process the group manager, if exists.
-  $group = entity_load_single($og_membership->group_type, $og_membership->gid);
+  $group = entity_load($og_membership->group_type, $og_membership->gid);
   if (!empty($group->uid) && $group->uid == $og_membership->etid && $og_membership->entity_type == 'user') {
     return;
   }

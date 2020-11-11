@@ -1203,7 +1203,7 @@ function og_membership_type_create($name, $values = array()) {
   $values += array(
     'language' => $language->language,
   );
-  $wrapper = entity_property_values_create_entity('og_membership_type', $values);
+  $wrapper = entity_plus_property_values_create_entity('og_membership_type', $values);
   return $wrapper->value();
 }
 
@@ -1292,7 +1292,7 @@ function og_membership_invalidate_cache() {
  * @return OgMembership
  *   Returns a new OG membership object.
  *
- * @see entity_property_values_create_entity()
+ * @see entity_plus_property_values_create_entity()
  */
 function og_membership_create($group_type, $gid, $entity_type, $etid, $field_name, $values = array()) {
   global $language;
@@ -1316,7 +1316,7 @@ function og_membership_create($group_type, $gid, $entity_type, $etid, $field_nam
   $field = field_info_field($field_name);
   $values['type'] = $field['settings']['handler_settings']['membership_type'];
 
-  $wrapper = entity_property_values_create_entity('og_membership', $values);
+  $wrapper = entity_plus_property_values_create_entity('og_membership', $values);
   return $wrapper->value();
 }
 

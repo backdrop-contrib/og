@@ -5,6 +5,7 @@ dependencies[] = options
 dependencies[] = list
 dependencies[] = text
 dependencies[] = entity
+dependencies[] = entity_ui
 dependencies[] = entityreference
 backdrop = 1.x
 type = module

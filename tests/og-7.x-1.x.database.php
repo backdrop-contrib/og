@@ -24526,42 +24526,42 @@ db_insert('registry')->fields(array(
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityAPIController',
+  'name' => 'EntityPlusController',
   'type' => 'class',
   'filename' => 'sites/all/modules/entity/includes/entity.controller.inc',
   'module' => 'entity',
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityAPIControllerExportable',
+  'name' => 'EntityPlusControllerExportable',
   'type' => 'class',
   'filename' => 'sites/all/modules/entity/includes/entity.controller.inc',
   'module' => 'entity',
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityAPIControllerInterface',
+  'name' => 'EntityPlusControllerInterface',
   'type' => 'interface',
   'filename' => 'sites/all/modules/entity/includes/entity.controller.inc',
   'module' => 'entity',
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityAPIi18nItegrationTestCase',
+  'name' => 'EntityPlusi18nItegrationTestCase',
   'type' => 'class',
   'filename' => 'sites/all/modules/entity/entity.test',
   'module' => 'entity',
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityAPIRulesIntegrationTestCase',
+  'name' => 'EntityPlusRulesIntegrationTestCase',
   'type' => 'class',
   'filename' => 'sites/all/modules/entity/entity.test',
   'module' => 'entity',
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityAPITestCase',
+  'name' => 'EntityPlusTestCase',
   'type' => 'class',
   'filename' => 'sites/all/modules/entity/entity.test',
   'module' => 'entity',
@@ -24617,7 +24617,7 @@ db_insert('registry')->fields(array(
   'weight' => '0',
 ))
 ->values(array(
-  'name' => 'EntityDefaultViewsController',
+  'name' => 'EntityPlusDefaultViewsController',
   'type' => 'class',
   'filename' => 'sites/all/modules/entity/views/entity.views.inc',
   'module' => 'entity',

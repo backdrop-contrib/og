@@ -9,7 +9,7 @@
 /**
  * "OG membership" entity Views definitions.
  */
-class OgMembershipViewsController extends EntityDefaultViewsController {
+class OgMembershipViewsController extends EntityPlusDefaultViewsController {
 
   /**
    * Override views_data().

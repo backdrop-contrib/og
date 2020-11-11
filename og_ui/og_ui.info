@@ -1,12 +1,8 @@
 name = Organic groups UI
 description = "Organic groups UI."
 package = "Organic groups"
-dependencies[] = og
-dependencies[] = views_bulk_operations
 backdrop = 1.x
 type = module
-version = VERSION
 configure = admin/config/group
 
-; Views handlers
-; Migrate
+dependencies[] = og

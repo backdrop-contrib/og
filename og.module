@@ -119,7 +119,7 @@ function og_menu() {
 function og_entity_info() {
   $items['og_membership_type'] = array(
     'label' => t('OG membership type'),
-    'controller class' => 'EntityAPIControllerExportable',
+    'controller class' => 'EntityPlusControllerExportable',
     'entity class' => 'OgMembershipType',
     'base table' => 'og_membership_type',
     'fieldable' => TRUE,
@@ -135,7 +135,7 @@ function og_entity_info() {
     'bundle of' => 'og_membership',
     'module' => 'og',
     'metadata controller class' => 'EntityDefaultMetadataController',
-    'views controller class' => 'EntityDefaultViewsController',
+    'views controller class' => 'EntityPlusDefaultViewsController',
     'access callback' => 'og_membership_type_access',
     'entity cache' => module_exists('entitycache'),
   );
@@ -155,7 +155,7 @@ function og_entity_info() {
   $items['og_membership'] = array(
     'label' => t('OG membership'),
     'entity class' => 'OgMembership',
-    'controller class' => 'EntityAPIController',
+    'controller class' => 'EntityPlusController',
     'base table' => 'og_membership',
     'fieldable' => TRUE,
     'entity keys' => array(

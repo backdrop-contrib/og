@@ -1035,7 +1035,7 @@ function og_ui_node_type_update($info) {
  */
 function og_ui_node_type_save($bundle_name) {
   $config = config('og.settings');
-  if ($config->get('group_type_' . $bundle_name)) {
+  if ($config->get('og_group_type_' . $bundle_name)) {
     og_create_field(OG_GROUP_FIELD, 'node', $bundle_name);
   }
 

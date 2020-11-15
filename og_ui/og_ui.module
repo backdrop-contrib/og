@@ -292,8 +292,7 @@ function og_ui_field_create_instance($instance) {
     return;
   }
 
-  // TODO This variable was probably removed in Backdrop without replacement.
-  variable_set('menu_rebuild_needed', TRUE);
+  state_set('menu_rebuild_needed', TRUE);
 }
 
 /**
@@ -309,8 +308,7 @@ function og_ui_field_delete_instance($instance) {
     return;
   }
 
-  // TODO This variable was probably removed in Backdrop without replacement.
-  variable_set('menu_rebuild_needed', TRUE);
+  state_set('menu_rebuild_needed', TRUE);
 }
 
 /**
@@ -989,6 +987,19 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
       ),
     );
   }
+  $form['#submit'][] = 'og_ui_form_node_type_form_submit';
+}
+
+/**
+   * Submit handler for the OG options on the Content Type edit form.
+   */
+function og_ui_form_node_type_form_submit($form, &$form_state) {
+  $config = config('og.settings');
+  $config->set('og_group_type_' . $form['#node_type']->type, $form_state['values']['og_group_type']);
+  $config->set('og_group_content_type_' . $form['#node_type']->type, $form_state['values']['og_group_content_type']);
+  $config->set('target_type_' . $form['#node_type']->type, $form_state['values']['og_group_type']);
+  $config->set('target_bundles_' . $form['#node_type']->type, $form_state['values']['og_group_type']);
+  $config->save();
 }
 
 /**
@@ -1023,32 +1034,29 @@ function og_ui_node_type_update($info) {
  *   The content type name.
  */
 function og_ui_node_type_save($bundle_name) {
-  // TODO This variable was probably removed in Backdrop without replacement.
-  if (variable_get('og_group_type_' . $bundle_name, FALSE)) {
+  $config = config('og.settings');
+  if ($config->get('og_group_type_' . $bundle_name)) {
     og_create_field(OG_GROUP_FIELD, 'node', $bundle_name);
   }
 
-  // TODO This variable was probably removed in Backdrop without replacement.
-  if (variable_get('og_group_content_type_' . $bundle_name, FALSE) && !og_is_group_content_type('node', $bundle_name)) {
+  if ($config->get('og_group_content_type_' . $bundle_name) && !og_is_group_content_type('node', $bundle_name)) {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    // TODO This variable was probably removed in Backdrop without replacement.
-    $og_field['field']['target_type'] = variable_get('target_type_' . $bundle_name);
-    // TODO This variable was probably removed in Backdrop without replacement.
-    $og_field['field']['settings']['handler_settings']['target_bundles'] = variable_get('target_bundles_' . $bundle_name);
+    $og_field['field']['target_type'] = $config->get('target_type_' . $bundle_name);
+    $og_field['field']['settings']['handler_settings']['target_bundles'] = $config->get('target_bundles_' . $bundle_name);
     og_create_field(OG_AUDIENCE_FIELD, 'node', $bundle_name, $og_field);
   }
 
-  // Delete the variable, as we will rely on the presence of the field.
-  $vars = array(
+  // Delete the config variables, as we will rely on the presence of the field.
+  $configvars = array(
     'og_group_type',
     'og_group_content_type',
     'target_type',
     'target_bundles',
   );
-  foreach ($vars as $var) {
-    // TODO This variable was probably removed in Backdrop without replacement.
-    variable_del($var . '_' . $bundle_name);
+  foreach ($configvars as $configvar) {
+    $config->clear($configvar . '_' . $bundle_name);
   }
+  $config->save();
 }
 
 /**

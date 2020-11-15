@@ -987,18 +987,19 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
       ),
     );
   }
-  $form['#submit'][] = 'og_ui_form_node_type_form_submit';
+  array_unshift($form['#submit'], 'og_ui_form_node_type_form_submit');
 }
 
 /**
    * Submit handler for the OG options on the Content Type edit form.
    */
 function og_ui_form_node_type_form_submit($form, &$form_state) {
+  $content_type = $form_state['values']['type'];
   $config = config('og.settings');
-  $config->set('og_group_type_' . $form['#node_type']->type, $form_state['values']['og_group_type']);
-  $config->set('og_group_content_type_' . $form['#node_type']->type, $form_state['values']['og_group_content_type']);
-  $config->set('target_type_' . $form['#node_type']->type, $form_state['values']['og_group_type']);
-  $config->set('target_bundles_' . $form['#node_type']->type, $form_state['values']['og_group_type']);
+  $config->set('og_group_type_' . $content_type, $form_state['values']['og_group_type']);
+  $config->set('og_group_content_type_' . $content_type, $form_state['values']['og_group_content_type']);
+  $config->set('target_type_' . $content_type, $form_state['values']['target_type']);
+  $config->set('target_bundles_' . $content_type, $form_state['values']['target_bundles']);
   $config->save();
 }
 

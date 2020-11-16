@@ -3,8 +3,37 @@
 /**
  * @file
  * Main class for OG membership entities provided by Entity API.
+ *
+ * A subclass of Entity is a requirement for creating a custom entity. It is
+ * also a minimum requirement to define the methods included here, even as 
+ * empty functions.
  */
 class OgMembership extends Entity {
+  /**
+   * Implements EntityInterface::id().
+   */
+  public function id() {
+  }
+
+  /**
+   * Implements EntityInterface::entityType().
+   */
+  public function entityType() {
+    return 'og_membership';
+  }
+
+  /**
+   * Implements EntityInterface::label().
+   */
+  public function label() {
+  }
+
+  /**
+   * Implements EntityInterface::uri().
+   */
+  public function uri() {
+  }
+
   public function __construct(array $values = array(), $entityType = NULL) {
     parent::__construct($values, 'og_membership');
   }

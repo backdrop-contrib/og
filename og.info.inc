@@ -50,40 +50,40 @@ class OgMembershipMetadataController extends EntityDefaultMetadataController {
 
     $properties['created']['type'] = 'date';
     $properties['created'] += array(
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
     );
 
     $properties['state']['type'] = 'integer';
     $properties['state'] += array(
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
       'options list' => 'og_group_content_states',
       'required' => TRUE,
     );
 
     $properties['entity_type'] += array(
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
     );
 
     $properties['type']['type'] = 'og_membership_type';
     $properties['type'] += array(
       'required' => TRUE,
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
     );
 
     $properties['group_type'] += array(
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
       'required' => TRUE,
       'options list' => 'og_get_all_group_entity',
     );
 
     $properties['field_name'] += array(
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
       // TODO: Add options list to give a list of group-audience fields.
       // 'options list' => '',
     );
 
     $properties['language'] += array(
-      'setter callback' => 'entity_property_verbatim_set',
+      'setter callback' => 'entity_plus_property_verbatim_set',
     );
 
     return $info;

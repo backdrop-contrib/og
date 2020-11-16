@@ -7,23 +7,6 @@
  */
 
 /**
- * Plugins are described by creating a $plugin array which will be used
- * by the system that includes this file.
- */
-$plugin = array(
-  'title' => t("OG: user permission in group"),
-  'description' => t('Control access by group permission string.'),
-  'callback' => 'og_perm_ctools_access_check',
-  'default' => array('perm' => ''),
-  'settings form' => 'og_perm_ctools_access_settings',
-  'summary' => 'og_perm_ctools_access_summary',
-  'required context' => array(
-    new ctools_context_required(t('User'), 'user'),
-    new ctools_context_required(t('Node'), 'node'),
-  ),
-);
-
-/**
  * Settings form for the 'by perm' access plugin
  */
 function og_perm_ctools_access_settings($form, &$form_state, $conf) {

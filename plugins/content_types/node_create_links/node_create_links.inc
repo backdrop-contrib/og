@@ -1,21 +1,5 @@
 <?php
 
-if (module_exists('entityreference_prepopulate')) {
-  /**
-   * Plugin definition.
-   */
-  $plugin = array(
-    'title' => t('Content create links'),
-    'description' => t('Crafted links to create content (nodes) for a given group.'),
-    'required context' => new ctools_context_required(t('Node'), 'node'),
-    'category' => t('Organic groups'),
-    'defaults' => array(
-      'types' => array(),
-      'field_name' => OG_AUDIENCE_FIELD,
-    ),
-  );
-}
-
 /**
  * Render callback.
  */

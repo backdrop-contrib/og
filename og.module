@@ -104,6 +104,7 @@ function og_menu() {
  * Implements hook_entity_info().
  */
 function og_entity_info() {
+  module_load_include('inc', 'og', 'og.og');
   $items['og_membership_type'] = array(
     'label' => t('OG membership type'),
     'controller class' => 'EntityPlusControllerExportable',
@@ -420,15 +421,37 @@ function og_modules_uninstalled($modules) {
 }
 
 /**
- * Implements hook_ctools_plugin_directory().
+ * Implements hook_entityreference_behavior_plugins().
  */
-function og_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'ctools') {
-    return 'plugins/' . $plugin;
-  }
-  elseif ($module == 'entityreference') {
-    return "plugins/entityreference/$plugin";
-  }
+function og_entityreference_behavior_plugins() {
+  $plugins = array(
+    'og_behavior' => array(
+      'title' => t('OG behavior'),
+      'class' => 'OgBehaviorHandler',
+      'settings level' => 'field',
+      'force enabled' => TRUE,
+    ),
+    'og_widget' => array(
+      'title' => t('OG widget'),
+      'class' => 'OgWidgetHandler',
+      'behavior type' => 'instance',
+      'force enabled' => TRUE,
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_entityreference_selection_plugins().
+ */
+function og_entityreference_selection_plugins() {
+  $plugins = array(
+    'og' => array(
+      'title' => t('Organic groups'),
+      'class' => 'OgSelectionHandler',
+    ),
+  );
+  return $plugins;
 }
 
 /**
@@ -3822,5 +3845,8 @@ function og_autoload_info() {
     'OgBehaviorHandler' => 'plugins/entityreference/behavior/OgBehaviorHandler.class.php',
     'OgWidgetHandler' => 'plugins/entityreference/behavior/OgWidgetHandler.class.php',
     'OgSelectionHandler' => 'plugins/entityreference/selection/OgSelectionHandler.class.php',
+    'og_context' => 'includes/og_context.inc',
+    'og_context_required' => 'includes/og_context.inc',
+    'og_context_optional' => 'includes/og_context.inc',
   );
 }

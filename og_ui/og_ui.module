@@ -1154,7 +1154,7 @@ function og_ui_get_group_admin($entity_type, $etid) {
   $data = module_invoke_all('og_ui_get_group_admin', $entity_type, $etid);
 
   // Sort the results.
-  uasort($data, 'backdrop_sort_title');
+  backdrop_sort($data, array('title' => SORT_STRING));
 
   // Allow other modules to alter the menu items.
   $context = array(

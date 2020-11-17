@@ -35,11 +35,6 @@ function og_install() {
     );
     field_create_instance($instance);
   }
-  // Dynamically generated variable data was detected on the following lines.
-  // /og/includes/migrate/7000/og_add_fields.inc line 27
-  // /og/includes/migrate/7000/og_ogur_roles.migrate.inc line 37
-  // /og/og.module line 1839
-  // /og/og.module line 2617
 }
 
 /**

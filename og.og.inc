@@ -9,23 +9,6 @@
 /**
  * Implements hook_og_info().
  *
- * The format of the plugin info:
- *
- *   $info['MACHINE_NAME'] = array(
- *   'form' => 'og_MACHINE_NAME_form',
- *   'callback' => 'og_MACHINE_NAME_callback',
- *   'name' => 'NAME',
- *   'multi' => 'loop', // loop or direct
- *   'single' => 'skip', // optional
- *   'category' => 'CATEGORY',
- *   'default description' => 'Description here', // optional
- *   'handler' => array(
- *     'file_type' => 'inc',
- *     'file_name' => 'MACHINE_NAME',
- *     'path' => 'plugins/', // usually plugins/ directory
- *     'module' => MODULE_NAME,
- *   ),
- * );
  */
 
 function og_og_info() {

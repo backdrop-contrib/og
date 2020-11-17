@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains code related to the ctools system of 'context'.
+ * Contains code related to the OG system of 'context'.
  *
  * Context, originally from Panels, is a method of packaging objects into
  * a more generic bundle and providing a plugin system so that a UI can
@@ -145,8 +145,6 @@ class og_context {
 
   /**
    * Return the value of argument (or arg) variable as it was passed in.
-   *
-   * For example see ctools_plugin_load_function() and ctools_terms_context().
    *
    * @return mixed
    *   The original arg value.

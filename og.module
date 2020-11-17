@@ -428,7 +428,7 @@ function og_entityreference_behavior_plugins() {
     'og_behavior' => array(
       'title' => t('OG behavior'),
       'class' => 'OgBehaviorHandler',
-      'settings level' => 'field',
+      'behavior type' => 'field',
       'force enabled' => TRUE,
     ),
     'og_widget' => array(
@@ -1249,7 +1249,7 @@ function og_membership_type_load($name = NULL) {
  *   SAVED_UPDATED is returned depending on the operation performed.
  */
 function og_membership_type_save($og_membership) {
-  return entity_save('og_membership_type', $og_membership);
+  return entity_plus_save('og_membership_type', $og_membership);
 }
 
 /**
@@ -1259,7 +1259,7 @@ function og_membership_type_save($og_membership) {
  *   The OG membership type entity to be deleted.
  */
 function og_membership_type_delete($og_membership) {
-  return entity_delete('og_membership_type', $og_membership);
+  return entity_delete_multiple('og_membership_type', array($og_membership));
 }
 
 /**
@@ -1634,7 +1634,7 @@ function _og_query_og_membership_alter_conditions(&$conditions, $aliases, $base_
  *   SAVED_UPDATED is returned depending on the operation performed.
  */
 function og_membership_save($og_membership) {
-  return entity_save('og_membership', $og_membership);
+  return entity_plus_save('og_membership', $og_membership);
 }
 
 /**

@@ -404,11 +404,12 @@ function og_entity_setter($object, $property_name, $wrapper) {
  */
 function og_default_og_membership_type() {
   $items = array();
-  $items['og_membership_type_default'] = entity_import('og_membership_type', '{
+  $serialized = '{
     "name" : "og_membership_type_default",
     "description" : "Default",
     "rdf_mapping" : []
-  }');
+  }';
+  $items['og_membership_type_default'] = entity_get_controller('og_membership_type')->import($serialized);
   return $items;
 }
 

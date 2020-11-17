@@ -13,7 +13,7 @@
 
 function og_og_info() {
   $info = array(
-    'access' = array(
+    'access' => array(
       'og_is_node_group_content' => array(
         'title' => t("OG: Node is an OG group content"),
         'description' => t('Control access by whether or not a node is of type "Group content".'),
@@ -85,7 +85,7 @@ function og_og_info() {
         ),
         'file' => 'plugins/content_types/node_create_links.inc',
       ),
-    ),
+    );
   }
   
   return $info;

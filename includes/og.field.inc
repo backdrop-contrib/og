@@ -47,8 +47,6 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
   }
   $cache[$identifier] = TRUE;
 
-  ctools_include('fields');
-
   $field_modes = array('default');
   $has_admin = FALSE;
 
@@ -156,7 +154,7 @@ function og_field_widget_form(&$form, &$form_state, $field, $instance, $langcode
       $dummy_form_state['field'][$field_name][$langcode]['items_count'] = !empty($dummy_entity->{$field_name}[$langcode]) ? count($dummy_entity->{$field_name}[$langcode]) : 0;
     }
 
-    $new_element = ctools_field_invoke_field($mocked_instance, 'form', $entity_type, $dummy_entity, $form, $dummy_form_state, array('default' => TRUE));
+    $new_element = _og_field_invoke_field($mocked_instance, 'form', $entity_type, $dummy_entity, $form, $dummy_form_state, array('default' => TRUE));
     $element[$field_mode] = $new_element[$field_name][LANGUAGE_NONE];
     if (in_array($mocked_instance['widget']['type'], array('entityreference_autocomplete', 'entityreference_autocomplete_tags'))) {
       // Change the "Add more" button name so it adds only the needed
@@ -216,6 +214,71 @@ function _og_field_widget_replace_autocomplete_path(&$element, $field_mode) {
     $element['#autocomplete_path'] .= "/$path[7]";
   }
 }
+
+/**
+  * Replacement for core _field_invoke() to invoke on a single field.
+  *
+  * Plucked from `ctools_field_invoke_field`. Remove/replace if alternative is
+  * available.
+  */
+function _og_field_invoke_field($field_name, $op, $entity_type, $entity, &$a = NULL, &$b = NULL, $options = array()) {
+  if (is_array($field_name)) {
+    $instance = $field_name;
+    $field = empty($field_name['field']) ? field_info_field($instance['field_name']) : $field_name['field'];
+    $field_name = $instance['field_name'];
+  }
+  else {
+    list(, , $bundle) = entity_extract_ids($entity_type, $entity);
+    $instance = field_info_instance($entity_type, $field_name, $bundle);
+  }
+
+  if (empty($instance)) {
+    return;
+  }
+
+  // Merge default options.
+  $default_options = array(
+    'default' => FALSE,
+    'deleted' => FALSE,
+    'language' => NULL,
+  );
+  $options += $default_options;
+
+  $return = array();
+
+  // Everything from here is unmodified code from _field_invoke() formerly
+  // inside a foreach loop over the instances.
+  $function = $options['default'] ? 'field_default_' . $op : $field['module'] . '_field_' . $op;
+  if (function_exists($function)) {
+    // Determine the list of languages to iterate on.
+    $available_languages = field_available_languages($entity_type, $field);
+    $languages = _field_language_suggestion($available_languages, $options['language'], $field_name);
+
+    foreach ($languages as $langcode) {
+      $items = isset($entity->{$field_name}[$langcode]) ? $entity->{$field_name}[$langcode] : array();
+      $result = $function($entity_type, $entity, $field, $instance, $langcode, $items, $a, $b);
+      if (isset($result)) {
+        // For hooks with array results, we merge results together.
+        // For hooks with scalar results, we collect results in an array.
+        if (is_array($result)) {
+          $return = array_merge($return, $result);
+        }
+        else {
+          $return[] = $result;
+        }
+      }
+
+      // Populate $items back in the field values, but avoid replacing missing
+      // fields with an empty array (those are not equivalent on update).
+      if ($items !== array() || isset($entity->{$field_name}[$langcode])) {
+        $entity->{$field_name}[$langcode] = $items;
+      }
+    }
+  }
+
+  return $return;
+}
+
 
 
 /**

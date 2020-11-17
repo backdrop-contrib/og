@@ -453,15 +453,6 @@ function og_ui_views_api() {
 }
 
 /**
- * Implements hook_ctools_plugin_directory().
- */
-function og_ui_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'ctools') {
-    return 'plugins/' . $plugin;
-  }
-}
-
-/**
  * Implements hook_admin_paths().
  */
 function og_ui_admin_paths() {

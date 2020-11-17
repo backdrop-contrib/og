@@ -1,20 +1,6 @@
 <?php
 
 /**
- * Plugin definition.
- */
-$plugin = array(
-  'title' => t('Membership links'),
-  'description' => t('Show membership unsubscribe and subscribe link(s) to a given group.'),
-  'required context' => new ctools_context_required(t('OG Group'), 'entity:group'),
-  'defaults' => array(
-    'membership_types' => array(),
-    'include_name' => FALSE,
-  ),
-  'category' => t('Organic groups'),
-);
-
-/**
  * Render callback.
  */
 function og_ui_membership_links_content_type_render($subtype, $conf, $args, $context) {

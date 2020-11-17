@@ -14,7 +14,7 @@ function og_ui_views_default_views() {
   $view->tag = 'og';
   $view->base_table = 'users';
   $view->human_name = 'OG members admin';
-  $view->core = 7;
+  $view->core = 1;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 

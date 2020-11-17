@@ -38,7 +38,7 @@ function og_membership_type_form($form, &$form_state, $og_membership_type, $op =
   $form['name'] = array(
     '#type' => 'machine_name',
     '#default_value' => isset($og_membership_type->name) ? $og_membership_type->name : '',
-    '#disabled' => entity_has_status('og_membership_type', $og_membership_type, ENTITY_IN_CODE),
+    '#disabled' => entity_plus_has_status('og_membership_type', $og_membership_type, ENTITY_IN_CODE),
     '#machine_name' => array(
       'exists' => 'og_membership_type_load',
       'source' => array('description'),
@@ -55,7 +55,7 @@ function og_membership_type_form($form, &$form_state, $og_membership_type, $op =
     '#weight' => 40,
   );
 
-  if (!entity_has_status('og_membership_type', $og_membership_type, ENTITY_IN_CODE) && $op != 'add') {
+  if (!entity_plus_has_status('og_membership_type', $og_membership_type, ENTITY_IN_CODE) && $op != 'add') {
     $form['actions']['delete'] = array(
       '#type' => 'submit',
       '#value' => t('Delete og_membership type'),

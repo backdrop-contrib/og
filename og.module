@@ -104,6 +104,7 @@ function og_menu() {
  * Implements hook_entity_info().
  */
 function og_entity_info() {
+  module_load_include('inc', 'og', 'og.og');
   $items['og_membership_type'] = array(
     'label' => t('OG membership type'),
     'controller class' => 'EntityPlusControllerExportable',
@@ -403,11 +404,12 @@ function og_entity_setter($object, $property_name, $wrapper) {
  */
 function og_default_og_membership_type() {
   $items = array();
-  $items['og_membership_type_default'] = entity_import('og_membership_type', '{
+  $serialized = '{
     "name" : "og_membership_type_default",
     "description" : "Default",
     "rdf_mapping" : []
-  }');
+  }';
+  $items['og_membership_type_default'] = entity_get_controller('og_membership_type')->import($serialized);
   return $items;
 }
 
@@ -420,15 +422,37 @@ function og_modules_uninstalled($modules) {
 }
 
 /**
- * Implements hook_ctools_plugin_directory().
+ * Implements hook_entityreference_behavior_plugins().
  */
-function og_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'ctools') {
-    return 'plugins/' . $plugin;
-  }
-  elseif ($module == 'entityreference') {
-    return "plugins/entityreference/$plugin";
-  }
+function og_entityreference_behavior_plugins() {
+  $plugins = array(
+    'og_behavior' => array(
+      'title' => t('OG behavior'),
+      'class' => 'OgBehaviorHandler',
+      'behavior type' => 'field',
+      'force enabled' => TRUE,
+    ),
+    'og_widget' => array(
+      'title' => t('OG widget'),
+      'class' => 'OgWidgetHandler',
+      'behavior type' => 'instance',
+      'force enabled' => TRUE,
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_entityreference_selection_plugins().
+ */
+function og_entityreference_selection_plugins() {
+  $plugins = array(
+    'og' => array(
+      'title' => t('Organic groups'),
+      'class' => 'OgSelectionHandler',
+    ),
+  );
+  return $plugins;
 }
 
 /**
@@ -1226,7 +1250,7 @@ function og_membership_type_load($name = NULL) {
  *   SAVED_UPDATED is returned depending on the operation performed.
  */
 function og_membership_type_save($og_membership) {
-  return entity_save('og_membership_type', $og_membership);
+  return entity_plus_save('og_membership_type', $og_membership);
 }
 
 /**
@@ -1236,7 +1260,7 @@ function og_membership_type_save($og_membership) {
  *   The OG membership type entity to be deleted.
  */
 function og_membership_type_delete($og_membership) {
-  return entity_delete('og_membership_type', $og_membership);
+  return entity_delete_multiple('og_membership_type', array($og_membership));
 }
 
 /**
@@ -1611,7 +1635,7 @@ function _og_query_og_membership_alter_conditions(&$conditions, $aliases, $base_
  *   SAVED_UPDATED is returned depending on the operation performed.
  */
 function og_membership_save($og_membership) {
-  return entity_save('og_membership', $og_membership);
+  return entity_plus_save('og_membership', $og_membership);
 }
 
 /**
@@ -3822,5 +3846,8 @@ function og_autoload_info() {
     'OgBehaviorHandler' => 'plugins/entityreference/behavior/OgBehaviorHandler.class.php',
     'OgWidgetHandler' => 'plugins/entityreference/behavior/OgWidgetHandler.class.php',
     'OgSelectionHandler' => 'plugins/entityreference/selection/OgSelectionHandler.class.php',
+    'og_context' => 'includes/og_context.inc',
+    'og_context_required' => 'includes/og_context.inc',
+    'og_context_optional' => 'includes/og_context.inc',
   );
 }

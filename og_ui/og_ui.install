@@ -20,9 +20,6 @@ function og_ui_uninstall() {
   }
 }
 
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function og_ui_update_7200(&$sandbox) { }
-
 /**
  * Implements hook_update_last_removed().
  */
@@ -41,11 +38,4 @@ function og_ui_update_1000() {
   update_variable_del('og_ui_7000_add_field');
   update_variable_del('og_ui_admin_people_view');
   update_variable_del('og_ui_deny_subscribe_without_approval');
-}
-
-/**
- * Implements hook_install().
- */
-function og_ui_install() {
-  // Dynamically generated variable data was detected.
 }

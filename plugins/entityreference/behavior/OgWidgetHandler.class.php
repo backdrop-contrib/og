@@ -3,7 +3,7 @@
 /**
  * OG behavior handler.
  */
-class OgWidgetHandler extends EntityReference_BehaviorHandler_Abstract {
+class OgWidgetHandler extends EntityReferenceBehaviorHandler {
 
   public function access($field, $instance) {
     return ($field['settings']['handler'] == 'og' || strpos($field['settings']['handler'], 'og_') === 0) && $instance['widget']['type'] == 'og_complex';

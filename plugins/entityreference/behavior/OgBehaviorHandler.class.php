@@ -3,17 +3,17 @@
 /**
  * OG behavior handler.
  */
-class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
+class OgBehaviorHandler extends EntityReferenceBehaviorHandler {
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::access().
+   * Implements EntityReferenceBehaviorHandler::access().
    */
   public function access($field, $instance) {
     return $field['settings']['handler'] == 'og' || strpos($field['settings']['handler'], 'og_') === 0;
   }
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::load().
+   * Implements EntityReferenceBehaviorHandler::load().
    */
   public function load($entity_type, $entities, $field, $instances, $langcode, &$items) {
     // Get the OG memberships from the field.
@@ -42,7 +42,7 @@ class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
   }
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::insert().
+   * Implements EntityReferenceBehaviorHandler::insert().
    */
   public function insert($entity_type, $entity, $field, $instance, $langcode, &$items) {
     if (!empty($entity->skip_og_membership)) {
@@ -53,7 +53,7 @@ class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
   }
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::access().
+   * Implements EntityReferenceBehaviorHandler::access().
    */
   public function update($entity_type, $entity, $field, $instance, $langcode, &$items) {
     if (!empty($entity->skip_og_membership)) {
@@ -64,7 +64,7 @@ class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
   }
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::Delete()
+   * Implements EntityReferenceBehaviorHandler::Delete()
    *
    * CRUD memberships from field, or if entity is marked for deleteing,
    * delete all the OG membership related to it.
@@ -192,7 +192,7 @@ class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
   }
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::views_data_alter().
+   * Implements EntityReferenceBehaviorHandler::views_data_alter().
    */
   public function views_data_alter(&$data, $field) {
     // We need to override the default EntityReference table settings when OG
@@ -236,7 +236,7 @@ class OgBehaviorHandler extends EntityReference_BehaviorHandler_Abstract {
   }
 
   /**
-   * Implements EntityReference_BehaviorHandler_Abstract::validate().
+   * Implements EntityReferenceBehaviorHandler::validate().
    *
    * Re-build $errors array to be keyed correctly by "default" and "admin" field
    * modes.

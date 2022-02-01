@@ -4,7 +4,7 @@
 /**
  * OG selection handler.
  */
-class OgSelectionHandler extends EntityReference_SelectionHandler_Generic {
+class OgSelectionHandler extends EntityReferenceSelectionHandlerGeneric {
 
   /**
    * Implements EntityReferenceHandler::getInstance().
@@ -75,7 +75,7 @@ class OgSelectionHandler extends EntityReference_SelectionHandler_Generic {
   public function buildEntityFieldQuery($match = NULL, $match_operator = 'CONTAINS') {
     global $user;
 
-    $handler = EntityReference_SelectionHandler_Generic::getInstance($this->field, $this->instance, $this->entity_type, $this->entity);
+    $handler = EntityReferenceSelectionHandlerGeneric::getInstance($this->field, $this->instance, $this->entity_type, $this->entity);
     $query = $handler->buildEntityFieldQuery($match, $match_operator);
 
     // FIXME: http://drupal.org/node/1325628
@@ -164,7 +164,7 @@ class OgSelectionHandler extends EntityReference_SelectionHandler_Generic {
   }
 
   public function entityFieldQueryAlter(SelectQueryInterface $query) {
-    $handler = EntityReference_SelectionHandler_Generic::getInstance($this->field, $this->instance);
+    $handler = EntityReferenceSelectionHandlerGeneric::getInstance($this->field, $this->instance);
     // FIXME: Allow altering, after fixing http://drupal.org/node/1413108
     // $handler->entityFieldQueryAlter($query);
   }

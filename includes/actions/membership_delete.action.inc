@@ -6,15 +6,14 @@
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_action_info().
  */
 function og_membership_delete_action_info() {
   return array('og_membership_delete_action' => array(
       'type' => 'og_membership',
       'label' => t('Remove from group'),
-      'behavior' => array('deletes_property'),
-      'configurable' => FALSE,
+      'callback' => 'og_membership_delete_action',
+      'file' => 'membership_delete.action.inc',
     ));
 }
 
@@ -22,7 +21,7 @@ function og_membership_delete_action_info() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function og_membership_delete_action($og_membership, $context) {
+function og_membership_delete_action($og_membership, &$context) {
   $group_type = $og_membership->group_type;
   $gid = $og_membership->gid;
 

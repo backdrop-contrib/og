@@ -1,13 +1,14 @@
 <?php
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_action_info().
  */
 function og_user_roles_action_info() {
   return array('og_user_roles_action' => array(
       'type' => 'og_membership',
       'label' => t('Modify OG user roles'),
+      'callback' => 'og_user_roles_action_form',
+      'file' => 'user_roles.action.inc',
       'configurable' => TRUE,
     ));
 }
@@ -16,7 +17,7 @@ function og_user_roles_action_info() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function og_user_roles_action_form($context) {
+function og_user_roles_action_form($og_membership, &$context) {
   $gid = '';
   $group_type = '';
 

@@ -6,14 +6,14 @@
  */
 
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_action_info().
  */
 function og_set_state_action_info() {
   return array('og_set_state_action' => array(
       'type' => 'og_membership',
       'label' => t('Modify membership status'),
-      'configurable' => TRUE,
+      'callback' => 'og_set_state_action',
+      'file' => 'set_state.action.inc',
     ));
 }
 
@@ -21,7 +21,17 @@ function og_set_state_action_info() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function og_set_state_action_form($context) {
+function og_set_state_action($og_membership, &$context) {
+  // $_SESSION['og_set_state_action']['group'] = $og_membership;
+  $context['redirect'] = 'og/set_state';
+}
+
+/**
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function og_set_state_action_form($og_membership, &$context) {
+  // $_SESSION['og_set_state_action'] =
   $form['state'] = array(
     '#type' => 'select',
     '#title' => t('State'),
@@ -45,7 +55,7 @@ function og_set_state_action_submit($form, $form_state) {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function og_set_state_action($og_membership, $context) {
+function og_set_state_action($og_membership, &$context) {
   $state = $context['state'];
 
   if ($og_membership->state == $state) {

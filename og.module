@@ -96,6 +96,14 @@ function og_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
+  $items['og/set_state'] = array(
+    'title' => 'Set state for selected user(s) in the group',
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('og_set_state_action_form'),
+    'access callback' => 'og_membership_type_access',
+    'file' => 'includes/actions/set_state.action.inc',
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }
@@ -125,7 +133,7 @@ function og_entity_info() {
     'metadata controller class' => 'EntityDefaultMetadataController',
     'views controller class' => 'EntityPlusDefaultViewsController',
     'access callback' => 'og_membership_type_access',
-    'entity cache' => module_exists('entitycache'),
+    'entity cache' => TRUE,
   );
 
   if (class_exists('OgMembershipTypeUIController')) {
@@ -161,7 +169,7 @@ function og_entity_info() {
     'metadata controller class' => 'OgMembershipMetadataController',
     'views controller class' => 'OgMembershipViewsController',
     'access callback' => 'og_membership_access',
-    'entity cache' => module_exists('entitycache'),
+    'entity cache' => TRUE,
   );
 
   // Add bundle info but bypass entity_load() as we cannot use it here.

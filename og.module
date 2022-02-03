@@ -96,8 +96,8 @@ function og_menu() {
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
-  $items['og/set_state'] = array(
-    'title' => 'Set state for selected user(s) in the group',
+  $items['og/set_state/select'] = array(
+    'title' => 'Select state for selected user(s) in the group',
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_set_state_action_form'),
     'access callback' => 'og_membership_type_access',

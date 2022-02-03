@@ -12,7 +12,7 @@ function og_set_state_action_info() {
   return array('og_set_state_action' => array(
       'type' => 'og_membership',
       'label' => t('Modify membership status'),
-      'callback' => 'og_set_state_action',
+      'callback' => 'og_set_state_action_select',
       'file' => 'set_state.action.inc',
     ));
 }
@@ -21,8 +21,16 @@ function og_set_state_action_info() {
  * @todo Please document this function.
  * @see http://drupal.org/node/1354
  */
-function og_set_state_action($og_membership, &$context) {
-  // $_SESSION['og_set_state_action']['group'] = $og_membership;
+function og_set_state_action_select($og_membership, &$context) {
+  $_SESSION['og_set_state_action']['state_orig'] = $og_membership->state;
+  $_SESSION['og_set_state_action']['group_type'] = $og_membership->group_type;
+  $_SESSION['og_set_state_action']['gid'] = $og_membership->gid;
+  if ($og_membership->entity_type == 'user') {
+    $_SESSION['og_set_state_action']['uids'][] = $og_membership->etid;
+  }
+  else {
+    $_SESSION['og_set_state_action']['uids'] = array();
+  }
   $context['redirect'] = 'og/set_state';
 }
 
@@ -48,22 +56,19 @@ function og_set_state_action_form($og_membership, &$context) {
  * @see http://drupal.org/node/1354
  */
 function og_set_state_action_submit($form, $form_state) {
-  return array('state' => $form_state['values']['state']);
-}
+  $state = $form_state['values']['state']);
+  $state_orig = $_SESSION['og_set_state_action']['state_orig'];
+  $group_type = $_SESSION['og_set_state_action']['group_type'];
+  $gid = $_SESSION['og_set_state_action']['gid'];
+  // @todo: process multiple UIDs; see user_multiple_cancel_confirm_submit()
+  //        for a model on how to do this.
 
-/**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
- */
-function og_set_state_action($og_membership, &$context) {
-  $state = $context['state'];
-
-  if ($og_membership->state == $state) {
+  if ($state_orig == $state) {
     return;
   }
 
   // Don't process the group manager, if exists.
-  $group = entity_load($og_membership->group_type, $og_membership->gid);
+  $group = entity_load($group_type, $gid);
   if (!empty($group->uid) && $group->uid == $og_membership->etid && $og_membership->entity_type == 'user') {
     return;
   }

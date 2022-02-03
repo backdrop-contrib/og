@@ -36,7 +36,7 @@ file = og.test
 
 [OgMigrate7000TestCase]
 name = OG migrate - 7000
-description = Tests the upgrade path of OG from Drupal 6.
+description = Tests the upgrade path of OG from Backdrop 6.
 group = Organic groups
 file = og.test
 

@@ -9,7 +9,7 @@
  */
 function og_default_rules_configuration() {
   $items = array();
-  $items['rules_og_member_active'] = entity_import('rules_config', '{ "rules_og_member_active" : {
+  $items['rules_og_member_active'] = entity_plus_import('rules_config', '{ "rules_og_member_active" : {
     "LABEL" : "OG member subscribe (Active)",
     "PLUGIN" : "reaction rule",
     "ACTIVE" : false,
@@ -40,7 +40,7 @@ function og_default_rules_configuration() {
     ]
   }
 }');
-  $items['rules_og_member_pending'] = entity_import('rules_config', '{ "rules_og_member_pending" : {
+  $items['rules_og_member_pending'] = entity_plus_import('rules_config', '{ "rules_og_member_pending" : {
     "LABEL" : "OG member subscribe (Pending)",
     "PLUGIN" : "reaction rule",
     "ACTIVE" : false,
@@ -72,7 +72,7 @@ function og_default_rules_configuration() {
   }
 }');
 
-  $items['rules_og_new_content'] = entity_import('rules_config', '{ "rules_og_new_content" : {
+  $items['rules_og_new_content'] = entity_plus_import('rules_config', '{ "rules_og_new_content" : {
     "LABEL" : "OG new content notification",
     "PLUGIN" : "reaction rule",
     "ACTIVE" : false,

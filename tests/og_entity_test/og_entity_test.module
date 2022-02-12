@@ -135,7 +135,7 @@ function og_entity_test_delete_multiple(array $pids) {
  */
 function og_entity_test_entity_insert($entity, $entity_type) {
   if ($entity_type == 'og_entity_test_type') {
-    $_SESSION['entity_hook_test']['entity_insert'][] = entity_id($entity_type, $entity);
+    $_SESSION['entity_hook_test']['entity_insert'][] = $entity->id();
   }
 }
 
@@ -143,7 +143,7 @@ function og_entity_test_entity_insert($entity, $entity_type) {
  * Implements hook_entity_update().
  */
 function og_entity_test_entity_update($entity, $entity_type) {
-  $_SESSION['entity_hook_test']['entity_update'][] = entity_id($entity_type, $entity);
+  $_SESSION['entity_hook_test']['entity_update'][] = $entity->id();
 }
 
 /**
@@ -151,7 +151,7 @@ function og_entity_test_entity_update($entity, $entity_type) {
  */
 function og_entity_test_entity_delete($entity, $entity_type) {
   if ($entity_type == 'og_entity_test_type') {
-    $_SESSION['entity_hook_test']['entity_delete'][] = entity_id($entity_type, $entity);
+    $_SESSION['entity_hook_test']['entity_delete'][] = $entity->id();
   }
 }
 

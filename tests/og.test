@@ -59,7 +59,7 @@ class OgAccess extends OgTestBase {
 
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
 
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
@@ -77,7 +77,7 @@ class OgAccess extends OgTestBase {
 
     // User has access to a group associated with a group content.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $node = $this->backdropCreateNode($settings);
 
     $values = array('entity_type' => 'node', 'entity' => $node);
@@ -86,7 +86,7 @@ class OgAccess extends OgTestBase {
     $this->assertFalse(og_user_access_entity($perm, 'node', $node, $user2), t('User2 does not have access to group content.'));
 
     // Make group content also a group.
-    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+    og_create_field(OG_GROUP_FIELD, 'node', 'post');
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     og_create_field('og_group_ref_2', 'user', 'user', $og_field);
 
@@ -113,7 +113,7 @@ class OgAccess extends OgTestBase {
 
     // Entity is an orphan group content.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
     $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
@@ -124,7 +124,7 @@ class OgAccess extends OgTestBase {
     // Entity isn't a group or a group content.
     $settings = array();
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $node = $this->backdropCreateNode($settings);
     $this->assertNull(og_user_access_entity($perm, 'node', $node, $user1), t('Entity is not a group or a group contentm, so return value is NULL.'));
 
@@ -157,7 +157,7 @@ class OgNodeAccess extends OgTestBase {
     og_create_field(OG_GROUP_FIELD, 'node', 'page');
 
     // Add OG audience field to the node's "article" bundle.
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article');
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post');
 
     // Create an editor user and a group manager for these tests.
     $this->editor_user = $this->backdropCreateUser(array('access content', 'edit any page content', 'edit any article content', 'create article content'));
@@ -174,7 +174,7 @@ class OgNodeAccess extends OgTestBase {
 
     // Create node to add to group.
     $settings = array(
-      'type' => 'article',
+      'type' => 'post',
       'uid' => $this->group_manager->uid,
     );
     $this->group_content = $this->backdropCreateNode($settings);
@@ -226,7 +226,7 @@ class OgNodeAccess extends OgTestBase {
     $this->backdropGet('node/add/article');
     $this->assertResponse('200', t('User can access node create with non-required field.'));
 
-    $instance = field_info_instance('node', OG_AUDIENCE_FIELD, 'article');
+    $instance = field_info_instance('node', OG_AUDIENCE_FIELD, 'post');
     $instance['required'] = TRUE;
     field_update_instance($instance);
 
@@ -397,10 +397,10 @@ class OgMetaData extends OgTestBase {
     // Add OG audience field to the node's "article" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
 
     // Add a second audience field.
-    og_create_field('og_ref_2', 'node', 'article', $og_field);
+    og_create_field('og_ref_2', 'node', 'post', $og_field);
 
     $user1 = $this->backdropCreateUser();
 
@@ -420,7 +420,7 @@ class OgMetaData extends OgTestBase {
     $wrapper->save();
 
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
 
     // Create group entities.
     foreach (og_group_content_states() as $state => $value) {
@@ -486,7 +486,7 @@ class OgGroupAndUngroup extends OgTestBase {
     // Add OG audience field to the node's "article" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
   }
 
   /**
@@ -512,7 +512,7 @@ class OgGroupAndUngroup extends OgTestBase {
     $wrapper->save();
 
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
 
@@ -552,7 +552,7 @@ class OgGroupAndUngroup extends OgTestBase {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
     $og_field['field']['cardinality'] = 2;
-    og_create_field('og_ref_2', 'node', 'article', $og_field);
+    og_create_field('og_ref_2', 'node', 'post', $og_field);
 
     // Re-group to another field.
     $values += array('field_name' => 'og_ref_2');
@@ -585,7 +585,7 @@ class OgGroupAndUngroup extends OgTestBase {
     // Exception on audience field, referencing wrong target type.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'node';
-    og_create_field('og_ref_3', 'node', 'article', $og_field);
+    og_create_field('og_ref_3', 'node', 'post', $og_field);
     $values['field_name'] = 'og_ref_3';
     try {
       og_group('og_entity_test', $entity1->pid, $values);
@@ -600,7 +600,7 @@ class OgGroupAndUngroup extends OgTestBase {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
     $og_field['field']['settings']['handler_settings']['target_bundles'] = array('test');
-    og_create_field('og_ref_4', 'node', 'article', $og_field);
+    og_create_field('og_ref_4', 'node', 'post', $og_field);
     $values['field_name'] = 'og_ref_4';
     try {
       og_group('og_entity_test', $entity1->pid, $values);
@@ -644,7 +644,7 @@ class OgGroupAndUngroup extends OgTestBase {
 
     // Test creating a non-saved OG membership.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
@@ -653,7 +653,7 @@ class OgGroupAndUngroup extends OgTestBase {
     $this->assertTrue($og_membership->id, 'New OG membership was created and saved.');
 
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
@@ -733,7 +733,7 @@ class OgPermissionsTestCase extends OgTestBase {
     // Add OG audience field to the node's "article" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
   }
 
 

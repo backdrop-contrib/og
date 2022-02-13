@@ -44,6 +44,7 @@ class EntityClass extends Entity {
    * Implements EntityInterface::id().
    */
   public function id() {
+    return $this->pid;
   }
 
   /**
@@ -57,12 +58,14 @@ class EntityClass extends Entity {
    * Implements EntityInterface::label().
    */
   public function label() {
+    return t('Test Entity');
   }
 
   /**
    * Implements EntityInterface::uri().
    */
   public function uri() {
+    return array('path' => 'custom/' . $this->id());
   }
 
 }
@@ -76,6 +79,7 @@ class EntityClassType extends Entity {
    * Implements EntityInterface::id().
    */
   public function id() {
+    return $this->id;
   }
 
   /**
@@ -89,12 +93,14 @@ class EntityClassType extends Entity {
    * Implements EntityInterface::label().
    */
   public function label() {
+    return t('Test entity type');
   }
 
   /**
    * Implements EntityInterface::uri().
    */
   public function uri() {
+    return array('path' => 'custom/' . $this->id());
   }
 
 }

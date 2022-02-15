@@ -605,7 +605,7 @@ class OgUiPrivateGroupStatus extends DrupalWebTestCase {
     // Change the approval variable and ask to join the private group.
     $roles = og_roles('node', $this->group->type);
     og_role_grant_permissions(array_search(OG_ANONYMOUS_ROLE, $roles), array('subscribe without approval'));
-    variable_set('og_ui_deny_subscribe_without_approval', FALSE);
+    config_set('og_ui.settings', 'og_ui_deny_subscribe_without_approval', FALSE);
 
     // Verify the user membership is approved automatically.
     $this->drupalPost('group/node/' . $this->group->nid . '/subscribe/og_user_node', array(), t('Join'));

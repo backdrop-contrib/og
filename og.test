@@ -163,7 +163,7 @@ class OgNodeAccess extends DrupalWebTestCase {
    */
   function testStrictAccessNodeUpdate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', TRUE);
+    config_set('og.settings', 'og_node_access_strict', TRUE);
 
     // Login as editor and try to change the group node and group content.
     $this->drupalLogin($this->editor_user);
@@ -189,7 +189,7 @@ class OgNodeAccess extends DrupalWebTestCase {
    */
   function testStrictAccessNodeCreate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', TRUE);
+    config_set('og.settings', 'og_node_access_strict', TRUE);
     $editor_user = $this->editor_user;
     $this->drupalLogin($editor_user);
 
@@ -236,7 +236,7 @@ class OgNodeAccess extends DrupalWebTestCase {
    */
   function testNoStrictAccessNodeUpdate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', FALSE);
+    config_set('og.settings', 'og_node_access_strict', FALSE);
 
     // Login as editor and try to change the group node and group content.
     $this->drupalLogin($this->editor_user);
@@ -265,7 +265,7 @@ class OgNodeAccess extends DrupalWebTestCase {
    */
   function testNoStrictAccessNodeCreate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', FALSE);
+    config_set('og.settings', 'og_node_access_strict', FALSE);
 
     $this->group_editor_user = $this->drupalCreateUser(array('access content'));
     $this->drupalLogin($this->group_editor_user);
@@ -291,7 +291,7 @@ class OgNodeAccess extends DrupalWebTestCase {
    */
   function testNodeUpdateAudienceField() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', TRUE);
+    config_set('og.settings', 'og_node_access_strict', TRUE);
     $editor_user = $this->editor_user;
 
     // Add editor to a single groups.
@@ -638,7 +638,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
   function testGroupManagerDefaultRoles() {
     // Get only the admin role.
     $og_roles = og_roles('entity_test', 'main', 0, FALSE, FALSE);
-    variable_set('og_group_manager_default_rids_entity_test_main', array_keys($og_roles));
+    config_set('og.settings', 'og_group_manager_default_rids_entity_test_main', array_keys($og_roles));
     $user1 = $this->drupalCreateUser();
 
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -889,7 +889,7 @@ class OgDefaultAccessFieldTestCase extends DrupalWebTestCase {
     $this->assertTrue(array_search(OG_ADMINISTRATOR_ROLE, $user_roles), t('User has overriden "admin" role.'));
 
     // Disable existing group's default access field.
-    variable_set('og_maintain_overridden_roles', TRUE);
+    config_set('og.settings', 'og_maintain_overridden_roles', TRUE);
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
     $this->assertEqual($og_roles, og_roles('entity_test', 'main', $entity->pid), t('Group with enabled default access field that was disabled is assigned to the global roles and permissions settings.'));
@@ -903,7 +903,7 @@ class OgDefaultAccessFieldTestCase extends DrupalWebTestCase {
     $wrapper->save();
 
     // Assert admin role was not maintained from the overriden group.
-    variable_set('og_maintain_overridden_roles', FALSE);
+    config_set('og.settings', 'og_maintain_overridden_roles', FALSE);
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
 
@@ -2017,8 +2017,8 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
     og_create_field(OG_AUDIENCE_FIELD, 'node', $type->type, $og_field);
 
     // Set the setting for delete a group content when deleting group.
-    variable_set('og_orphans_delete', TRUE);
-    variable_set('og_use_queue', TRUE);
+    config_set('og.settings', 'og_orphans_delete', TRUE);
+    config_set('og.settings', 'og_use_queue', TRUE);
   }
 
   /**
@@ -2127,7 +2127,7 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
    */
   public function testGroupContentNodeAccessAfterDeletingGroupAndWhenUsingQueue() {
     // Configure OG to use queue for deleting pending content.
-    variable_set('og_use_queue', TRUE);
+    config_set('og.settings', 'og_use_queue', TRUE);
 
     $account = $this->drupalCreateUser(array('access content', 'edit own ' . $this->node_type . ' content'));
     $this->drupalLogin($account);
@@ -2359,7 +2359,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
     $this->drupalLogin($this->site_user);
 
     // Set node access strict variable to FALSE for posting outside groups.
-    variable_set('og_node_access_strict', FALSE);
+    config_set('og.settings', 'og_node_access_strict', FALSE);
 
     // Verify that the user can publish group content outside a group.
     $node_title = $this->randomName();

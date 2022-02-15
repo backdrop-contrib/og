@@ -266,7 +266,7 @@ class OgUiManagePeopleTestCase extends DrupalWebTestCase {
 
     // Add the same user twice.
     $this->drupalPost('group/entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
-    $this->assertText(t('User @name is already subscribed to group.', array('@name' => format_username($this->user2))), 'User can not be added twice.');
+    $this->assertText(t('User @name is already subscribed to group.', array('@name' => user_format_name($this->user2))), 'User can not be added twice.');
 
     // Add non-existing user.
     $edit = array();

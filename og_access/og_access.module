@@ -443,3 +443,14 @@ function og_access_autoload_info() {
   return array(
   );
 }
+
+/**
+ * Implements hook_config_info().
+ */
+function og_access_config_info() {
+  $prefixes['og_access.settings'] = array(
+    'label' => t('Organic groups access control settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}

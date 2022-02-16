@@ -36,7 +36,7 @@ jobs:
           repository: backdrop-contrib/entity_plus
           path: modules/entity_plus
 
-      - name: Checkout Entity Tokens
+      - name: Checkout Entity Reference
         uses: actions/checkout@v2
         with:
           repository: backdrop-contrib/entityreference

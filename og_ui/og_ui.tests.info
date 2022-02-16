@@ -22,12 +22,6 @@ description = Verify the people management functionality.
 group = Organic groups UI
 file = og_ui.test
 
-[OgUiMigrate7000TestCase]
-name = OG UI upgrade path
-description = Tests the upgrade path of Organic groups UI.
-group = Organic groups UI
-file = og_ui.test
-
 [OgUiPrivateGroupStatus]
 name = Subscribe to private groups
 description = Testing the automatic approval of a membership request for a private group.

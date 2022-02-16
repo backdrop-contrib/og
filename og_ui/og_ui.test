@@ -2,13 +2,6 @@
 
 
 class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG UI role permissions',
-      'description' => 'Verify that role permissions can be added and removed via the permissions page of the group.',
-      'group' => 'Organic groups UI'
-    );
-  }
 
   function setUp() {
     parent::setUp('og_ui', 'entity_feature');
@@ -59,13 +52,6 @@ class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
 }
 
 class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG UI admin section',
-      'description' => 'Verify that only users with group admin permissions can see the admin tabs.',
-      'group' => 'Organic groups UI'
-    );
-  }
 
   function setUp() {
     parent::setUp('og_ui');
@@ -147,13 +133,6 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
 }
 
 class OgUiSubscribeTestCase extends BackdropWebTestCase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG UI subscribe',
-      'description' => 'Verify the subscribe and unsubsribe functionality.',
-      'group' => 'Organic groups UI'
-    );
-  }
 
   function setUp() {
     parent::setUp('og_ui', 'entity_feature');
@@ -222,14 +201,6 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
   public $user1;
   public $user2;
   public $entity;
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG UI manage people',
-      'description' => 'Verify the people management functionality.',
-      'group' => 'Organic groups UI'
-    );
-  }
 
   function setUp() {
     parent::setUp('og_ui', 'entity_feature');
@@ -450,14 +421,6 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
 class OgUiPrivateGroupStatus extends BackdropWebTestCase {
   public $user;
   public $group;
-
-  public static function getInfo() {
-    return array(
-      'name'  => 'Subscribe to private groups',
-      'description'  => 'Testing the automatic approval of a membership request for a private group.',
-      'group' => 'Organic groups UI',
-    );
-  }
 
   public function setUp() {
     parent::setUp(array('og', 'og_access', 'og_ui'));

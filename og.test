@@ -2,14 +2,6 @@
 
 class OgAccess extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG entity access',
-      'description' => 'Test the access provided by OG API.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'entity_feature');
   }
@@ -111,14 +103,6 @@ class OgAccess extends BackdropWebTestCase {
  * Test Group node access. This will test nodes that are groups and group content.
  */
 class OgNodeAccess extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG node access',
-      'description' => 'Test strict node access permissions for group nodes and group content.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og');
@@ -345,14 +329,6 @@ class OgNodeAccess extends BackdropWebTestCase {
  */
 class OgMetaData extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG metadata',
-      'description' => 'Test the metadata properties.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'entity_feature');
   }
@@ -438,14 +414,6 @@ class OgMetaData extends BackdropWebTestCase {
  * Test Group content handeling.
  */
 class OgGroupAndUngroup extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG group and ungroup',
-      'description' => 'Test the group and ungrouping of content with a group.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'entity_feature');
@@ -687,13 +655,6 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
 }
 
 class OgPermissionsTestCase extends BackdropWebTestCase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG permissions',
-      'description' => 'Verify that permissions can be added and removed via API.',
-      'group' => 'Organic groups'
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'entity_feature');
@@ -829,13 +790,6 @@ class OgPermissionsTestCase extends BackdropWebTestCase {
 }
 
 class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG default access field',
-      'description' => 'Test groups with default access field.',
-      'group' => 'Organic groups'
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'entity_feature');
@@ -916,14 +870,6 @@ class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
  * Test the complex widget.
  */
 class OgFieldWidgetTestCase extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG reference widget',
-      'description' => 'Test the OG reference widget behavior.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og');
@@ -1103,14 +1049,6 @@ class OgFieldWidgetTestCase extends BackdropWebTestCase {
  */
 class OgRoleRevoke extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG roles revoke',
-      'description' => 'Test the revocation of group roles',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'entity_feature');
   }
@@ -1164,14 +1102,6 @@ class OgRoleRevoke extends BackdropWebTestCase {
  * Test queying group-audience fields using entityFieldQuery.
  */
 class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience fields query',
-      'description' => 'Test querying group-audience fields using entityFieldQuery.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'entity_feature');
@@ -1397,14 +1327,6 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
  */
 class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG field condition query',
-      'description' => 'Test querying field condition fields using entityFieldQuery.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'entity_feature');
 
@@ -1564,14 +1486,6 @@ class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
  */
 class OgAudienceFieldAutoCreateTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience fields auto-create',
-      'description' => 'Test auto attaching a group-audience field to the user entity, if needed, upon adding a new group field.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
   }
@@ -1601,14 +1515,6 @@ class OgAudienceFieldAutoCreateTestCase extends BackdropWebTestCase {
 
 
 class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG widget behavior',
-      'description' => 'Test the widget behavior of group-audience fields.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og_test', 'entity_feature');
@@ -1746,14 +1652,6 @@ class OgDeleteOrphansTestCase extends BackdropWebTestCase {
 
   public $group_type;
   public $node_type;
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG orphan delete',
-      'description' => 'Verifying for deleting orphan group content.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og_test');
@@ -1926,15 +1824,6 @@ class OgNonMembersPublishingContentTestCase extends BackdropWebTestCase {
   public $user;
   public $adminUser;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG non members publishing',
-      'description' => 'Grant access to non members users publishing content with the group passed in the query string.',
-      'group' => 'Organic groups',
-      'dependencies' => array('entityreference_prepopulate'),
-    );
-  }
-
   public function setUp() {
     parent::setUp('og_test', 'entityreference_prepopulate');
 
@@ -2020,14 +1909,6 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends BackdropWebTestCase {
   public $site_user;
   public $group_user;
   public $group_content;
-
-  public static function getInfo() {
-    return array(
-      'name' => 'User can publish group content only inside group',
-      'description' => "User with permission to create a group content only in a group can't publish outside of a group.",
-      'group' => 'Organic groups',
-    );
-  }
 
   public function setUp() {
     parent::setUp('og');
@@ -2156,14 +2037,6 @@ class OgAutoCompleteAccessibleGroupsValidation extends BackdropWebTestCase {
   var $group_owner;
   var $group_member;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Auto complete for non accessible groups',
-      'description' => "Verify the user cannot fill in the auto complete field with the name of a un-accessible group name.",
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
 
@@ -2238,14 +2111,6 @@ class OgAutoCompleteAccessibleGroupsValidation extends BackdropWebTestCase {
  */
 class OgSelectAccessibleGroupsValidation extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Select widget for non accessible groups',
-      'description' => "Verify the user cannot fill in the select field with the name of a un-accessible group name.",
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
 
@@ -2313,14 +2178,6 @@ class OgSelectAccessibleGroupsValidation extends BackdropWebTestCase {
  */
 class OgAudienceFieldAccessOverrideTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience field access settings',
-      'description' => 'Test the ability to use entity access instead of field access for the audience field.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
   }
@@ -2360,14 +2217,6 @@ class OgAudienceFieldAccessOverrideTestCase extends BackdropWebTestCase {
  * Verify OG group ref field support delta after saving.
  */
 class OgAudienceFieldDeltaTestCase extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience field wrapper delta',
-      'description' => 'Testing OG audience field returns the expected values when using entity metadata wrapper delta.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og');

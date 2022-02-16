@@ -10,14 +10,6 @@
  */
 class OgAccessTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG access',
-      'description' => 'Test the visibility of nodes that are handled by OG access.',
-      'group' => 'Organic groups access',
-    );
-  }
-
   function setUp() {
     parent::setUp('og_access');
     node_access_rebuild();
@@ -354,14 +346,6 @@ class OgAccessTestCase extends BackdropWebTestCase {
  */
 class OgAccessUseGroupDefaultsTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Use group defaults',
-      'description' => "Verify for an exception when OG access field is missing from the group, but exists on the group content.",
-      'group' => 'Organic groups access',
-    );
-  }
-
   function setUp() {
     parent::setUp('og_access');
     node_access_rebuild();
@@ -412,14 +396,6 @@ class OgAccessUseGroupDefaultsTestCase extends BackdropWebTestCase {
  * Tests moderated group memberships.
  */
 class OgAccessModeratedGroup extends BackdropWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG moderated group membership',
-      'description' => 'Test groups that require membership approval.',
-      'group' => 'Organic groups access',
-    );
-  }
 
   public function setUp() {
     parent::setUp(array('og', 'og_access', 'og_ui'));

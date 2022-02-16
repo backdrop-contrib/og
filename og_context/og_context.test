@@ -10,14 +10,6 @@
  */
 class OgContextTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG context',
-      'description' => 'Check if context is returning only if user has right permissions.',
-      'group' => 'Organic groups context',
-    );
-  }
-
   function setUp() {
     parent::setUp('og_context', 'og_access');
     node_access_rebuild();

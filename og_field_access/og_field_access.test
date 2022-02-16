@@ -11,14 +11,6 @@
  */
 class OgFieldAccessTestCase extends BackdropWebTestCase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Organic groups field access',
-      'description' => 'Test the access control on fields.',
-      'group' => 'Organic groups field access',
-    );
-  }
-
   function setUp() {
     parent::setUp('og_field_access');
   }

@@ -8,7 +8,7 @@
 /**
  * Test OG access.
  */
-class OgAccessTestCase extends DrupalWebTestCase {
+class OgAccessTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -22,17 +22,17 @@ class OgAccessTestCase extends DrupalWebTestCase {
     parent::setUp('og_access');
     node_access_rebuild();
 
-    $this->user1 = $this->drupalCreateUser();
-    $this->user2 = $this->drupalCreateUser(array(
+    $this->user1 = $this->backdropCreateUser();
+    $this->user2 = $this->backdropCreateUser(array(
       'access content',
     ));
 
     // Create group and group content node types.
-    $this->group_type = $this->drupalCreateContentType()->type;
+    $this->group_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_GROUP_FIELD, 'node', $this->group_type);
     og_create_field(OG_ACCESS_FIELD, 'node', $this->group_type);
 
-    $this->group_content_type = $this->drupalCreateContentType()->type;
+    $this->group_content_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content_type);
 
     // Create a group node and enable access.
@@ -41,7 +41,7 @@ class OgAccessTestCase extends DrupalWebTestCase {
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings['uid'] = $this->user1->uid;
-    $this->group_node = $this->drupalCreateNode($settings);
+    $this->group_node = $this->backdropCreateNode($settings);
   }
 
   /**
@@ -54,7 +54,7 @@ class OgAccessTestCase extends DrupalWebTestCase {
     );
 
     // Create group content.
-    $node1 = $this->drupalCreateNode($settings);
+    $node1 = $this->backdropCreateNode($settings);
     $values = array(
       'entity_type' => 'node',
       'entity' => $node1,
@@ -66,28 +66,28 @@ class OgAccessTestCase extends DrupalWebTestCase {
     $this->assertFalse(node_access('view', $this->group_node, $this->user2), 'Other user should not see the group');
 
     // Group is private. We are changing it to public.
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
 
     $edit = array(
       'group_access[und]' => 0,
     );
-    $this->drupalPost('node/' . $this->group_node->nid . '/edit', $edit, 'Save');
+    $this->backdropPost('node/' . $this->group_node->nid . '/edit', $edit, 'Save');
 
-    drupal_static_reset();
+    backdrop_static_reset();
     $this->assertTrue(node_access('view', $node1, $this->user2), 'Other user should be able to see the node');
     $this->assertTrue(node_access('view', $this->group_node, $this->user2), 'Other user should be able to see the group');
 
     // Group is public. We are changing it to private.
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
 
     $edit = array(
       'group_access[und]' => 1,
     );
-    $this->drupalPost('node/' . $this->group_node->nid . '/edit', $edit, 'Save');
+    $this->backdropPost('node/' . $this->group_node->nid . '/edit', $edit, 'Save');
 
     $this->group_node = node_load($this->group_node->nid);
 
-    drupal_static_reset();
+    backdrop_static_reset();
     $this->assertFalse(node_access('view', $node1, $this->user2), 'Other user should not see the node');
     $this->assertFalse(node_access('view', $this->group_node, $this->user2), 'Other user should not see the group');
   }
@@ -99,7 +99,7 @@ class OgAccessTestCase extends DrupalWebTestCase {
    * groups are accessible, even for members.
    */
   function testSubGroupContentAccess() {
-    $subgroup_content_type = $this->drupalCreateContentType()->type;
+    $subgroup_content_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_AUDIENCE_FIELD, 'node', $subgroup_content_type);
     og_create_field(OG_GROUP_FIELD, 'node', $subgroup_content_type);
     og_create_field(OG_ACCESS_FIELD, 'node', $subgroup_content_type);
@@ -113,24 +113,24 @@ class OgAccessTestCase extends DrupalWebTestCase {
     $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $this->group_node->nid;
     $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_DEFAULT;
-    $subgroup_node = $this->drupalCreateNode($settings);
+    $subgroup_node = $this->backdropCreateNode($settings);
 
     // Add another user to group.
     og_group('node', $this->group_node->nid, array('entity' => $this->user2));
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
 
     // Assert the user can view the group.
     // Assert the user is a group member.
     $this->assertTrue(og_is_member('node', $this->group_node->nid, 'user', $this->user1), 'User is a group member.');
-    $this->drupalGet('node/' . $subgroup_node->nid);
+    $this->backdropGet('node/' . $subgroup_node->nid);
     $this->assertResponse('200', 'Group member can view subgroup.');
 
     // Assert another user is a group member.
-    $this->drupalLogin($this->user2);
+    $this->backdropLogin($this->user2);
     $this->assertTrue(og_is_member('node', $this->group_node->nid, 'user', $this->user2), 'User is a group member.');
 
     // Assert the member can see the subgroup.
-    $this->drupalGet('node/' . $subgroup_node->nid);
+    $this->backdropGet('node/' . $subgroup_node->nid);
     $this->assertResponse('200', 'Group member can view subgroup.');
   }
 
@@ -138,22 +138,22 @@ class OgAccessTestCase extends DrupalWebTestCase {
    * Group with access field.
    */
   function testGroupAccess() {
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
     $nid = $this->group_node->nid;
 
     // Assert the user is a group member.
     $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
 
     // Assert the user can view the group.
-    $this->drupalGet('node/' . $nid);
+    $this->backdropGet('node/' . $nid);
     $this->assertResponse('200', t('Group member can view group node.'));
 
     // Assert another user is not a group member.
-    $this->drupalLogin($this->user2);
+    $this->backdropLogin($this->user2);
     $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
 
     // Assert non-member can't view the group.
-    $this->drupalGet('node/' . $nid);
+    $this->backdropGet('node/' . $nid);
     $this->assertResponse('403', t('Non group member can not view group node.'));
   }
 
@@ -163,7 +163,7 @@ class OgAccessTestCase extends DrupalWebTestCase {
   function testGroupContentAccessDefault() {
     og_create_field(OG_CONTENT_ACCESS_FIELD, 'node', $this->group_content_type);
 
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
     $nid = $this->group_node->nid;
 
     // Create a group content node and set default access.
@@ -171,20 +171,20 @@ class OgAccessTestCase extends DrupalWebTestCase {
     $settings['type'] = $this->group_content_type;
     $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $nid;
     $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_DEFAULT;
-    $group_content_node = $this->drupalCreateNode($settings);
+    $group_content_node = $this->backdropCreateNode($settings);
 
     // Assert the user can view the group.
     // Assert the user is a group member.
     $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
-    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->backdropGet('node/' . $group_content_node->nid);
     $this->assertResponse('200', t('Group member can view group node.'));
 
     // Assert another user is not a group member.
-    $this->drupalLogin($this->user2);
+    $this->backdropLogin($this->user2);
     $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
 
     // Assert non-member can't view the group.
-    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->backdropGet('node/' . $group_content_node->nid);
     $this->assertResponse('403', t('Non group member can not view group node.'));
   }
 
@@ -199,13 +199,13 @@ class OgAccessTestCase extends DrupalWebTestCase {
     // public, and one time set to private.
     foreach (array(0, 1) as $state) {
       // Make sure user1 is logged in.
-      $this->drupalLogin($this->user1);
+      $this->backdropLogin($this->user1);
       // Create a group node and enable access.
       $settings = array();
       $settings['type'] = $this->group_type;
       $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
       $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = $state;
-      $group_node = $this->drupalCreateNode($settings);
+      $group_node = $this->backdropCreateNode($settings);
       $nid = $group_node->nid;
 
 
@@ -214,27 +214,27 @@ class OgAccessTestCase extends DrupalWebTestCase {
       $settings['type'] = $this->group_content_type;
       $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $nid;
       $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_PUBLIC;
-      $public_node = $this->drupalCreateNode($settings);
+      $public_node = $this->backdropCreateNode($settings);
 
       // Create a group content node and set private access.
       $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_PRIVATE;
-      $private_node = $this->drupalCreateNode($settings);
+      $private_node = $this->backdropCreateNode($settings);
 
       // Assert the user can view the group.
       $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
-      $this->drupalGet('node/' . $public_node->nid);
+      $this->backdropGet('node/' . $public_node->nid);
       $this->assertResponse('200', t('Group member can view public group content node.'));
-      $this->drupalGet('node/' . $private_node->nid);
+      $this->backdropGet('node/' . $private_node->nid);
       $this->assertResponse('200', t('Group member can view private group content node.'));
 
       // Assert another user is not a group member.
-      $this->drupalLogin($this->user2);
+      $this->backdropLogin($this->user2);
       $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
 
       // Assert non-member can't view the group.
-      $this->drupalGet('node/' . $public_node->nid);
+      $this->backdropGet('node/' . $public_node->nid);
       $this->assertResponse('200', t('Non group member can view public group content node.'));
-      $this->drupalGet('node/' . $private_node->nid);
+      $this->backdropGet('node/' . $private_node->nid);
       $this->assertResponse('403', t('Non group member can not view private group content node.'));
     }
   }
@@ -243,27 +243,27 @@ class OgAccessTestCase extends DrupalWebTestCase {
    * Test group content without access field.
    */
   function testGroupContentAccessNotExist() {
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
     $nid = $this->group_node->nid;
 
     // Create a group content node and set default access.
     $settings = array();
     $settings['type'] = $this->group_content_type;
     $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $nid;
-    $group_content_node = $this->drupalCreateNode($settings);
+    $group_content_node = $this->backdropCreateNode($settings);
 
     // Assert the user can view the group.
     // Assert the user is a group member.
     $this->assertTrue(og_is_member('node', $nid, 'user', $this->user1), t('User is a group member.'));
-    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->backdropGet('node/' . $group_content_node->nid);
     $this->assertResponse('200', t('Group member can view group node.'));
 
     // Assert another user is not a group member.
-    $this->drupalLogin($this->user2);
+    $this->backdropLogin($this->user2);
     $this->assertFalse(og_is_member('node', $nid, 'user', $this->user2), t('User is not a group member.'));
 
     // Assert non-member can't view the group.
-    $this->drupalGet('node/' . $group_content_node->nid);
+    $this->backdropGet('node/' . $group_content_node->nid);
     $this->assertResponse('403', t('Non group member can not view group node.'));
   }
 
@@ -272,18 +272,18 @@ class OgAccessTestCase extends DrupalWebTestCase {
    * results in a private group content.
    */
   function testOgStrictPrivate() {
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
 
     // Create a group node and set as private.
     $settings = array();
     $settings['type'] = $this->group_type;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $group_node1 = $this->drupalCreateNode($settings);
+    $group_node1 = $this->backdropCreateNode($settings);
 
     // Create a group node and set as public.
     $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 0;
-    $group_node2 = $this->drupalCreateNode($settings);
+    $group_node2 = $this->backdropCreateNode($settings);
 
     // Create a group content node and set default access.
     $settings = array();
@@ -291,18 +291,18 @@ class OgAccessTestCase extends DrupalWebTestCase {
     $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $group_node1->nid;
     $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][1]['target_id'] = $group_node2->nid;
     $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_DEFAULT;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     // Assert the user can view the group.
     $this->assertTrue(og_is_member('node', $group_node1->nid, 'user', $this->user1), t('User is a group member.'));
-    $this->drupalGet('node/' . $node->nid);
+    $this->backdropGet('node/' . $node->nid);
     $this->assertResponse('200', t('Group member can view public group node.'));
 
     // Assert another user is not a group member.
-    $this->drupalLogin($this->user2);
+    $this->backdropLogin($this->user2);
     $this->assertFalse(og_is_member('node', $group_node1->nid, 'user', $this->user2), t('User is not a group member.'));
 
-    $this->drupalGet('node/' . $node->nid);
+    $this->backdropGet('node/' . $node->nid);
     $this->assertResponse('403', t('Non group member can not view group content node.'));
 
     // Assert all groups were registered in {node_access}.
@@ -319,20 +319,20 @@ class OgAccessTestCase extends DrupalWebTestCase {
   function testUnpublishedNode() {
     $user1 = $this->user1;
     $user2 = $this->user2;
-    $this->drupalLogin($user1);
+    $this->backdropLogin($user1);
 
     // Create a group node and set as private.
     $settings = array();
     $settings['type'] = $this->group_type;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $group_node1 = $this->drupalCreateNode($settings);
+    $group_node1 = $this->backdropCreateNode($settings);
 
     // Create a group content node and set default access.
     $settings = array();
     $settings['type'] = $this->group_content_type;
     $settings[OG_AUDIENCE_FIELD][LANGUAGE_NONE][0]['target_id'] = $group_node1->nid;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     // Add another user to group.
     og_group('node', $group_node1->nid, array('entity' => $user2));
@@ -341,7 +341,7 @@ class OgAccessTestCase extends DrupalWebTestCase {
 
     $node->status = NODE_NOT_PUBLISHED;
     node_save($node);
-    drupal_static_reset('node_access');
+    backdrop_static_reset('node_access');
 
     $this->assertFalse(node_access('view', $node, $user2), 'Group member can not view unpublished node.');
   }
@@ -352,7 +352,7 @@ class OgAccessTestCase extends DrupalWebTestCase {
 /**
  * Test "Use group defaults".
  */
-class OgAccessUseGroupDefaultsTestCase extends DrupalWebTestCase {
+class OgAccessUseGroupDefaultsTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -367,10 +367,10 @@ class OgAccessUseGroupDefaultsTestCase extends DrupalWebTestCase {
     node_access_rebuild();
 
     // Create group and group content node types.
-    $this->group_type = $this->drupalCreateContentType()->type;
+    $this->group_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_GROUP_FIELD, 'node', $this->group_type);
 
-    $this->group_content_type = $this->drupalCreateContentType()->type;
+    $this->group_content_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content_type);
     og_create_field(OG_CONTENT_ACCESS_FIELD, 'node', $this->group_content_type);
 
@@ -379,7 +379,7 @@ class OgAccessUseGroupDefaultsTestCase extends DrupalWebTestCase {
     $settings['type'] = $this->group_type;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
     $settings['uid'] = 1;
-    $this->group_node = $this->drupalCreateNode($settings);
+    $this->group_node = $this->backdropCreateNode($settings);
   }
 
   /**
@@ -392,7 +392,7 @@ class OgAccessUseGroupDefaultsTestCase extends DrupalWebTestCase {
     $settings[OG_CONTENT_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = OG_CONTENT_ACCESS_DEFAULT;
 
     try {
-      $this->drupalCreateNode($settings);
+      $this->backdropCreateNode($settings);
       $this->fail("Can set node visibility  when access field is missing from the group.");
     }
     catch (OgException $e) {
@@ -402,7 +402,7 @@ class OgAccessUseGroupDefaultsTestCase extends DrupalWebTestCase {
     // Attach the OG access field to the group bundle and try to create a
     // group content.
     og_create_field(OG_ACCESS_FIELD, 'node', $this->group_type);
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $this->assertTrue($node, 'A group content has been created successfully.');
   }
@@ -411,7 +411,7 @@ class OgAccessUseGroupDefaultsTestCase extends DrupalWebTestCase {
 /**
  * Tests moderated group memberships.
  */
-class OgAccessModeratedGroup extends DrupalWebTestCase {
+class OgAccessModeratedGroup extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -426,32 +426,32 @@ class OgAccessModeratedGroup extends DrupalWebTestCase {
     node_access_rebuild();
 
     // Creating the content type and the necessary fields for this test.
-    $content_type = $this->drupalCreateContentType();
+    $content_type = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $content_type->type);
     og_create_field(OG_ACCESS_FIELD, 'node', $content_type->type);
 
     // Creating a private group, and a user.
-    $this->group = $this->drupalCreateNode(array('type' => $content_type->type));
+    $this->group = $this->backdropCreateNode(array('type' => $content_type->type));
 
     $wrapper = entity_metadata_wrapper('node', $this->group);
     $wrapper->{OG_GROUP_FIELD}->set(TRUE);
     $wrapper->{OG_ACCESS_FIELD}->set(1);
     $wrapper->save();
-    $this->user = $this->drupalCreateUser();
+    $this->user = $this->backdropCreateUser();
 
     // Remove ability to apply without approval, but still allow them to subscribe.
     $roles = og_roles('node', $this->group->type);
     og_role_revoke_permissions(array_search(OG_ANONYMOUS_ROLE, $roles), array('subscribe without approval'));
     og_role_grant_permissions(array_search(OG_ANONYMOUS_ROLE, $roles), array('subscribe'));
 
-    $this->drupalLogin($this->user);
+    $this->backdropLogin($this->user);
   }
 
   /**
    * Test membership creation attempt made via direct API calls, by non-admins.
    */
   public function testMembershipRequest() {
-    // The call of drupalLogin() in setUp() is not effective for API calls,
+    // The call of backdropLogin() in setUp() is not effective for API calls,
     // switching users here to test the permission check.
     global $user;
     $current_user = $user;

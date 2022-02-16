@@ -1,6 +1,6 @@
 <?php
 
-class OgAccess extends DrupalWebTestCase {
+class OgAccess extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -31,9 +31,9 @@ class OgAccess extends DrupalWebTestCase {
     $og_field['field']['settings']['target_type'] = 'entity_test';
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
 
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
-    $user3 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
+    $user3 = $this->backdropCreateUser();
 
     // Create a group.
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -48,7 +48,7 @@ class OgAccess extends DrupalWebTestCase {
     // User has access to a group associated with a group content.
     $settings = array();
     $settings['type'] = 'article';
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $values = array('entity_type' => 'node', 'entity' => $node);
     og_group('entity_test', $entity1->pid, $values);
@@ -62,7 +62,7 @@ class OgAccess extends DrupalWebTestCase {
 
     $settings['uid'] = $user2->uid;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $wrapper = entity_metadata_wrapper('node', $node);
     $wrapper->{OG_GROUP_FIELD}->set(1);
@@ -78,14 +78,14 @@ class OgAccess extends DrupalWebTestCase {
     // Entity is a disabled group.
     $settings['uid'] = $user2->uid;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
     $this->assertNull(og_user_access_entity($perm, 'node', $node, $user1), t('Entity is a disabled group, so return value is NULL.'));
 
     // Entity is an orphan group content.
     $settings = array();
     $settings['type'] = 'article';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
     og_group('entity_test', $entity1->pid, $values);
     $entity1->delete();
@@ -95,7 +95,7 @@ class OgAccess extends DrupalWebTestCase {
     $settings = array();
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
     $settings['type'] = 'article';
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
     $this->assertNull(og_user_access_entity($perm, 'node', $node, $user1), t('Entity is not a group or a group contentm, so return value is NULL.'));
 
     // Entity is NULL - as might be passed by field_access().
@@ -110,7 +110,7 @@ class OgAccess extends DrupalWebTestCase {
 /**
  * Test Group node access. This will test nodes that are groups and group content.
  */
-class OgNodeAccess extends DrupalWebTestCase {
+class OgNodeAccess extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -130,8 +130,8 @@ class OgNodeAccess extends DrupalWebTestCase {
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'article');
 
     // Create an editor user and a group manager for these tests.
-    $this->editor_user = $this->drupalCreateUser(array('access content', 'edit any page content', 'edit any article content', 'create article content'));
-    $this->group_manager = $this->drupalCreateUser(array('access content', 'create page content', 'edit own article content', 'edit own page content'));
+    $this->editor_user = $this->backdropCreateUser(array('access content', 'edit any page content', 'edit any article content', 'create article content'));
+    $this->group_manager = $this->backdropCreateUser(array('access content', 'create page content', 'edit own article content', 'edit own page content'));
 
     // Create group node.
     $settings = array(
@@ -139,15 +139,15 @@ class OgNodeAccess extends DrupalWebTestCase {
       OG_GROUP_FIELD . '[und][0][value]' => 1,
       'uid' => $this->group_manager->uid
     );
-    $this->group1 = $this->drupalCreateNode($settings);
-    $this->group2 = $this->drupalCreateNode($settings);
+    $this->group1 = $this->backdropCreateNode($settings);
+    $this->group2 = $this->backdropCreateNode($settings);
 
     // Create node to add to group.
     $settings = array(
       'type' => 'article',
       'uid' => $this->group_manager->uid,
     );
-    $this->group_content = $this->drupalCreateNode($settings);
+    $this->group_content = $this->backdropCreateNode($settings);
 
     // Add node to group.
     $values = array(
@@ -166,21 +166,21 @@ class OgNodeAccess extends DrupalWebTestCase {
     config_set('og.settings', 'og_node_access_strict', TRUE);
 
     // Login as editor and try to change the group node and group content.
-    $this->drupalLogin($this->editor_user);
+    $this->backdropLogin($this->editor_user);
 
-    $this->drupalGet('node/' . $this->group1->nid . '/edit');
+    $this->backdropGet('node/' . $this->group1->nid . '/edit');
     $this->assertResponse('403', t('A non-member with core node access permissions was denied access to edit group node.'));
 
-    $this->drupalGet('node/' . $this->group_content->nid . '/edit');
+    $this->backdropGet('node/' . $this->group_content->nid . '/edit');
     $this->assertResponse('403', t('A non-member with core node access permissions was denied access to edit group content node.'));
 
     // Login as a group manager and try to change group node.
-    $this->drupalLogin($this->group_manager);
+    $this->backdropLogin($this->group_manager);
 
-    $this->drupalGet('node/' . $this->group1->nid . '/edit');
+    $this->backdropGet('node/' . $this->group1->nid . '/edit');
     $this->assertResponse('200', t('Group manager allowed to access to edit group node.'));
 
-    $this->drupalGet('node/' . $this->group_content->nid . '/edit');
+    $this->backdropGet('node/' . $this->group_content->nid . '/edit');
     $this->assertResponse('200', t('Group manager allowed to access to edit group content node.'));
   }
 
@@ -191,16 +191,16 @@ class OgNodeAccess extends DrupalWebTestCase {
     // Set Node access strict variable.
     config_set('og.settings', 'og_node_access_strict', TRUE);
     $editor_user = $this->editor_user;
-    $this->drupalLogin($editor_user);
+    $this->backdropLogin($editor_user);
 
-    $this->drupalGet('node/add/article');
+    $this->backdropGet('node/add/article');
     $this->assertResponse('200', t('User can access node create with non-required field.'));
 
     $instance = field_info_instance('node', OG_AUDIENCE_FIELD, 'article');
     $instance['required'] = TRUE;
     field_update_instance($instance);
 
-    $this->drupalGet('node/add/article');
+    $this->backdropGet('node/add/article');
     $this->assertResponse('403', t('User cannot access node create with required field.'));
 
     // Test OG's create permission for a group member.
@@ -216,7 +216,7 @@ class OgNodeAccess extends DrupalWebTestCase {
 
     // Add update permission.
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
-    $this->drupalGet('node/add/article');
+    $this->backdropGet('node/add/article');
     $this->assertResponse('403', 'Group member cannot create node.');
 
     // Add create permission.
@@ -226,7 +226,7 @@ class OgNodeAccess extends DrupalWebTestCase {
       'update any article content' => 0,
     );
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
-    $this->drupalGet('node/add/article');
+    $this->backdropGet('node/add/article');
     $this->assertResponse('200', 'Group member can create node.');
   }
 
@@ -239,21 +239,21 @@ class OgNodeAccess extends DrupalWebTestCase {
     config_set('og.settings', 'og_node_access_strict', FALSE);
 
     // Login as editor and try to change the group node and group content.
-    $this->drupalLogin($this->editor_user);
+    $this->backdropLogin($this->editor_user);
 
-    $this->drupalGet('node/' . $this->group1->nid . '/edit');
+    $this->backdropGet('node/' . $this->group1->nid . '/edit');
     $this->assertResponse('200', t('A non-member with core node access permissions was not denied access.'));
 
-    $this->drupalGet('node/' . $this->group_content->nid . '/edit');
+    $this->backdropGet('node/' . $this->group_content->nid . '/edit');
     $this->assertResponse('200', t('A non-member with core node access permissions was not denied access to edit group content node.'));
 
     // Login as a group manager and try to change group node.
-    $this->drupalLogin($this->group_manager);
+    $this->backdropLogin($this->group_manager);
 
-    $this->drupalGet('node/' . $this->group1->nid . '/edit');
+    $this->backdropGet('node/' . $this->group1->nid . '/edit');
     $this->assertResponse('200', t('Group manager allowed to access to edit group node.'));
 
-    $this->drupalGet('node/' . $this->group_content->nid . '/edit');
+    $this->backdropGet('node/' . $this->group_content->nid . '/edit');
     $this->assertResponse('200', t('Group manager allowed to access to edit group content node.'));
   }
 
@@ -267,8 +267,8 @@ class OgNodeAccess extends DrupalWebTestCase {
     // Set Node access strict variable.
     config_set('og.settings', 'og_node_access_strict', FALSE);
 
-    $this->group_editor_user = $this->drupalCreateUser(array('access content'));
-    $this->drupalLogin($this->group_editor_user);
+    $this->group_editor_user = $this->backdropCreateUser(array('access content'));
+    $this->backdropLogin($this->group_editor_user);
 
     // Test OG's create permission for a group member.
     og_group('node', $this->group1, array('entity' => $this->group_editor_user));
@@ -281,7 +281,7 @@ class OgNodeAccess extends DrupalWebTestCase {
       'update any article content' => 0,
     );
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
-    $this->drupalGet('node/add/article');
+    $this->backdropGet('node/add/article');
     $this->assertResponse('200', 'Group member can create node.');
   }
 
@@ -310,9 +310,9 @@ class OgNodeAccess extends DrupalWebTestCase {
     og_role_change_permissions($og_roles[OG_AUTHENTICATED_ROLE], $permissions);
 
     // Login and try to edit this node
-    $this->drupalLogin($this->editor_user);
+    $this->backdropLogin($this->editor_user);
 
-    $this->drupalGet('node/'. $this->group_content->nid .'/edit');
+    $this->backdropGet('node/'. $this->group_content->nid .'/edit');
     $name = 'og_group_ref[und][0][default][]';
     $xpath = $this->buildXPathQuery('//select[@name=:name]', array(':name' => $name));
     $fields = $this->xpath($xpath);
@@ -326,13 +326,13 @@ class OgNodeAccess extends DrupalWebTestCase {
     );
     og_role_change_permissions($og_roles[OG_AUTHENTICATED_ROLE], $permissions);
 
-    $this->drupalGet('node/'. $this->group_content->nid .'/edit');
+    $this->backdropGet('node/'. $this->group_content->nid .'/edit');
     $xpath = $this->buildXPathQuery('//select[@name=:name]', array(':name' => $name));
     $fields = $this->xpath($xpath);
     $this->assertFalse(!empty($fields[0]->option[2]), 'User cannot assign group-content to a new group.');
 
     // Test for retaining groups on node save.
-    $this->drupalPost('node/'. $this->group_content->nid .'/edit', array(), t('Save'));
+    $this->backdropPost('node/'. $this->group_content->nid .'/edit', array(), t('Save'));
 
     $entity_groups = og_get_entity_groups('node', $this->group_content->nid);
     $this->assertFalse(in_array($this->group2->nid, $entity_groups['node']), 'Content retains original groups after saving node form.');
@@ -343,7 +343,7 @@ class OgNodeAccess extends DrupalWebTestCase {
 /**
  * Test the Organic groups API and CRUD handling.
  */
-class OgMetaData extends DrupalWebTestCase {
+class OgMetaData extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -372,7 +372,7 @@ class OgMetaData extends DrupalWebTestCase {
     // Add a second audience field.
     og_create_field('og_ref_2', 'node', 'article', $og_field);
 
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('entity_test', $entity1);
@@ -394,7 +394,7 @@ class OgMetaData extends DrupalWebTestCase {
 
     // Create group entities.
     foreach (og_group_content_states() as $state => $value) {
-      $node = $this->drupalCreateNode($settings);
+      $node = $this->backdropCreateNode($settings);
 
       // Assign article to the group.
       $values = array('entity_type' => 'node', 'entity' => $node);
@@ -437,7 +437,7 @@ class OgMetaData extends DrupalWebTestCase {
 /**
  * Test Group content handeling.
  */
-class OgGroupAndUngroup extends DrupalWebTestCase {
+class OgGroupAndUngroup extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -463,8 +463,8 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
    * Test group and ungroup of content.
    */
   function testGroupAndUngroup() {
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
 
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('entity_test', $entity1);
@@ -484,7 +484,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = 'article';
     $settings['uid'] = $user2->uid;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     // Exception on OG membership for anonymous user.
     try {
@@ -616,7 +616,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = 'article';
     $settings['uid'] = $user2->uid;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
 
     $og_membership = og_group('entity_test', $entity1->pid, $values);
@@ -625,7 +625,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = 'article';
     $settings['uid'] = $user2->uid;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
 
     $og_membership = og_group('entity_test', $entity1->pid, $values, FALSE);
@@ -639,7 +639,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
     // Get only the admin role.
     $og_roles = og_roles('entity_test', 'main', 0, FALSE, FALSE);
     config_set('og.settings', 'og_group_manager_default_rids_entity_test_main', array_keys($og_roles));
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('entity_test', $entity1);
@@ -655,7 +655,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
    */
   public function testGroupManagerNotActive() {
     // Create the user.
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Create the group; the group owner is the previously created user.
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -686,7 +686,7 @@ class OgGroupAndUngroup extends DrupalWebTestCase {
 
 }
 
-class OgPermissionsTestCase extends DrupalWebTestCase {
+class OgPermissionsTestCase extends BackdropWebTestCase {
   public static function getInfo() {
     return array(
       'name' => 'OG permissions',
@@ -712,7 +712,7 @@ class OgPermissionsTestCase extends DrupalWebTestCase {
    */
   function testOgUserRoleChangePermissions() {
     // Create user.
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Create an entity.
     $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -721,7 +721,7 @@ class OgPermissionsTestCase extends DrupalWebTestCase {
     $wrapper->save();
 
     // Associate user to the group.
-    $user2 = $this->drupalCreateUser();
+    $user2 = $this->backdropCreateUser();
     $values = array('entity_type' => 'user', 'entity' => $user2);
     og_group('entity_test', $entity->pid, $values);
 
@@ -761,7 +761,7 @@ class OgPermissionsTestCase extends DrupalWebTestCase {
    */
   function testBlockedAndPendingRoles() {
     // Create user.
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Create an entity.
     $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -770,7 +770,7 @@ class OgPermissionsTestCase extends DrupalWebTestCase {
     $wrapper->save();
 
     // Associate user to the group, and grant "admin" role.
-    $user2 = $this->drupalCreateUser();
+    $user2 = $this->backdropCreateUser();
     $values = array('entity_type' => 'user', 'entity' => $user2);
     og_group('entity_test', $entity->pid, $values);
     $og_roles = og_roles('entity_test', 'main');
@@ -806,7 +806,7 @@ class OgPermissionsTestCase extends DrupalWebTestCase {
 
   function testGrantRolesTwiceForPendingUsers() {
     // Create user.
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Create an entity.
     $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -828,7 +828,7 @@ class OgPermissionsTestCase extends DrupalWebTestCase {
   }
 }
 
-class OgDefaultAccessFieldTestCase extends DrupalWebTestCase {
+class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
   public static function getInfo() {
     return array(
       'name' => 'OG default access field',
@@ -847,7 +847,7 @@ class OgDefaultAccessFieldTestCase extends DrupalWebTestCase {
    */
   function testOgDefaultAccessField() {
     // Create user.
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Add OG group field to the entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
@@ -915,7 +915,7 @@ class OgDefaultAccessFieldTestCase extends DrupalWebTestCase {
 /**
  * Test the complex widget.
  */
-class OgFieldWidgetTestCase extends DrupalWebTestCase {
+class OgFieldWidgetTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -929,11 +929,11 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
     parent::setUp('og');
 
     // Add OG group field to a the node's "group" bundle.
-    $this->drupalCreateContentType(array('type' => 'group'));
+    $this->backdropCreateContentType(array('type' => 'group'));
     og_create_field(OG_GROUP_FIELD, 'node', 'group');
 
     // Add OG audience field to the node's "post" bundle.
-    $this->drupalCreateContentType(array('type' => 'post'));
+    $this->backdropCreateContentType(array('type' => 'post'));
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['instance']['required'] = TRUE;
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
@@ -943,8 +943,8 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
    * Test "field modes" of the OG reference widget.
    */
   function testFieldModes() {
-    $user1 = $this->drupalCreateUser(array('administer group', 'access content', 'create post content'));
-    $user2 = $this->drupalCreateUser(array('access content', 'create post content'));
+    $user1 = $this->backdropCreateUser(array('administer group', 'access content', 'create post content'));
+    $user2 = $this->backdropCreateUser(array('access content', 'create post content'));
 
     // Create group nodes.
     $settings = array(
@@ -952,24 +952,24 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
       OG_GROUP_FIELD . '[und][0][value]' => 1,
     );
     $settings['uid'] = $user1->uid;
-    $group1 = $this->drupalCreateNode($settings);
+    $group1 = $this->backdropCreateNode($settings);
 
     $settings['uid'] = $user2->uid;
-    $group2 = $this->drupalCreateNode($settings);
+    $group2 = $this->backdropCreateNode($settings);
 
     $settings = array(
       'type' => 'post',
     );
     $settings['uid'] = $user1->uid;
-    $post1 = $this->drupalCreateNode($settings);
+    $post1 = $this->backdropCreateNode($settings);
     og_group('node', $group1->nid, array('entity_type' => 'node', 'entity' => $post1));
 
     $settings['uid'] = $user2->uid;
-    $post2 = $this->drupalCreateNode($settings);
+    $post2 = $this->backdropCreateNode($settings);
     og_group('node', $group2->nid, array('entity_type' => 'node', 'entity' => $post2));
 
-    $this->drupalLogin($user1);
-    $this->drupalGet("node/$post1->nid/edit");
+    $this->backdropLogin($user1);
+    $this->backdropGet("node/$post1->nid/edit");
 
     $fields = $this->xpath('//*[@id="edit-og-group-ref-und-0-default"]');
     $this->assertEqual($fields[0]->option['value'], '_none', '"Default" field mode is not required for administrator.');
@@ -977,8 +977,8 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
     $fields = $this->xpath('//*[@id="edit-og-group-ref-und-0-admin-0-target-id"]');
     $this->assertTrue(strpos($fields[0]->attributes()->class[0], 'form-autocomplete'), '"Administrator field more is an autocomplete widget type."');
 
-    $this->drupalLogin($user2);
-    $this->drupalGet("node/$post2->nid/edit");
+    $this->backdropLogin($user2);
+    $this->backdropGet("node/$post2->nid/edit");
 
     $fields = $this->xpath('//*[@id="edit-og-group-ref-und-0-default"]');
     $this->assertEqual($fields[0]->option['value'], $group2->nid, '"Default" field mode is required.');
@@ -988,16 +988,16 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
    * Test "field widget settings" of the OG reference widget.
    */
   function testFieldSettings() {
-    $user = $this->drupalCreateUser(array('administer content types', 'administer group', 'access content', 'administer fields'));
-    $this->drupalLogin($user);
+    $user = $this->backdropCreateUser(array('administer content types', 'administer group', 'access content', 'administer fields'));
+    $this->backdropLogin($user);
 
     $widgets = field_info_widget_types();
     foreach($widgets as $widget => $settings){
       if(in_array('entityreference', $settings['field types'])){
         $widget_type_url = "admin/structure/types/manage/post/fields/".OG_AUDIENCE_FIELD."/widget-type";
-        $this->drupalPost($widget_type_url, array('widget_type' => $widget), 'Continue');
+        $this->backdropPost($widget_type_url, array('widget_type' => $widget), 'Continue');
         $edit_url = "admin/structure/types/manage/post/fields/".OG_AUDIENCE_FIELD;
-        $this->drupalPost($edit_url, array(), 'Save settings');
+        $this->backdropPost($edit_url, array(), 'Save settings');
       }
     }
   }
@@ -1006,8 +1006,8 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
    * Test non-accessible group IDs are saved, upon form submit.
    */
   function testHiddenGroupIds() {
-    $user1 = $this->drupalCreateUser(array('administer group', 'access content', 'create post content'));
-    $user2 = $this->drupalCreateUser(array('access content', 'create post content'));
+    $user1 = $this->backdropCreateUser(array('administer group', 'access content', 'create post content'));
+    $user2 = $this->backdropCreateUser(array('access content', 'create post content'));
 
     // Create group nodes.
     $settings = array(
@@ -1015,21 +1015,21 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
       OG_GROUP_FIELD . '[und][0][value]' => 1,
     );
     $settings['uid'] = $user1->uid;
-    $group1 = $this->drupalCreateNode($settings);
+    $group1 = $this->backdropCreateNode($settings);
 
     $settings['uid'] = $user2->uid;
-    $group2 = $this->drupalCreateNode($settings);
+    $group2 = $this->backdropCreateNode($settings);
 
     $settings = array(
       'type' => 'post',
     );
     $settings['uid'] = $user1->uid;
-    $post1 = $this->drupalCreateNode($settings);
+    $post1 = $this->backdropCreateNode($settings);
     og_group('node', $group1->nid, array('entity_type' => 'node', 'entity' => $post1));
     og_group('node', $group2->nid, array('entity_type' => 'node', 'entity' => $post1));
 
-    $this->drupalLogin($user2);
-    $this->drupalPost("node/$post1->nid/edit", array(), 'Save');
+    $this->backdropLogin($user2);
+    $this->backdropPost("node/$post1->nid/edit", array(), 'Save');
 
     // Assert post still belongs to both groups, although user was able
     // to select only one.
@@ -1042,20 +1042,20 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
    * user edit.
    */
   function testUserEdit() {
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
 
     $settings = array(
       'type' => 'group',
       OG_GROUP_FIELD . '[und][0][value]' => 1,
     );
     $settings['uid'] = $user1->uid;
-    $group1 = $this->drupalCreateNode($settings);
+    $group1 = $this->backdropCreateNode($settings);
 
     og_group('node', $group1->nid, array('entity' => $user2, 'state' => OG_STATE_PENDING));
 
-    $this->drupalLogin($user2);
-    $this->drupalPost("user/$user2->uid/edit", array(), 'Save');
+    $this->backdropLogin($user2);
+    $this->backdropPost("user/$user2->uid/edit", array(), 'Save');
 
     $this->assertTrue(og_get_entity_groups('user', $user2, array(OG_STATE_PENDING)), 'User membership was retained after user save.');
   }
@@ -1068,7 +1068,7 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     og_create_field('another_field', 'node', 'post', $og_field);
 
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Create a group.
     $settings = array(
@@ -1076,21 +1076,21 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
       OG_GROUP_FIELD . '[und][0][value]' => 1,
       'uid' => $user1->uid,
     );
-    $group1 = $this->drupalCreateNode($settings);
-    $group2 = $this->drupalCreateNode($settings);
+    $group1 = $this->backdropCreateNode($settings);
+    $group2 = $this->backdropCreateNode($settings);
 
     // Create group content.
     $settings = array(
       'type' => 'post',
       'uid' => $user1->uid,
     );
-    $post1 = $this->drupalCreateNode($settings);
+    $post1 = $this->backdropCreateNode($settings);
 
     og_group('node', $group1->nid, array('entity_type' => 'node', 'entity' => $post1, 'field_name' => OG_AUDIENCE_FIELD));
     og_group('node', $group2->nid, array('entity_type' => 'node', 'entity' => $post1, 'field_name' => 'another_field'));
 
-    $this->drupalLogin($user1);
-    $this->drupalGet("node/$post1->nid/edit");
+    $this->backdropLogin($user1);
+    $this->backdropGet("node/$post1->nid/edit");
 
     // Assert correct selection in both fields.
     $this->assertOptionSelected('edit-og-group-ref-und-0-default', $group1->nid);
@@ -1101,7 +1101,7 @@ class OgFieldWidgetTestCase extends DrupalWebTestCase {
 /**
  * Test the revocation of group roles.
  */
-class OgRoleRevoke extends DrupalWebTestCase {
+class OgRoleRevoke extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -1117,7 +1117,7 @@ class OgRoleRevoke extends DrupalWebTestCase {
 
   function testOgRoleRevoke()  {
     // Create a user.
-    $user1 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
 
     // Add OG group field to the entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
@@ -1163,7 +1163,7 @@ class OgRoleRevoke extends DrupalWebTestCase {
 /**
  * Test queying group-audience fields using entityFieldQuery.
  */
-class OgEntityFieldQueryTestCase extends DrupalWebTestCase {
+class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -1176,12 +1176,12 @@ class OgEntityFieldQueryTestCase extends DrupalWebTestCase {
   function setUp() {
     parent::setUp('og', 'entity_feature');
 
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
-    $type = $this->drupalCreateContentType();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
+    $type = $this->backdropCreateContentType();
     $group_type = $type->type;
 
-    $type = $this->drupalCreateContentType();
+    $type = $this->backdropCreateContentType();
     $group_content_type = $type->type;
 
     og_create_field(OG_GROUP_FIELD, 'node', $group_type);
@@ -1231,14 +1231,14 @@ class OgEntityFieldQueryTestCase extends DrupalWebTestCase {
       'uid' => $user1->uid,
     );
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $group2 = $this->drupalCreateNode($settings);
+    $group2 = $this->backdropCreateNode($settings);
 
     // Create group-content.
     $settings = array(
       'type' => $group_content_type,
       'uid' => $user1->uid,
     );
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $wrapper = entity_metadata_wrapper('node', $node);
     $wrapper->node_reference->set($group2);
@@ -1395,7 +1395,7 @@ class OgEntityFieldQueryTestCase extends DrupalWebTestCase {
 /**
  * EntityFieldQuery FieldConditions with multiple group content entity types.
  */
-class OgEntityFieldQueryFieldConditionTestCase extends DrupalWebTestCase {
+class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -1408,12 +1408,12 @@ class OgEntityFieldQueryFieldConditionTestCase extends DrupalWebTestCase {
   function setUp() {
     parent::setUp('og', 'entity_feature');
 
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
-    $type = $this->drupalCreateContentType();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
+    $type = $this->backdropCreateContentType();
     $this->group_type = $type->type;
 
-    $type = $this->drupalCreateContentType();
+    $type = $this->backdropCreateContentType();
     $this->group_content_type = $type->type;
 
     og_create_field(OG_GROUP_FIELD, 'node', $this->group_type);
@@ -1452,14 +1452,14 @@ class OgEntityFieldQueryFieldConditionTestCase extends DrupalWebTestCase {
       'uid' => $user1->uid,
     );
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $group1 = $this->drupalCreateNode($settings);
+    $group1 = $this->backdropCreateNode($settings);
 
     $settings = array(
       'type' => $this->group_type,
       'uid' => $user1->uid,
     );
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
-    $group2 = $this->drupalCreateNode($settings);
+    $group2 = $this->backdropCreateNode($settings);
 
     // Create group-content.
     // First content node.
@@ -1469,7 +1469,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends DrupalWebTestCase {
     );
     $settings['list_text'][LANGUAGE_NONE][0]['value'] = 'red';
 
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $values = array(
       'entity_type' => 'node',
@@ -1484,7 +1484,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends DrupalWebTestCase {
     );
     $settings['list_text'][LANGUAGE_NONE][0]['value'] = 'red';
 
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $values = array(
       'entity_type' => 'node',
@@ -1562,7 +1562,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends DrupalWebTestCase {
 /**
  * Test group-audience field auto-create.
  */
-class OgAudienceFieldAutoCreateTestCase extends DrupalWebTestCase {
+class OgAudienceFieldAutoCreateTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -1580,8 +1580,8 @@ class OgAudienceFieldAutoCreateTestCase extends DrupalWebTestCase {
    * Test auto-attaching group-audience fields to the user entity.
    */
   function testAutoAttach()  {
-    $type1 = $this->drupalCreateContentType();
-    $type2 = $this->drupalCreateContentType();
+    $type1 = $this->backdropCreateContentType();
+    $type2 = $this->backdropCreateContentType();
 
     $this->assertFalse(field_info_instance('user', 'og_user_node', 'user'), 'Field does not exist in user entity yet.');
     og_create_field(OG_GROUP_FIELD, 'node', $type1->type);
@@ -1600,7 +1600,7 @@ class OgAudienceFieldAutoCreateTestCase extends DrupalWebTestCase {
 }
 
 
-class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
+class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -1616,7 +1616,7 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
     // Add OG group field to the entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
 
-    $type = $this->drupalCreateContentType(array('type' => 'behavior'));
+    $type = $this->backdropCreateContentType(array('type' => 'behavior'));
     $this->group_content = $type->type;
 
     // Add OG audience field to the new bundle.
@@ -1629,8 +1629,8 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
    * Test piping group association via the group-audience field.
    */
   function testGroupAudienceField() {
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
 
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('entity_test', $entity1);
@@ -1640,7 +1640,7 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = $this->group_content;
     $settings['uid'] = $user2->uid;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     $wrapper = entity_metadata_wrapper('node', $node);
 
@@ -1660,8 +1660,8 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
    * Test skipping OgBehaviorHandler.
    */
   function testGroupAudienceFieldSkipBehavior() {
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser();
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser();
 
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('entity_test', $entity1);
@@ -1671,7 +1671,7 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = $this->group_content;
     $settings['uid'] = $user2->uid;
-    $node = $this->drupalCreateNode($settings);
+    $node = $this->backdropCreateNode($settings);
 
     og_group('entity_test', $entity1, array('entity_type' => 'node', 'entity' => $node));
     $node->og_group_on_save = array('group_type' => 'entity_test', 'gid' => $entity1->pid);
@@ -1699,9 +1699,9 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
       "create $this->group_content content",
       'administer group',
     );
-    $user1 = $this->drupalCreateUser();
-    $user2 = $this->drupalCreateUser($permissions);
-    $user3 = $this->drupalCreateUser($permissions);
+    $user1 = $this->backdropCreateUser();
+    $user2 = $this->backdropCreateUser($permissions);
+    $user3 = $this->backdropCreateUser($permissions);
 
     // Create a group.
     $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -1719,8 +1719,8 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
       'og_group_ref[und][0][default][]' => array($entity1->pid),
     );
 
-    $this->drupalLogin($user2);
-    $this->drupalPost('node/add/' . $type, $edit, t('Save'));
+    $this->backdropLogin($user2);
+    $this->backdropPost('node/add/' . $type, $edit, t('Save'));
 
     $gids = og_get_entity_groups('node', 1);
     $id = key($gids['entity_test']);
@@ -1729,9 +1729,9 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
 
 
     // Post a node, state should be pending.
-    $this->drupalLogin($user3);
+    $this->backdropLogin($user3);
     $edit['title'] = 'state-pending';
-    $this->drupalPost('node/add/' . $type, $edit, t('Save'));
+    $this->backdropPost('node/add/' . $type, $edit, t('Save'));
     $gids = og_get_entity_groups('node', 2, array(OG_STATE_PENDING));
     $id = key($gids['entity_test']);
     $og_membership = og_membership_load($id);
@@ -1742,7 +1742,7 @@ class OgBehaviorHandlerTestCase  extends DrupalWebTestCase {
 /**
  * Testing for deleting orphans group content.
  */
-class OgDeleteOrphansTestCase extends DrupalWebTestCase {
+class OgDeleteOrphansTestCase extends BackdropWebTestCase {
 
   public $group_type;
   public $node_type;
@@ -1759,12 +1759,12 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
     parent::setUp('og_test');
 
     // Create a group content type.
-    $group = $this->drupalCreateContentType();
+    $group = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $group->type);
     $this->group_type = $group->type;
 
     // Create group audience content type.
-    $type = $this->drupalCreateContentType();
+    $type = $this->backdropCreateContentType();
     $this->node_type = $type->type;
 
     // Add OG audience field to the audience content type.
@@ -1784,22 +1784,22 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
    */
   function testDeleteGroup() {
     // Creating two groups.
-    $first_group = $this->drupalCreateNode(array('type' => $this->group_type));
-    $second_group = $this->drupalCreateNode(array('type' => $this->group_type));
+    $first_group = $this->backdropCreateNode(array('type' => $this->group_type));
+    $second_group = $this->backdropCreateNode(array('type' => $this->group_type));
 
     // Create two nodes.
-    $first_node = $this->drupalCreateNode(array('type' => $this->node_type));
+    $first_node = $this->backdropCreateNode(array('type' => $this->node_type));
     og_group('node', $first_group, array('entity_type' => 'node', 'entity' => $first_node));
     og_group('node', $second_group, array('entity_type' => 'node', 'entity' => $first_node));
 
-    $second_node = $this->drupalCreateNode(array('type' => $this->node_type));
+    $second_node = $this->backdropCreateNode(array('type' => $this->node_type));
     og_group('node', $first_group, array('entity_type' => 'node', 'entity' => $second_node));
 
     // Delete the group.
     node_delete($first_group->nid);
 
     // Execute manually the queue worker.
-    $queue = DrupalQueue::get('og_membership_orphans');
+    $queue = BackdropQueue::get('og_membership_orphans');
     $item = $queue->claimItem();
     og_membership_orphans_worker($item->data);
 
@@ -1818,18 +1818,18 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
    */
   function testMoveOrphans() {
     // Creating two groups.
-    $first_group = $this->drupalCreateNode(array('type' => $this->group_type, 'title' => 'move'));
-    $second_group = $this->drupalCreateNode(array('type' => $this->group_type));
+    $first_group = $this->backdropCreateNode(array('type' => $this->group_type, 'title' => 'move'));
+    $second_group = $this->backdropCreateNode(array('type' => $this->group_type));
 
     // Create a group and relate it to the first group.
-    $first_node = $this->drupalCreateNode(array('type' => $this->node_type));
+    $first_node = $this->backdropCreateNode(array('type' => $this->node_type));
     og_group('node', $first_group, array('entity_type' => 'node', 'entity' => $first_node));
 
     // Delete the group.
     node_delete($first_group->nid);
 
     // Execute manually the queue worker.
-    $queue = DrupalQueue::get('og_membership_orphans');
+    $queue = BackdropQueue::get('og_membership_orphans');
     $item = $queue->claimItem();
     og_membership_orphans_worker($item->data);
 
@@ -1847,15 +1847,15 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
    * after deleting one of the groups.
    */
   public function testEditGroupContentAfterDeletingGroup() {
-    $account = $this->drupalCreateUser(array('edit own ' . $this->node_type . ' content'));
-    $this->drupalLogin($account);
+    $account = $this->backdropCreateUser(array('edit own ' . $this->node_type . ' content'));
+    $this->backdropLogin($account);
 
     // Create two groups.
-    $first_group = $this->drupalCreateNode(array('type' => $this->group_type));
-    $second_group = $this->drupalCreateNode(array('type' => $this->group_type));
+    $first_group = $this->backdropCreateNode(array('type' => $this->group_type));
+    $second_group = $this->backdropCreateNode(array('type' => $this->group_type));
 
     // Create group content, assign it to both groups.
-    $group_content = $this->drupalCreateNode(array(
+    $group_content = $this->backdropCreateNode(array(
       'type' => $this->node_type,
       'title' => 'Lorem ipsum',
       'uid' => $account->uid,
@@ -1864,14 +1864,14 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
     og_group('node', $second_group, array('entity_type' => 'node', 'entity' => $group_content));
 
     // Try to edit the group content node, using the UI.
-    $this->drupalPost('node/' . $group_content->nid . '/edit', array(), 'Save');
+    $this->backdropPost('node/' . $group_content->nid . '/edit', array(), 'Save');
     $this->assertText($this->node_type . ' Lorem ipsum has been updated.');
 
     // Delete the first group.
     node_delete($first_group->nid);
 
     // Try again to edit the group content node.
-    $this->drupalPost('node/' . $group_content->nid . '/edit', array(), 'Save');
+    $this->backdropPost('node/' . $group_content->nid . '/edit', array(), 'Save');
     $this->assertText($this->node_type . ' Lorem ipsum has been updated.');
   }
 
@@ -1885,15 +1885,15 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
     // Configure OG to use queue for deleting pending content.
     config_set('og.settings', 'og_use_queue', TRUE);
 
-    $account = $this->drupalCreateUser(array('access content', 'edit own ' . $this->node_type . ' content'));
-    $this->drupalLogin($account);
+    $account = $this->backdropCreateUser(array('access content', 'edit own ' . $this->node_type . ' content'));
+    $this->backdropLogin($account);
 
     // Create two groups.
-    $first_group = $this->drupalCreateNode(array('type' => $this->group_type));
-    $second_group = $this->drupalCreateNode(array('type' => $this->group_type));
+    $first_group = $this->backdropCreateNode(array('type' => $this->group_type));
+    $second_group = $this->backdropCreateNode(array('type' => $this->group_type));
 
     // Create group content, assign it to both groups.
-    $group_content = $this->drupalCreateNode(array(
+    $group_content = $this->backdropCreateNode(array(
       'type' => $this->node_type,
       'title' => 'Lorem ipsum',
       'uid' => $account->uid,
@@ -1903,14 +1903,14 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
 
     // Display a list of my nodes, that uses node_access() to check if links may
     // be displayed.
-    $this->drupalGet('og_test/my_content');
+    $this->backdropGet('og_test/my_content');
     $this->assertText('Lorem ipsum');
 
     // Delete the first group.
     node_delete($first_group->nid);
 
     // Display a list of my nodes again, to ensure nothing changed.
-    $this->drupalGet('og_test/my_content');
+    $this->backdropGet('og_test/my_content');
     $this->assertNoText('EntityMalformedException');
     $this->assertText('Lorem ipsum');
   }
@@ -1920,7 +1920,7 @@ class OgDeleteOrphansTestCase extends DrupalWebTestCase {
 /**
  * Testing publishing content in a group for non members users.
  */
-class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
+class OgNonMembersPublishingContentTestCase extends BackdropWebTestCase {
 
   public $group;
   public $user;
@@ -1939,13 +1939,13 @@ class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
     parent::setUp('og_test', 'entityreference_prepopulate');
 
     // Creating a user.
-    $this->user = $this->drupalCreateUser();
+    $this->user = $this->backdropCreateUser();
 
     // Creating admin.
-    $this->adminUser = $this->drupalCreateUser(array('bypass node access', 'administer group'));
+    $this->adminUser = $this->backdropCreateUser(array('bypass node access', 'administer group'));
 
     // Create a group content type.
-    $this->drupalCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
+    $this->backdropCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
     og_create_field(OG_GROUP_FIELD, 'node', 'group');
 
     // Create the group.
@@ -1954,10 +1954,10 @@ class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
       OG_GROUP_FIELD . '[und][0][value]' => 1,
       'uid' => 1,
     );
-    $this->group = $this->drupalCreateNode($settings);
+    $this->group = $this->backdropCreateNode($settings);
 
     // Create the group content.
-    $this->drupalCreateContentType(array('name' => 'Group content', 'type' => 'group_content'));
+    $this->backdropCreateContentType(array('name' => 'Group content', 'type' => 'group_content'));
 
     // Attach the audience field and enable the prepopulate behavior.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
@@ -1979,14 +1979,14 @@ class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
    */
   public function testNonMembersPublish() {
     // Login as normal user.
-    $this->drupalLogin($this->user);
+    $this->backdropLogin($this->user);
 
     // Verify the user can't publish content to the group content.
-    $this->drupalGet('node/add/group-content');
+    $this->backdropGet('node/add/group-content');
     $this->assertResponse('403', t('The user can not create post in the group.'));
 
     // Create a the group content.
-    $this->drupalPost('node/add/group-content', array('title' => 'foo'), t('Save'), array('query' => array('og_group_ref' => $this->group->nid)));
+    $this->backdropPost('node/add/group-content', array('title' => 'foo'), t('Save'), array('query' => array('og_group_ref' => $this->group->nid)));
 
     // Verify the node belong to the group.
     $query = new entityFieldQuery();
@@ -2002,11 +2002,11 @@ class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
     $node_array_keys = array_keys($result_node);
     $nid = reset($node_array_keys);
 
-    $this->drupalLogin($this->adminUser);
+    $this->backdropLogin($this->adminUser);
 
     // Verify the audience field will remain after another user editing the
     // group.
-    $this->drupalpost('node/' . $nid . '/edit', array(), t('Save'));
+    $this->backdroppost('node/' . $nid . '/edit', array(), t('Save'));
     $this->assertText($this->group->title, 'The node is still referenced to the group.');
   }
 }
@@ -2015,7 +2015,7 @@ class OgNonMembersPublishingContentTestCase extends DrupalWebTestCase {
  * Verify that users only with OG permissions can post only inside a group
  *
  */
-class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
+class OgUserCanPublishGroupContentTypeOnlyInGroup extends BackdropWebTestCase {
   public $group;
   public $site_user;
   public $group_user;
@@ -2033,7 +2033,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
     parent::setUp('og');
 
     // Create a group content type.
-    $group = $this->drupalCreateContentType();
+    $group = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $group->type);
 
     // Create the group.
@@ -2042,10 +2042,10 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
       OG_GROUP_FIELD . '[und][0][value]' => 1,
       'uid' => 1,
     );
-    $this->group = $this->drupalCreateNode($settings);
+    $this->group = $this->backdropCreateNode($settings);
 
     // Create the group content content type.
-    $this->group_content = $this->drupalCreateContentType();
+    $this->group_content = $this->backdropCreateContentType();
 
     // Attach the audience field.
     og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content->type);
@@ -2059,8 +2059,8 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
     ));
 
     // Creating users.
-    $this->group_user = $this->drupalCreateUser();
-    $this->site_user = $this->drupalCreateUser(array('create ' . $this->group_content->type . ' content', 'edit own ' . $this->group_content->type . ' content'));
+    $this->group_user = $this->backdropCreateUser();
+    $this->site_user = $this->backdropCreateUser(array('create ' . $this->group_content->type . ' content', 'edit own ' . $this->group_content->type . ' content'));
 
     og_group('node', $this->group->nid, array('entity' => $this->group_user));
   }
@@ -2071,8 +2071,8 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
    */
   public function testGroupUserCanPostGroupContentOnlyInGroup() {
     $node_title = $this->randomName();
-    $this->drupalLogin($this->group_user);
-    $this->drupalPost('node/add', array('title' => $node_title), t('Save'));
+    $this->backdropLogin($this->group_user);
+    $this->backdropPost('node/add', array('title' => $node_title), t('Save'));
     $this->assertText("You must select one or more groups for this content", "The user can't publish a content outside a group");
 
     // Check the user can publish node inside the group.
@@ -2080,7 +2080,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
       'title' => $node_title,
       'og_group_ref[und][0][default][]' => array($this->group->nid),
     );
-    $this->drupalPost('node/add', $edit, t('Save'));
+    $this->backdropPost('node/add', $edit, t('Save'));
 
     $this->assertText($this->group_content->type . " " . $node_title . " has been created.", "The user can create content inside a group.");
 
@@ -2097,14 +2097,14 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
       'title' => $node_title,
       'og_group_ref[und][0][default][]' => array(),
     );
-    $this->drupalPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
+    $this->backdropPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
     $this->assertText("You must select one or more groups for this content", "The user can't edit a content outside a group");
 
     $edit = array(
       'title' => $node_title,
       'og_group_ref[und][0][default][]' => array($this->group->nid),
     );
-    $this->drupalPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
+    $this->backdropPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
     $this->assertText($this->group_content->type . " " . $node_title . " has been updated.", "The user can edit content inside a group.");
   }
 
@@ -2112,14 +2112,14 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
    * Verify that non-group user can post group content outside of a group.
    */
   public function testNonGroupUserCanPostGroupContentOutsideGroup() {
-    $this->drupalLogin($this->site_user);
+    $this->backdropLogin($this->site_user);
 
     // Set node access strict variable to FALSE for posting outside groups.
     config_set('og.settings', 'og_node_access_strict', FALSE);
 
     // Verify that the user can publish group content outside a group.
     $node_title = $this->randomName();
-    $this->drupalPost('node/add', array('title' => $node_title), t('Save'));
+    $this->backdropPost('node/add', array('title' => $node_title), t('Save'));
 
     $params = array(
       '@type' => $this->group_content->type,
@@ -2138,7 +2138,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
     $edit = array(
       'title' => $node_title,
     );
-    $this->drupalPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
+    $this->backdropPost('node/' . reset($result['node'])->nid . '/edit', $edit, t('Save'));
     $this->assertText($this->group_content->type . " " . $node_title . " has been updated.", "The user can edit content outside a group.");
   }
 }
@@ -2146,7 +2146,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends DrupalWebTestCase {
 /**
  * Test for publishing content into group the user is not a member.
  */
-class OgAutoCompleteAccessibleGroupsValidation extends DrupalWebTestCase {
+class OgAutoCompleteAccessibleGroupsValidation extends BackdropWebTestCase {
 
   var $dummy_content_type;
 
@@ -2168,8 +2168,8 @@ class OgAutoCompleteAccessibleGroupsValidation extends DrupalWebTestCase {
     parent::setUp('og');
 
     // Create group content.
-    $this->drupalCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
-    $this->drupalCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
+    $this->backdropCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
+    $this->backdropCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
 
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['instance']['settings']['behaviors']['og_widget']['default']['widget_type'] = 'entityreference_autocomplete';
@@ -2177,15 +2177,15 @@ class OgAutoCompleteAccessibleGroupsValidation extends DrupalWebTestCase {
     og_create_field(OG_GROUP_FIELD, 'node', 'group');
 
     // Create users.
-    $this->group_owner = $this->drupalCreateUser(array('create group_content content', 'administer group'));
-    $this->group_member = $this->drupalCreateUser(array('create group_content content'));
+    $this->group_owner = $this->backdropCreateUser(array('create group_content content', 'administer group'));
+    $this->group_member = $this->backdropCreateUser(array('create group_content content'));
 
     // Create a group node.
     $settings = array();
     $settings['type'] = 'group';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
     $settings['uid'] = $this->group_owner->uid;
-    $this->group_node_1 = $this->drupalCreateNode($settings);
+    $this->group_node_1 = $this->backdropCreateNode($settings);
     og_group('node', $this->group_node_1, array(
       'entity' => $this->group_member,
     ));
@@ -2193,42 +2193,42 @@ class OgAutoCompleteAccessibleGroupsValidation extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = 'group';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
-    $settings['uid'] = $this->drupalCreateUser()->uid;
-    $this->group_node_2 = $this->drupalCreateNode($settings);
+    $settings['uid'] = $this->backdropCreateUser()->uid;
+    $this->group_node_2 = $this->backdropCreateNode($settings);
   }
 
   /**
    * Verify that a user can't publish content into group that he isn't a member.
    */
   function testAuthenticatedUserCantReferenceToPrivateGroup() {
-    $this->drupalLogin($this->group_member);
+    $this->backdropLogin($this->group_member);
 
     // Try to publish content into group the user is not a member.
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
     $this->assertText('The referenced group (node: ' . $this->group_node_2->nid . ') is invalid.', 'The reference to group the user is not accessible has achieved');
 
     // Try to publish content into group that doesn't exist.
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content', 'og_group_ref[und][0][default][0][target_id]' => 'foo (900)'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content', 'og_group_ref[und][0][default][0][target_id]' => 'foo (900)'), 'Save');
     $this->assertText('The referenced group (node: 900) is invalid.', 'The reference to group the user is not accessible has achieved');
 
     // Try to publish content into the group the user is a member of.
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 2', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_1->title . '(' . $this->group_node_1->nid . ')'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 2', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_1->title . '(' . $this->group_node_1->nid . ')'), 'Save');
     $this->assertText('Group content New group content 2 has been created.', 'The group content created successfully');
 
     // Testing the widgets my group and other groups.
-    $this->drupalLogin($this->group_owner);
+    $this->backdropLogin($this->group_owner);
 
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
     $this->assertText('The referenced group (node: ' . $this->group_node_2->nid . ') is invalid.', 'The reference to group the user is not accessible has achieved');
 
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][admin][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][admin][0][target_id]' => $this->group_node_2->title . '(' . $this->group_node_2->nid . ')'), 'Save');
     $this->assertText('Group content New group content 3 has been created.', 'The group content created successfully');
 
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][admin][0][target_id]' => 'foo (900)'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 3', 'og_group_ref[und][0][admin][0][target_id]' => 'foo (900)'), 'Save');
     $this->assertText('The referenced group (node: 900) is invalid.', 'The reference to group the user is not accessible has achieved');
 
     // Try to publish content into the group the user is a member of.
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 4', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_1->title . '(' . $this->group_node_1->nid . ')'), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 4', 'og_group_ref[und][0][default][0][target_id]' => $this->group_node_1->title . '(' . $this->group_node_1->nid . ')'), 'Save');
     $this->assertText('Group content New group content 4 has been created.', 'The group content created successfully');
   }
 }
@@ -2236,7 +2236,7 @@ class OgAutoCompleteAccessibleGroupsValidation extends DrupalWebTestCase {
 /**
  * Test for publishing content using a select widget.
  */
-class OgSelectAccessibleGroupsValidation extends DrupalWebTestCase {
+class OgSelectAccessibleGroupsValidation extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -2250,8 +2250,8 @@ class OgSelectAccessibleGroupsValidation extends DrupalWebTestCase {
     parent::setUp('og');
 
     // Create group content.
-    $this->drupalCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
-    $this->drupalCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
+    $this->backdropCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
+    $this->backdropCreateContentType(array( 'name' => 'Group', 'type' => 'group'));
 
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['instance']['settings']['behaviors']['og_widget']['default']['widget_type'] = 'options_select';
@@ -2259,15 +2259,15 @@ class OgSelectAccessibleGroupsValidation extends DrupalWebTestCase {
     og_create_field(OG_GROUP_FIELD, 'node', 'group');
 
     // Create users.
-    $this->group_owner = $this->drupalCreateUser(array('create group_content content', 'administer group'));
-    $this->group_member = $this->drupalCreateUser(array('create group_content content'));
+    $this->group_owner = $this->backdropCreateUser(array('create group_content content', 'administer group'));
+    $this->group_member = $this->backdropCreateUser(array('create group_content content'));
 
     // Create a group node.
     $settings = array();
     $settings['type'] = 'group';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
     $settings['uid'] = $this->group_owner->uid;
-    $this->group_node_1 = $this->drupalCreateNode($settings);
+    $this->group_node_1 = $this->backdropCreateNode($settings);
     og_group('node', $this->group_node_1, array(
       'entity' => $this->group_member,
     ));
@@ -2275,8 +2275,8 @@ class OgSelectAccessibleGroupsValidation extends DrupalWebTestCase {
     $settings = array();
     $settings['type'] = 'group';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = TRUE;
-    $settings['uid'] = $this->drupalCreateUser()->uid;
-    $this->group_node_2 = $this->drupalCreateNode($settings);
+    $settings['uid'] = $this->backdropCreateUser()->uid;
+    $this->group_node_2 = $this->backdropCreateNode($settings);
   }
 
   /**
@@ -2284,26 +2284,26 @@ class OgSelectAccessibleGroupsValidation extends DrupalWebTestCase {
    * member of (either admin or not).
    */
   function testAuthenticatedUserCantReferenceToPrivateGroup() {
-    $this->drupalLogin($this->group_member);
+    $this->backdropLogin($this->group_member);
 
     // Try to publish content into group the user is not a member.
-    $this->drupalGet('node/add/group_content');
+    $this->backdropGet('node/add/group_content');
     $this->assertNoRaw('<option value="' . $this->group_node_2->nid . '">' . $this->group_node_2->title . '</option>', 'The reference to group the user is not a member of cannot be selected.');
     $this->assertRaw('<option value="' . $this->group_node_1->nid . '">' . $this->group_node_1->title . '</option>', 'The reference to group the user is a member of can be selected.');
 
     // Try to publish content into the group the user is a member of.
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 2', 'og_group_ref[und][0][default][]' => array($this->group_node_1->nid)), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 2', 'og_group_ref[und][0][default][]' => array($this->group_node_1->nid)), 'Save');
     $this->assertText('Group content New group content 2 has been created.', 'The group content created successfully');
 
     // Testing the widgets my group and other groups.
-    $this->drupalLogin($this->group_owner);
+    $this->backdropLogin($this->group_owner);
 
-    $this->drupalGet('node/add/group_content');
+    $this->backdropGet('node/add/group_content');
     $this->assertNoRaw('<option value="' . $this->group_node_2->nid . '">' . $this->group_node_2->title . '</option>', 'The reference to group the user is not a member of cannot be selected.');
     $this->assertRaw('<option value="' . $this->group_node_1->nid . '">' . $this->group_node_1->title . '</option>', 'The reference to group the user is a member of can be selected.');
 
     // Try to publish content into the group the user is a member of.
-    $this->drupalPost('node/add/group_content', array('title' => 'New group content 4', 'og_group_ref[und][0][default][]' => array($this->group_node_1->nid)), 'Save');
+    $this->backdropPost('node/add/group_content', array('title' => 'New group content 4', 'og_group_ref[und][0][default][]' => array($this->group_node_1->nid)), 'Save');
     $this->assertText('Group content New group content 4 has been created.', 'The group content created successfully');
   }
 }
@@ -2311,7 +2311,7 @@ class OgSelectAccessibleGroupsValidation extends DrupalWebTestCase {
 /**
  * Test group-audience field access settings.
  */
-class OgAudienceFieldAccessOverrideTestCase extends DrupalWebTestCase {
+class OgAudienceFieldAccessOverrideTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -2329,7 +2329,7 @@ class OgAudienceFieldAccessOverrideTestCase extends DrupalWebTestCase {
    * Test auto-attaching group-audience fields to the user entity.
    */
   function testAutoAttach()  {
-    $type1 = $this->drupalCreateContentType();
+    $type1 = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $type1->type);
     $this->assertTrue(field_info_instance('user', 'og_user_node', 'user'), 'Field was added to the user entity.');
 
@@ -2339,9 +2339,9 @@ class OgAudienceFieldAccessOverrideTestCase extends DrupalWebTestCase {
       "create $type1->type content",
       'administer group',
     );
-    $user1 = $this->drupalCreateUser();
-    $this->drupalLogin($user1);
-    $this->drupalGet('user/' . $user1->uid . '/edit');
+    $user1 = $this->backdropCreateUser();
+    $this->backdropLogin($user1);
+    $this->backdropGet('user/' . $user1->uid . '/edit');
     $this->assertNoRaw('id="edit-og-user-node"');
 
     // Change field to use entity access instead.
@@ -2350,7 +2350,7 @@ class OgAudienceFieldAccessOverrideTestCase extends DrupalWebTestCase {
     field_update_instance($instance);
 
     // The field should now be present.
-    $this->drupalGet('user/' . $user1->uid . '/edit');
+    $this->backdropGet('user/' . $user1->uid . '/edit');
     $this->assertRaw('id="edit-og-user-node"');
   }
 
@@ -2359,7 +2359,7 @@ class OgAudienceFieldAccessOverrideTestCase extends DrupalWebTestCase {
 /**
  * Verify OG group ref field support delta after saving.
  */
-class OgAudienceFieldDeltaTestCase extends DrupalWebTestCase {
+class OgAudienceFieldDeltaTestCase extends BackdropWebTestCase {
 
   public static function getInfo() {
     return array(
@@ -2372,10 +2372,10 @@ class OgAudienceFieldDeltaTestCase extends DrupalWebTestCase {
   function setUp() {
     parent::setUp('og');
 
-    $this->groupType = $this->drupalCreateContentType();
+    $this->groupType = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $this->groupType->type);
 
-    $this->groupConentType = $this->drupalCreateContentType();
+    $this->groupConentType = $this->backdropCreateContentType();
     og_create_field(OG_AUDIENCE_FIELD, 'node', $this->groupConentType->type);
   }
 
@@ -2384,8 +2384,8 @@ class OgAudienceFieldDeltaTestCase extends DrupalWebTestCase {
    * the get method.
    */
   function testEntityMetadataWrapperForOgAudienceField() {
-    $group = $this->drupalCreateNode(array('type' => $this->groupType->type));
-    $node = $this->drupalCreateNode(array('type' => $this->groupConentType->type));
+    $group = $this->backdropCreateNode(array('type' => $this->groupType->type));
+    $node = $this->backdropCreateNode(array('type' => $this->groupConentType->type));
 
     $wrapper = entity_metadata_wrapper('node', $node);
     $wrapper->{OG_AUDIENCE_FIELD}->set(array($group));

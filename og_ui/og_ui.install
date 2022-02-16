@@ -35,6 +35,7 @@ function og_ui_update_1000() {
   $config->set('og_ui_7000_add_field', update_variable_get('og_ui_7000_add_field', 'FALSE'));
   $config->set('og_ui_admin_people_view', update_variable_get('og_ui_admin_people_view', 'og_members_admin:default'));
   $config->set('og_ui_deny_subscribe_without_approval', update_variable_get('og_ui_deny_subscribe_without_approval', 'TRUE'));
+  $config->save();
   update_variable_del('og_ui_7000_add_field');
   update_variable_del('og_ui_admin_people_view');
   update_variable_del('og_ui_deny_subscribe_without_approval');

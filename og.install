@@ -41,29 +41,6 @@ function og_install() {
  * Implements hook_uninstall().
  */
 function og_uninstall() {
-  db_delete('variable')
-    ->condition('name', 'og_group_manager_default_rids_%', 'LIKE')
-    ->execute();
-
-  db_delete('variable')
-    ->condition('name', 'og_is_group_default_access__%__%', 'LIKE')
-    ->execute();
-
-  $vars = array(
-    'og_context',
-    'og_group_manager_full_access',
-    'og_skip_access',
-    'og_update_batch_size',
-    'og_upgrade_7001',
-    'og_node_access_strict',
-    'og_features_ignore_og_fields',
-    'og_maintain_overridden_roles',
-  );
-  foreach ($vars as $var) {
-    // TODO This variable was probably removed in Backdrop without replacement.
-    variable_del($var);
-  }
-
   // Delete OG-core fields.
   $og_fields = array(
     'group_group',

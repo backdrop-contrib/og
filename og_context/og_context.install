@@ -10,14 +10,7 @@
  * Implements hook_uninstall().
  */
 function og_context_uninstall() {
-  $vars = array(
-    'og_context_negotiation_group_context',
-    'og_context_providers_weight_group_context',
-  );
-  foreach ($vars as $var) {
-    // TODO This variable was probably removed in Backdrop without replacement.
-    variable_del($var);
-  }
+
 }
 
 /**
@@ -33,6 +26,7 @@ function og_context_update_1000() {
     'url' => -5,
     'node' => -4,
   );
+  $config->save();
   update_variable_del('og_context_providers_weight_group_context');
   update_variable_del('og_context_negotiation_group_context');
 }

@@ -11,7 +11,7 @@
 function og_ui_admin_settings($form_state) {
   $form = array();
   $config = config('og.settings');
-  $form['#config'] = 'og_ui.settings';
+  $form['#config'] = 'og.settings';
 
   $form['og_group_manager_full_access'] = array(
     '#type' => 'checkbox',
@@ -27,7 +27,12 @@ function og_ui_admin_settings($form_state) {
     '#default_value' => $config->get('og_node_access_strict'),
   );
 
-  $form['og_ui_admin_people_view'] = array(
+  $form['og_ui'] = array(
+    '#type' => 'fieldset',
+    '#config' => 'og_ui.settings',
+  );
+
+  $form['og_ui']['og_ui_admin_people_view'] = array(
     '#type' => 'select',
     '#title' => t('Admin people View'),
     '#description' => t('Select the View that should be used to show and control the people in the group.'),

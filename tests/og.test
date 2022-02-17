@@ -1,4 +1,5 @@
 <?php
+// OG audience fields query
 
 class OgTestBase extends BackdropWebTestCase {
   public $og_entity_types;
@@ -1450,8 +1451,6 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
   function setUp() {
     parent::setUp('og', 'entity', 'og_entity_test', 'entity_plus', 'entity_ui');
 
-    module_enable(array('og_entity_test'));
-
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
     $type = $this->backdropCreateContentType();
@@ -1495,10 +1494,9 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
       'entity_type' => 'node',
     );
     field_create_instance($instance);
-    debug('pass');
 
     // Create two groups.
-    $group1 = entity_create('og_entity_test', array('name' => 'og_entity_test', 'uid' => $user1->uid));
+    $group1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
     $wrapper = entity_metadata_wrapper('og_entity_test', $group1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();

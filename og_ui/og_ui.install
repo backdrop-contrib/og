@@ -10,14 +10,7 @@
  * Implements hook_uninstall().
  */
 function og_ui_uninstall() {
-  $vars = array(
-    'og_ui_admin_people_view',
-    'og_ui_deny_subscribe_without_approval',
-  );
-  foreach ($vars as $var) {
-    // TODO This variable was probably removed in Backdrop without replacement.
-    variable_del($var);
-  }
+
 }
 
 /**

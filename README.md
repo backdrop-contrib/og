@@ -30,6 +30,42 @@ or moderated.
  - [Organic Groups Terms, Definitions](https://github.com/backdrop-contrib/og/wiki/2.-Organic-Groups-Terms,-Definitions)
  - [For Developers and Site Builders](https://github.com/backdrop-contrib/og/wiki/3.-For-Developers-and-Site-Builders)
 
+## Upgrading Organic Groups from Drupal 7
+
+If you are upgrading an existing Organic Groups installation from Drupal 7 (or upgrading a Drupal 7 module that requires Organic Groups), there are some steps you can (should) take to ensure that your upgraded installation is fully enabled at the end of the process.
+
+#### Stub Modules
+
+Backdrop Organic Groups relies on two modules that don't exist in Drupal:
+
+- Entity UI (`entity_ui`), needed for the Backdrop version of Organic Groups;
+- Entity Plus (`entity_plus`), also needed for the Backdrop version of Organic Groups.
+
+When the Backdrop version of `update.php` runs, if those modules are not present and enabled, then the update will disable all of the Backdrop modules that depend on them, which includes Organic Groups, plus any further modules that depend on Organic Groups.
+
+So the solution is to install "stub" modules in the Drupal installation prior to generating the database from which the Backdrop upgrade will take place.
+
+#### Upgrade Process
+
+Assuming you are following [the official upgrade instructions](https://backdropcms.org/upgrade-from-drupal) or something similar [like this](https://packweb.eu/blog/migrating-drupal-7-backdrop-cms), do the following:
+
+1. Download and unzip these two modules, which are Drupal "stub" modules:
+    - [entity_plus.zip](https://github.com/backdrop-contrib/rules/wiki/files/entity_plus.zip)
+    - [entity_ui.zip](https://github.com/backdrop-contrib/rules/wiki/files/entity_ui.zip)
+
+2. In Step 2, "Prepare your Drupal site for upgrade", prior to substep 9 ("Make a second backup...calling it backdrop-ready.sql"),
+
+    - Install those two modules into `sites/all/modules` of your Drupal installation;
+    - Enable those two modules. (They don't do anything. This just makes your database know that they exist, or rather, that they will be forthcoming.)
+
+3. Continue with substep 9: make your second backup of the database to be used for Backdrop, e.g., backdrop-ready.sql.
+
+4. Once you have made that second backup, you can uninstall and remove the two stub modules from your Drupal installation.
+
+5. Continue with the rest of the migration/upgrade process.
+
+Of course, make sure that you've already installed the Backdrop versions of Organic Groups, Entity Plus, and Entity UI in your Backdrop contrib folder prior to running `update.php`, or all of the above will be for naught.
+
 ## Issues
 
 - Bugs and Feature requests should be reported in the 

@@ -8,29 +8,21 @@
 /**
  * Test OG access.
  */
-class OgContextTestCase extends DrupalWebTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG context',
-      'description' => 'Check if context is returning only if user has right permissions.',
-      'group' => 'Organic groups context',
-    );
-  }
+class OgContextTestCase extends BackdropWebTestCase {
 
   function setUp() {
     parent::setUp('og_context', 'og_access');
     node_access_rebuild();
 
-    $this->user1 = $this->drupalCreateUser();
-    $this->user2 = $this->drupalCreateUser();
+    $this->user1 = $this->backdropCreateUser();
+    $this->user2 = $this->backdropCreateUser();
 
     // Create group and group content node types.
-    $this->group_type = $this->drupalCreateContentType()->type;
+    $this->group_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_GROUP_FIELD, 'node', $this->group_type);
     og_create_field(OG_ACCESS_FIELD, 'node', $this->group_type);
 
-    $this->group_content_type = $this->drupalCreateContentType()->type;
+    $this->group_content_type = $this->backdropCreateContentType()->type;
     og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content_type);
 
     // Create a group node and enable access.
@@ -39,7 +31,7 @@ class OgContextTestCase extends DrupalWebTestCase {
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings[OG_ACCESS_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $settings['uid'] = $this->user1->uid;
-    $this->group_node = $this->drupalCreateNode($settings);
+    $this->group_node = $this->backdropCreateNode($settings);
   }
 
   /**
@@ -47,7 +39,7 @@ class OgContextTestCase extends DrupalWebTestCase {
    * has permissions and NULL if he doesn't.
    */
   function testGettingGroupContext() {
-    $this->drupalLogin($this->user1);
+    $this->backdropLogin($this->user1);
     // User can get the group context.
     $this->assertTrue(og_context('node', $this->group_node));
 

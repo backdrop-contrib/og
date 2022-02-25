@@ -33,14 +33,6 @@ class OgTestBase extends BackdropWebTestCase {
 
 class OgAccess extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG entity access',
-      'description' => 'Test the access provided by OG API.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'og_entity_test');
   }
@@ -143,14 +135,6 @@ class OgAccess extends OgTestBase {
  */
 class OgNodeAccess extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG node access',
-      'description' => 'Test strict node access permissions for group nodes and group content.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
 
@@ -194,7 +178,7 @@ class OgNodeAccess extends OgTestBase {
    */
   function testStrictAccessNodeUpdate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', TRUE);
+    config_set('og.settings', 'og_node_access_strict', TRUE);
 
     // Login as editor and try to change the group node and group content.
     $this->backdropLogin($this->editor_user);
@@ -220,7 +204,7 @@ class OgNodeAccess extends OgTestBase {
    */
   function testStrictAccessNodeCreate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', TRUE);
+    config_set('og.settings', 'og_node_access_strict', TRUE);
     $editor_user = $this->editor_user;
     $this->backdropLogin($editor_user);
 
@@ -267,7 +251,7 @@ class OgNodeAccess extends OgTestBase {
    */
   function testNoStrictAccessNodeUpdate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', FALSE);
+    config_set('og.settings', 'og_node_access_strict', FALSE);
 
     // Login as editor and try to change the group node and group content.
     $this->backdropLogin($this->editor_user);
@@ -296,7 +280,7 @@ class OgNodeAccess extends OgTestBase {
    */
   function testNoStrictAccessNodeCreate() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', FALSE);
+    config_set('og.settings', 'og_node_access_strict', FALSE);
 
     $this->group_editor_user = $this->backdropCreateUser(array('access content'));
     $this->backdropLogin($this->group_editor_user);
@@ -322,7 +306,7 @@ class OgNodeAccess extends OgTestBase {
    */
   function testNodeUpdateAudienceField() {
     // Set Node access strict variable.
-    variable_set('og_node_access_strict', TRUE);
+    config_set('og.settings', 'og_node_access_strict', TRUE);
     $editor_user = $this->editor_user;
 
     // Add editor to a single groups.
@@ -375,14 +359,6 @@ class OgNodeAccess extends OgTestBase {
  * Test the Organic groups API and CRUD handling.
  */
 class OgMetaData extends OgTestBase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG metadata',
-      'description' => 'Test the metadata properties.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'og_entity_test');
@@ -469,14 +445,6 @@ class OgMetaData extends OgTestBase {
  * Test Group content handeling.
  */
 class OgGroupAndUngroup extends OgTestBase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG group and ungroup',
-      'description' => 'Test the group and ungrouping of content with a group.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'og_entity_test');
@@ -669,7 +637,7 @@ class OgGroupAndUngroup extends OgTestBase {
   function testGroupManagerDefaultRoles() {
     // Get only the admin role.
     $og_roles = og_roles('og_entity_test', 'main', 0, FALSE, FALSE);
-    variable_set('og_group_manager_default_rids_og_entity_test_main', array_keys($og_roles));
+    config_set('og.settings', 'og_group_manager_default_rids_og_entity_test_main', array_keys($og_roles));
     $user1 = $this->backdropCreateUser();
 
     $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -718,13 +686,6 @@ class OgGroupAndUngroup extends OgTestBase {
 }
 
 class OgPermissionsTestCase extends OgTestBase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG permissions',
-      'description' => 'Verify that permissions can be added and removed via API.',
-      'group' => 'Organic groups'
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'og_entity_test');
@@ -860,13 +821,6 @@ class OgPermissionsTestCase extends OgTestBase {
 }
 
 class OgDefaultAccessFieldTestCase extends OgTestBase {
-  public static function getInfo() {
-    return array(
-      'name' => 'OG default access field',
-      'description' => 'Test groups with default access field.',
-      'group' => 'Organic groups'
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'og_entity_test');
@@ -920,7 +874,7 @@ class OgDefaultAccessFieldTestCase extends OgTestBase {
     $this->assertTrue(array_search(OG_ADMINISTRATOR_ROLE, $user_roles), t('User has overriden "admin" role.'));
 
     // Disable existing group's default access field.
-    variable_set('og_maintain_overridden_roles', TRUE);
+    config_set('og.settings', 'og_maintain_overridden_roles', TRUE);
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
     $this->assertEqual($og_roles, og_roles('og_entity_test', 'main', $entity->pid), t('Group with enabled default access field that was disabled is assigned to the global roles and permissions settings.'));
@@ -934,7 +888,7 @@ class OgDefaultAccessFieldTestCase extends OgTestBase {
     $wrapper->save();
 
     // Assert admin role was not maintained from the overriden group.
-    variable_set('og_maintain_overridden_roles', FALSE);
+    config_set('og.settings', 'og_maintain_overridden_roles', FALSE);
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
 
@@ -944,184 +898,9 @@ class OgDefaultAccessFieldTestCase extends OgTestBase {
 }
 
 /**
- * Upgrade 7000 test.
- *
- * Load a filled installation of Backdrop 6 and run the upgrade on it.
- *
- * TODO: We have to use $this->backdropGet('node/' . $nid); to proerly load
- * the node data, otherwise. We should understand why this is needed, and
- * remove it.
- */
-/* class OgMigrate7000TestCase extends UpgradePathTestCase {
-  public static function getInfo() {
-    return array(
-      'name'  => 'OG migrate - 7000',
-      'description'  => 'Tests the upgrade path of OG from Backdrop 6.',
-      'group' => 'Organic groups',
-      // TODO: Why do we need to enable Views?! - otherwise we get WSOD.
-      'dependencies' => array('migrate', 'views'),
-    );
-  }
- */
-/*   public function setUp() {
-    // Path to the database dump.
-    $this->databaseDumpFiles = array(
-      backdrop_get_path('module', 'og') . '/tests/backdrop-6.og.database.php',
-    );
-    parent::setUp();
-    $this->assertTrue($this->performUpgrade(), t('The upgrade was completed successfully.'));
-
-    // spl_autoload_register() wasn't called, so we do it here, to allow
-    // classes to be auto-loaded.
-    spl_autoload_register('backdrop_autoload_class');
-    spl_autoload_register('backdrop_autoload_interface');
-
-    // TODO: Why do we need to enable Views?!
-    module_enable(array('og', 'views', 'migrate'));
-
-    $class_names = array(
-      'OgMigrateAddFields',
-      'OgMigrateUser',
-      'OgMigrateContent',
-    );
-
-    // FIXME: migrate_flush_caches() crashes, so we register manually.
-    foreach ($class_names as $class_name) {
-      MigrationBase::registerMigration($class_name);
-    }
-
-    // Register a dynamic migration.
-    MigrationBase::registerMigration('OgMigrateGroup', 'OgMigrateGroupTest_group', array('bundle' => 'test_group'));
-
-    $migration = Migration::getInstance('OgMigrateAddFields');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'Migration OgMigrateAddFields executed.');
-
-    $migration = Migration::getInstance('OgMigrateGroupTest_group', 'OgMigrateGroup', array('bundle' => 'test_group'));
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'Migration OgMigrateGroupTest_group executed.');
-
-    $migration = Migration::getInstance('OgMigrateUser');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'Migration OgMigrateUser executed.');
-
-    $migration = Migration::getInstance('OgMigrateContent');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'Migration OgMigrateContent executed.');
-  }
- */
-  /**
-   * Test a successful group upgrade.
-   *
-   * @see og_7000_group()
-   */
-/*   public function testGroup() {
-    // Assert according to the scenario Backdrop 6's test table dump was created.
-    foreach (array(1, 2) as $nid) {
-      $this->backdropGet('node/' . $nid);
-      $node = node_load($nid);
-      $this->assertTrue($node->{OG_GROUP_FIELD}[LANGUAGE_NONE][0]['value'], t('Node ID @nid is an active group.', array('@nid' => $nid)));
-    }
-
-    // Test group content with NID 3 - 5 belong to the group with NID 2.
-    foreach (range(3, 5) as $nid) {
-      $this->backdropGet('node/' . $nid);
-      $node = node_load($nid);
-      $this->assertTrue(og_is_member('node', 2, 'node', $node), t('Node ID @nid is a group content of Node ID 2', array('@nid' => $nid)));
-    }
-
-    // Orphan group content (i.e. not attached to a group).
-    $node = node_load(6);
-    $this->assertFalse(og_get_entity_groups('node', $node), t('Node ID 6 is not associated with any group.'));
-
-    // Group content that shares the same group.
-    $node = node_load(9);
-    foreach (array(7, 8) as $nid) {
-      $this->assertTrue(og_is_member('node', $nid, 'node', $node), t('Node ID @nid is as group content associated with multiple groups.', array('@nid' => $node->nid)));
-    }
-  }
- */
-  /**
-   * Test user upgrade.
-   *
-   * @see og_7000_user()
-   */
-/*   public function testUser() {
-    // Assert users.
-    $values = array(
-      // Uid 3 is the group manager, so in OG6 it was marked as admin.
-      3 => array('admin' => TRUE),
-      4 => array('active' => FALSE),
-      5 => array(),
-      6 => array('active' => FALSE, 'admin' => TRUE),
-      7 => array('admin' => TRUE),
-    );
-
-    $og_roles = og_roles('node', 'test_group');
-
-    foreach ($values as $uid => $value) {
-      $account = user_load($uid);
-
-      // Set default values.
-      $value += array('active' => TRUE, 'admin' => FALSE);
-      $roles = array();
-
-      if ($value['active']) {
-        $op = 'active';
-        $states = array(OG_STATE_ACTIVE);
-        $rid = array_search(OG_AUTHENTICATED_ROLE, $og_roles);
-      }
-      else {
-        $op = 'pending';
-        $states = array(OG_STATE_PENDING);
-        // If the member is pending then they have the anonymous role.
-        $rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
-      }
-
-      $roles[$rid] = TRUE;
-
-      if ($value['admin']) {
-        // OG_ADMINISTRATOR_ROLE
-        $rid = array_search(OG_ADMINISTRATOR_ROLE, $og_roles);
-        $roles[$rid] = TRUE;
-      }
-
-      $this->assertTrue(og_is_member('node', 10, 'user', $account, $states), format_string('User @uid is @op member in group.', array('@uid' => $uid, '@op' => $op)));
-      // Pass also pending state, so we make sure that even if the user
-      // isn't active they are considered members, to check they get the
-      // correct role.
-      $this->assertEqual(array_keys(og_get_user_roles('node', 10, $uid, TRUE, FALSE)), array_keys($roles), format_string('User @uid has the correct roles in group.', array('@uid' => $uid)));
-    }
-  }
- */
-  /**
-   * Test group description upgrade.
-   *
-   * @see og_7000_group()
-   */
-/*   public function testGroupDescription() {
-    // Assert description was converted to a field.
-    foreach (array(1, 2, 7, 8, 10) as $nid) {
-      $this->backdropGet('node/' . $nid);
-      $node = node_load($nid);
-      $this->assertTrue($node->og_description[LANGUAGE_NONE][0]['value'], t('Description fields has correct data.'));
-    }
-  }
-}
- */
-
-/**
  * Test the complex widget.
  */
 class OgFieldWidgetTestCase extends OgTestBase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG reference widget',
-      'description' => 'Test the OG reference widget behavior.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og');
@@ -1301,14 +1080,6 @@ class OgFieldWidgetTestCase extends OgTestBase {
  */
 class OgRoleRevoke extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG roles revoke',
-      'description' => 'Test the revocation of group roles',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'og_entity_test');
   }
@@ -1359,94 +1130,9 @@ class OgRoleRevoke extends OgTestBase {
 }
 
 /**
- * Test Upgrade from branch 1.x to 2.x.
- */
-/* class OgMigrate7200TestCase extends UpdatePathTestCase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG migrate 7.x-2.x',
-      'description' => 'Test the upgrade from 7.x-1.x to 7.x-2.x branch.',
-      'group' => 'Organic groups',
-      'dependencies' => array('migrate'),
-    );
-  }
-
-  function setUp() {
-    // Path to the database dump files.
-    $this->databaseDumpFiles = array(
-      backdrop_get_path('module', 'og') . '/tests/og-7.x-1.x.database.php',
-    );
-
-    parent::setUp();
-
-    // FIXME: Since the DB dump holds group-audience field instances,
-    // we need to delete them, otherwise this will create notices in
-    // resulting from OG no longer defining hook_field_info().
-    // Deleting using field_delete_instance() didn't work.
-    db_delete('field_config_instance')
-      ->condition('field_name', 'group_audience')
-      ->execute();
-  }
-
-  function testUpgrade() {
-    $this->assertTrue($this->performUpgrade(), t('The upgrade was completed successfully.'));
-
-    $this->assertFalse(field_info_field('group_audience'), 'Group audience field was deleted.');
-
-    // spl_autoload_register() wasn't called, so we do it here, to allow
-    // classes to be auto-loaded.
-    spl_autoload_register('backdrop_autoload_class');
-    spl_autoload_register('backdrop_autoload_interface');
-
-    module_enable(array('og', 'migrate'));
-
-    // FIXME: migrate_flush_caches() crashes, so we register manually.
-    MigrationBase::registerMigration('OgMigrateMembership');
-    MigrationBase::registerMigration('OgMigrateRoles');
-    MigrationBase::registerMigration('OgMigrateUserRoles');
-
-    $migration = Migration::getInstance('OgMigrateMembership');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateMembership returned RESULT_COMPLETED');
-
-    $migration = Migration::getInstance('OgMigrateRoles');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateRoles returned RESULT_COMPLETED');
-
-    $migration = Migration::getInstance('OgMigrateUserRoles');
-    $result = $migration->processImport();
-    $this->assertEqual($result, Migration::RESULT_COMPLETED, 'OgMigrateUserRoles returned RESULT_COMPLETED');
-
-    // Assert group roles.
-    $roles = array(
-      'non-member',
-      'member',
-      'administrator member',
-    );
-    $this->assertEqual(array_values(og_roles('node', 'school', 1)), $roles, 'Returned expected roles group first group.');
-
-    $roles[] = 'new role';
-    $this->assertEqual(array_values(og_roles('node', 'school', 2)), $roles, 'Returned expected roles group second group.');
-
-    // Assert field name was registered in the OG membership.
-    $og_membership = entity_load('og_membership', 1);
-    $this->assertTrue($og_membership->field_name, 'Field name was registered in the OG membership.');
-  }
-}
- */
-/**
  * Test queying group-audience fields using entityFieldQuery.
  */
 class OgEntityFieldQueryTestCase extends OgTestBase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience fields query',
-      'description' => 'Test querying group-audience fields using entityFieldQuery.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'entity', 'og_entity_test', 'entity_plus', 'entity_ui');
@@ -1672,14 +1358,6 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
  */
 class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG field condition query',
-      'description' => 'Test querying field condition fields using entityFieldQuery.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og', 'og_entity_test');
 
@@ -1839,14 +1517,6 @@ class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
  */
 class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience fields auto-create',
-      'description' => 'Test auto attaching a group-audience field to the user entity, if needed, upon adding a new group field.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
   }
@@ -1874,16 +1544,7 @@ class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
   }
 }
 
-
-class OgBehaviorHandlerTestCase  extends OgTestBase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG widget behavior',
-      'description' => 'Test the widget behavior of group-audience fields.',
-      'group' => 'Organic groups',
-    );
-  }
+class OgBehaviorHandlerTestCase extends OgTestBase {
 
   function setUp() {
     parent::setUp('og_test', 'og_entity_test');
@@ -2022,14 +1683,6 @@ class OgDeleteOrphansTestCase extends OgTestBase {
   public $group_type;
   public $node_type;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG orphan delete',
-      'description' => 'Verifying for deleting orphan group content.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og_test');
 
@@ -2048,8 +1701,8 @@ class OgDeleteOrphansTestCase extends OgTestBase {
     og_create_field(OG_AUDIENCE_FIELD, 'node', $type->type, $og_field);
 
     // Set the setting for delete a group content when deleting group.
-    variable_set('og_orphans_delete', TRUE);
-    variable_set('og_use_queue', TRUE);
+    config_set('og.settings', 'og_orphans_delete', TRUE);
+    config_set('og.settings', 'og_use_queue', TRUE);
   }
 
   /**
@@ -2158,7 +1811,7 @@ class OgDeleteOrphansTestCase extends OgTestBase {
    */
   public function testGroupContentNodeAccessAfterDeletingGroupAndWhenUsingQueue() {
     // Configure OG to use queue for deleting pending content.
-    variable_set('og_use_queue', TRUE);
+    config_set('og.settings', 'og_use_queue', TRUE);
 
     $account = $this->backdropCreateUser(array('access content', 'edit own ' . $this->node_type . ' content'));
     $this->backdropLogin($account);
@@ -2200,15 +1853,6 @@ class OgNonMembersPublishingContentTestCase extends OgTestBase {
   public $group;
   public $user;
   public $adminUser;
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG non members publishing',
-      'description' => 'Grant access to non members users publishing content with the group passed in the query string.',
-      'group' => 'Organic groups',
-      'dependencies' => array('entityreference_prepopulate'),
-    );
-  }
 
   public function setUp() {
     parent::setUp('og_test', 'entityreference_prepopulate');
@@ -2291,18 +1935,11 @@ class OgNonMembersPublishingContentTestCase extends OgTestBase {
  *
  */
 class OgUserCanPublishGroupContentTypeOnlyInGroup extends OgTestBase {
+
   public $group;
   public $site_user;
   public $group_user;
   public $group_content;
-
-  public static function getInfo() {
-    return array(
-      'name' => 'User can publish group content only inside group',
-      'description' => "User with permission to create a group content only in a group can't publish outside of a group.",
-      'group' => 'Organic groups',
-    );
-  }
 
   public function setUp() {
     parent::setUp('og');
@@ -2390,7 +2027,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends OgTestBase {
     $this->backdropLogin($this->site_user);
 
     // Set node access strict variable to FALSE for posting outside groups.
-    variable_set('og_node_access_strict', FALSE);
+    config_set('og.settings', 'og_node_access_strict', FALSE);
 
     // Verify that the user can publish group content outside a group.
     $node_title = $this->randomName();
@@ -2430,14 +2067,6 @@ class OgAutoCompleteAccessibleGroupsValidation extends OgTestBase {
 
   var $group_owner;
   var $group_member;
-
-  public static function getInfo() {
-    return array(
-      'name' => 'Auto complete for non accessible groups',
-      'description' => "Verify the user cannot fill in the auto complete field with the name of a un-accessible group name.",
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og', 'entity_plus', 'entity_ui', 'entityreference');
@@ -2514,14 +2143,6 @@ class OgAutoCompleteAccessibleGroupsValidation extends OgTestBase {
  */
 class OgSelectAccessibleGroupsValidation extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Select widget for non accessible groups',
-      'description' => "Verify the user cannot fill in the select field with the name of a un-accessible group name.",
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
 
@@ -2589,14 +2210,6 @@ class OgSelectAccessibleGroupsValidation extends OgTestBase {
  */
 class OgAudienceFieldAccessOverrideTestCase extends OgTestBase {
 
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience field access settings',
-      'description' => 'Test the ability to use entity access instead of field access for the audience field.',
-      'group' => 'Organic groups',
-    );
-  }
-
   function setUp() {
     parent::setUp('og');
   }
@@ -2636,14 +2249,6 @@ class OgAudienceFieldAccessOverrideTestCase extends OgTestBase {
  * Verify OG group ref field support delta after saving.
  */
 class OgAudienceFieldDeltaTestCase extends OgTestBase {
-
-  public static function getInfo() {
-    return array(
-      'name' => 'OG audience field wrapper delta',
-      'description' => 'Testing OG audience field returns the expected values when using entity metadata wrapper delta.',
-      'group' => 'Organic groups',
-    );
-  }
 
   function setUp() {
     parent::setUp('og');

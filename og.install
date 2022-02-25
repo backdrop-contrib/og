@@ -41,29 +41,6 @@ function og_install() {
  * Implements hook_uninstall().
  */
 function og_uninstall() {
-  db_delete('variable')
-    ->condition('name', 'og_group_manager_default_rids_%', 'LIKE')
-    ->execute();
-
-  db_delete('variable')
-    ->condition('name', 'og_is_group_default_access__%__%', 'LIKE')
-    ->execute();
-
-  $vars = array(
-    'og_context',
-    'og_group_manager_full_access',
-    'og_skip_access',
-    'og_update_batch_size',
-    'og_upgrade_7001',
-    'og_node_access_strict',
-    'og_features_ignore_og_fields',
-    'og_maintain_overridden_roles',
-  );
-  foreach ($vars as $var) {
-    // TODO This variable was probably removed in Backdrop without replacement.
-    variable_del($var);
-  }
-
   // Delete OG-core fields.
   $og_fields = array(
     'group_group',
@@ -434,27 +411,49 @@ function og_update_last_removed() {
 function og_update_1000() {
   $config = config('og.settings');
   $config->set('og_7000_add_field', update_variable_get('og_7000_add_field', 'FALSE'));
-  $config->set('og_content_type_usage_typetype', update_variable_get('og_content_type_usage_typetype', 'dynamic variable in file /og/includes/migrate/7000/og_add_fields.inc line 27'));
   $config->set('og_7200_ogur_roles', update_variable_get('og_7200_ogur_roles', 'FALSE'));
-  $config->set('og_user_roles_roles_typetype', update_variable_get('og_user_roles_roles_typetype', 'dynamic variable in file /og/includes/migrate/7000/og_ogur_roles.migrate.inc line 37'));
   $config->set('og_node_access_strict', update_variable_get('og_node_access_strict', 'TRUE'));
   $config->set('og_use_queue', update_variable_get('og_use_queue', 'FALSE'));
   $config->set('og_orphans_delete', update_variable_get('og_orphans_delete', 'FALSE'));
-  $config->set('og_is_group__entity_type__bundle', update_variable_get('og_is_group__entity_type__bundle', 'dynamic variable in file /og/og.module line 1839'));
   $config->set('og_group_manager_full_access', update_variable_get('og_group_manager_full_access', 'TRUE'));
-  $config->set('og_is_group_default_access__group_type__bundle', update_variable_get('og_is_group_default_access__group_type__bundle', 'dynamic variable in file /og/og.module line 2617'));
   $config->set('og_maintain_overridden_roles', update_variable_get('og_maintain_overridden_roles', 'TRUE'));
   $config->set('og_features_ignore_og_fields', update_variable_get('og_features_ignore_og_fields', 'FALSE'));
+  $config->save();
   update_variable_del('og_7000_add_field');
-  update_variable_del('og_content_type_usage_typetype');
   update_variable_del('og_7200_ogur_roles');
-  update_variable_del('og_user_roles_roles_typetype');
   update_variable_del('og_node_access_strict');
   update_variable_del('og_use_queue');
   update_variable_del('og_orphans_delete');
-  update_variable_del('og_is_group__entity_type__bundle');
   update_variable_del('og_group_manager_full_access');
-  update_variable_del('og_is_group_default_access__group_type__bundle');
   update_variable_del('og_maintain_overridden_roles');
   update_variable_del('og_features_ignore_og_fields');
+
+  $result = db_select('variable', 'v')
+    ->fields('v', array('name'))
+    ->condition('name', 'og_group_manager_default_rids_%', 'LIKE')
+    ->execute()
+    ->fetchCol();
+  foreach($result as $name) {
+    $config->set($name, update_variable_get($name, array()));
+    update_variable_del($name);
+  }
+  $result = db_select('variable', 'v')
+    ->fields('v', array('name'))
+    ->condition('name', 'og_is_group_default_access__%__%', 'LIKE')
+    ->execute()
+    ->fetchCol();
+  foreach($result as $name) {
+    $config->set($name, update_variable_get($name, 'TRUE'));
+    update_variable_del($name);
+  }
+  $result = db_select('variable', 'v')
+    ->fields('v', array('name'))
+    ->condition('name', 'og_is_group__%__%', 'LIKE')
+    ->execute()
+    ->fetchCol();
+  foreach($result as $name) {
+    $config->set($name, update_variable_get($name, 'FALSE'));
+    update_variable_del($name);
+  }
+  $config->save();
 }

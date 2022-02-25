@@ -10,25 +10,29 @@
  */
 function og_ui_admin_settings($form_state) {
   $form = array();
-  $form['#config'] = 'og_ui.settings';
+  $config = config('og.settings');
+  $form['#config'] = 'og.settings';
 
-  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_group_manager_full_access'] = array(
     '#type' => 'checkbox',
     '#title' => t('Group manager full permissions'),
     '#description' => t('When enabled the group manager will have all the permissions in the group.'),
-    '#default_value' => variable_get('og_group_manager_full_access', TRUE),
+    '#default_value' => $config->get('og_group_manager_full_access'),
   );
 
-  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_node_access_strict'] = array(
     '#type' => 'checkbox',
     '#title' => t('Strict node access permissions'),
     '#description' => t('When enabled Organic groups will restrict permissions for creating, updating and deleting according to the  Organic groups access settings. Example: A content editor with the <em>Edit any page content</em> permission who is not a member of a group would be denied access to modifying page content in that group. (For restricting view access use the Organic groups access control module.)'),
-    '#default_value' => variable_get('og_node_access_strict', TRUE),
+    '#default_value' => $config->get('og_node_access_strict'),
   );
 
-  $form['og_ui_admin_people_view'] = array(
+  $form['og_ui'] = array(
+    '#type' => 'fieldset',
+    '#config' => 'og_ui.settings',
+  );
+
+  $form['og_ui']['og_ui_admin_people_view'] = array(
     '#type' => 'select',
     '#title' => t('Admin people View'),
     '#description' => t('Select the View that should be used to show and control the people in the group.'),
@@ -57,41 +61,41 @@ function og_ui_admin_settings($form_state) {
         );
 
         $name = 'og_group_manager_default_rids_' . $entity_type . '_' . $bundle_name;
-        // TODO This variable was probably removed in Backdrop without replacement.
+        if ($config->get($name) === NULL) {
+          $config->set($name, array());
+          $config->save();
+        }
         $form['og_group_manager_rids'][$name] = array(
           '#type' => 'select',
           '#title' => t('Roles in @entity-label - @bundle-label', $params),
           '#options' => $og_roles,
           '#multiple' => TRUE,
-          '#default_value' => variable_get($name, array()),
+          '#default_value' => $config->get($name),
         );
       }
     }
   }
 
-  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_features_ignore_og_fields'] = array(
     '#type' => 'checkbox',
     '#title' => t('Prevent "Features" export piping'),
     '#description' => t('When exporting using Features module a content-type, this will prevent from OG related fields to be exported.'),
-    '#default_value' => variable_get('og_features_ignore_og_fields', FALSE),
+    '#default_value' => $config->get('og_features_ignore_og_fields'),
     '#access' => module_exists('features'),
   );
 
-  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_use_queue'] = array(
     '#type' => 'checkbox',
     '#title' => t('Use queue'),
     '#description' => t("Use the core's queue process to operations such as deleting memberships when groups are deleted."),
-    '#default_value' => variable_get('og_use_queue', FALSE),
+    '#default_value' => $config->get('og_use_queue'),
   );
 
-  // TODO This variable was probably removed in Backdrop without replacement.
   $form['og_orphans_delete'] = array(
     '#type' => 'checkbox',
     '#title' => t('Delete orphans'),
     '#description' => t('Delete "Orphan" group-content (not including useres), when the group is deleted.'),
-    '#default_value' => variable_get('og_orphans_delete', FALSE),
+    '#default_value' => $config->get('og_orphans_delete'),
     '#states' => array(
       'visible' => array(
         ':input[name="og_use_queue"]' => array('checked' => TRUE),

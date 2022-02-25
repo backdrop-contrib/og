@@ -1237,3 +1237,14 @@ function og_ui_autoload_info() {
     'og_ui_handler_area_og_membership_overview' => 'includes/views/handlers/og_ui_handler_area_og_membership_overview.inc',
   );
 }
+
+/**
+ * Implements hook_config_info().
+ */
+function og_ui_config_info() {
+  $prefixes['og_ui.settings'] = array(
+    'label' => t('Organic groups UI settings'),
+    'group' => t('Configuration'),
+  );
+  return $prefixes;
+}

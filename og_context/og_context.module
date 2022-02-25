@@ -404,7 +404,7 @@ function og_context_provider_weight($provider) {
  */
 function og_context_config_info() {
   $prefixes['og_context.settings'] = array(
-    'label' => t('Module name settings'),
+    'label' => t('Organic groups context settings'),
     'group' => t('Configuration'),
   );
 }

@@ -155,7 +155,7 @@ function hook_og_role_revoke($entity_type, $gid, $uid, $rid) {
  */
 function hook_og_role_change_permissions($role, $grant, $revoke) {
   if (!$role->gid) {
-    drupal_set_message(t('Global group permissions granted for @role users: @permissions', array('@role' => $role->name, '@permissions' => implode(', ', $grant))));
+    backdrop_set_message(t('Global group permissions granted for @role users: @permissions', array('@role' => $role->name, '@permissions' => implode(', ', $grant))));
   }
 }
 
@@ -233,7 +233,7 @@ function hook_og_invalidate_cache($gids = array()) {
   );
 
   foreach ($caches as $cache) {
-    drupal_static_reset($cache);
+    backdrop_static_reset($cache);
   }
 }
 

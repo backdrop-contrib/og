@@ -506,7 +506,7 @@ function og_og_default_roles() {
  */
 function og_config_info() {
   $prefixes['og.settings'] = array(
-    'label' => t('Module name settings'),
+    'label' => t('Organic groups settings'),
     'group' => t('Configuration'),
   );
 }
@@ -889,8 +889,7 @@ function og_entity_insert($entity, $entity_type) {
     og_group($entity_type, $id, array('entity' => $entity->uid));
     // Assign roles to group manager.
     $name = 'og_group_manager_default_rids_' . $entity_type . '_' . $bundle;
-    // TODO This variable was probably removed in Backdrop without replacement.
-    if ($rids = variable_get($name)) {
+    if ($rids = config_get('og.settings', $name)) {
       foreach ($rids as $rid) {
         og_role_grant($entity_type, $id, $entity->uid, $rid);
       }
@@ -916,8 +915,7 @@ function og_entity_update($entity, $entity_type) {
     og_group($entity_type, $id, array('entity' => $entity->uid));
     // Assign roles to group manager.
     $name = 'og_group_manager_default_rids_' . $entity_type . '_' . $bundle;
-    // TODO This variable was probably removed in Backdrop without replacement.
-    if ($rids = variable_get($name)) {
+    if ($rids = config_get('og.settings', $name)) {
       foreach ($rids as $rid) {
         og_role_grant($entity_type, $id, $entity->uid, $rid);
       }
@@ -1876,7 +1874,13 @@ function og_is_group($entity_type, $entity) {
   }
   list(, , $bundle) = entity_extract_ids($entity_type, $entity);
   if (!field_info_instance($entity_type, OG_GROUP_FIELD, $bundle)) {
-    return config_get('og.settings', "og_is_group__{$entity_type}__{$bundle}");
+    $config = config('og.settings');
+    $variable = "og_is_group__{$entity_type}__{$bundle}";
+    if ($config->get($variable) === NULL) {
+      $config->set($variable, FALSE);
+      $config->save();
+    }
+    return $config->get($variable);
   }
   $items = field_get_items($entity_type, $entity, OG_GROUP_FIELD);
 
@@ -2654,7 +2658,13 @@ function og_is_group_default_access($group_type, $gid) {
   $bundle = $wrapper->getBundle();
 
   if (!field_info_instance($group_type, OG_DEFAULT_ACCESS_FIELD, $bundle)) {
-    return config_get('og.settings', "og_is_group_default_access__{$group_type}__{$bundle}");
+    $config = config('og.settings');
+    $variable = "og_is_group_default_access__{$group_type}__{$bundle}";
+    if ($config->get($variable) === NULL) {
+      $config->set($variable, TRUE);
+      $config->save();
+    }
+    return $config->get($variable);
   }
 
   if (empty($wrapper->{OG_DEFAULT_ACCESS_FIELD})) {

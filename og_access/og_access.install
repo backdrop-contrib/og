@@ -10,29 +10,22 @@
  * Implements hook_uninstall().
  */
 function og_access_uninstall() {
-  $vars = array(
-    'og_access_strict_private',
-  );
-  foreach ($vars as $var) {
-    // TODO This variable was probably removed in Backdrop without replacement.
-    variable_del($var);
-  }
 
-  // TODO This variable was probably removed in Backdrop without replacement.
-  variable_del(OG_ACCESS_PRIVACY_CHANGE_BATCH_PROCESSING);
 }
 
 /**
- * Implements hook_schema();().
+ * Implements hook_update_N().
  */
-function og_access_schema() {
-  if (db_table_exists('og_access_post')) {
-    db_rename_table('og_access_post', 'd6_og_access_post');
-  }
+function og_access_update_1000() {
+  $config = config('og_access.settings');
+  $config->set('og_access_privacy_change_batch_processing', update_variable_get('og_access_privacy_change_batch_processing', 'TRUE'));
+  $config->save();
+  update_variable_del('og_access_privacy_change_batch_processing');
 }
 
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function og_access_update_7000(&$sandbox) { }
-
-// TODO The old hook_update_N functions cannot be applied to Backdrop.
-function og_access_update_7200(&$sandbox) { }
+/**
+ * Implements hook_update_last_removed().
+ */
+function og_access_update_last_removed() {
+  return 7200;
+}

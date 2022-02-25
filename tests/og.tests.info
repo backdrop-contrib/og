@@ -34,12 +34,6 @@ description = Test groups with default access field.
 group = Organic groups
 file = og.test
 
-[OgMigrate7000TestCase]
-name = OG migrate - 7000
-description = Tests the upgrade path of OG from Backdrop 6.
-group = Organic groups
-file = og.test
-
 [OgFieldWidgetTestCase]
 name = OG reference widget
 description = Test the OG reference widget behavior.
@@ -49,12 +43,6 @@ file = og.test
 [OgRoleRevoke]
 name = OG roles revoke
 description = Test the revocation of group roles
-group = Organic groups
-file = og.test
-
-[OgMigrate7200TestCase]
-name = OG migrate 7.x-2.x
-description = Test the upgrade from 7.x-1.x to 7.x-2.x branch.
 group = Organic groups
 file = og.test
 

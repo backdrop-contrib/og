@@ -1544,7 +1544,7 @@ class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
   }
 }
 
-class OgBehaviorHandlerTestCase  extends OgTestBase {
+class OgBehaviorHandlerTestCase extends OgTestBase {
 
   function setUp() {
     parent::setUp('og_test', 'og_entity_test');

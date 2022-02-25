@@ -3849,5 +3849,6 @@ function og_autoload_info() {
     'og_context' => 'includes/og_context.inc',
     'og_context_required' => 'includes/og_context.inc',
     'og_context_optional' => 'includes/og_context.inc',
+    'OgTestBase' => 'tests/og.test',
   );
 }

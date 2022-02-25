@@ -1,9 +1,40 @@
 <?php
+// OG audience fields query
 
-class OgAccess extends BackdropWebTestCase {
+class OgTestBase extends BackdropWebTestCase {
+  public $og_entity_types;
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('entity_plus', 'entity_ui', 'entityreference', 'og', 'og_entity_test');
+
+    $types['main'] = entity_create('og_entity_test_type', array(
+      'name' => 'main',
+      'label' => t('Main test type'),
+      'weight' => 0,
+      'locked' => TRUE,
+    ));
+
+    // Types used during CRUD testing.
+    $types['test'] = entity_create('og_entity_test_type', array(
+      'name' => 'test',
+      'label' => 'label',
+      'weight' => 0,
+    ));
+    $types['test2'] = entity_create('og_entity_test_type', array(
+      'name' => 'test2',
+      'label' => 'label2',
+      'weight' => 2,
+    ));
+
+    // This may not be necessary.
+    $this->og_entity_types = $types;
+  }
+}
+
+class OgAccess extends OgTestBase {
+
+  function setUp() {
+    parent::setUp('og', 'og_entity_test');
   }
 
   /**
@@ -14,41 +45,41 @@ class OgAccess extends BackdropWebTestCase {
     // Change permissions to authenticated member.
 
     // Add OG group fields.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
-    $roles = array_flip(og_roles('entity_test', 'main'));
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
+    $roles = array_flip(og_roles('og_entity_test', 'main'));
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], array($perm => 1));
 
 
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
 
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
     $user3 = $this->backdropCreateUser();
 
     // Create a group.
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     // User has access to group.
-    $this->assertTrue(og_user_access_entity($perm, 'entity_test', $entity1, $user1), t('User1 has access to group.'));
-    $this->assertFalse(og_user_access_entity($perm, 'entity_test', $entity1, $user2), t('User2 does not have access to group.'));
+    $this->assertTrue(og_user_access_entity($perm, 'og_entity_test', $entity1, $user1), t('User1 has access to group.'));
+    $this->assertFalse(og_user_access_entity($perm, 'og_entity_test', $entity1, $user2), t('User2 does not have access to group.'));
 
     // User has access to a group associated with a group content.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $node = $this->backdropCreateNode($settings);
 
     $values = array('entity_type' => 'node', 'entity' => $node);
-    og_group('entity_test', $entity1->pid, $values);
+    og_group('og_entity_test', $entity1->pid, $values);
     $this->assertTrue(og_user_access_entity($perm, 'node', $node, $user1), t('User1 has access to group content.'));
     $this->assertFalse(og_user_access_entity($perm, 'node', $node, $user2), t('User2 does not have access to group content.'));
 
     // Make group content also a group.
-    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+    og_create_field(OG_GROUP_FIELD, 'node', 'post');
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     og_create_field('og_group_ref_2', 'user', 'user', $og_field);
 
@@ -61,7 +92,7 @@ class OgAccess extends BackdropWebTestCase {
     $wrapper->save();
 
     $values = array('entity_type' => 'node', 'entity' => $node);
-    og_group('entity_test', $entity1->pid, $values);
+    og_group('og_entity_test', $entity1->pid, $values);
 
     $this->assertTrue(og_user_access_entity($perm, 'node', $node, $user1), t('User1 has access based on access to group.'));
     $this->assertTrue(og_user_access_entity($perm, 'node', $node, $user2), t('User2 has access based on access to group content.'));
@@ -75,18 +106,18 @@ class OgAccess extends BackdropWebTestCase {
 
     // Entity is an orphan group content.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
     $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
-    og_group('entity_test', $entity1->pid, $values);
+    og_group('og_entity_test', $entity1->pid, $values);
     $entity1->delete();
     $this->assertNull(og_user_access_entity($perm, 'node', $node, $user1), t('Entity is an orphan group content, so return value is NULL.'));
 
     // Entity isn't a group or a group content.
     $settings = array();
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 0;
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $node = $this->backdropCreateNode($settings);
     $this->assertNull(og_user_access_entity($perm, 'node', $node, $user1), t('Entity is not a group or a group contentm, so return value is NULL.'));
 
@@ -102,7 +133,7 @@ class OgAccess extends BackdropWebTestCase {
 /**
  * Test Group node access. This will test nodes that are groups and group content.
  */
-class OgNodeAccess extends BackdropWebTestCase {
+class OgNodeAccess extends OgTestBase {
 
   function setUp() {
     parent::setUp('og');
@@ -111,7 +142,7 @@ class OgNodeAccess extends BackdropWebTestCase {
     og_create_field(OG_GROUP_FIELD, 'node', 'page');
 
     // Add OG audience field to the node's "article" bundle.
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article');
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post');
 
     // Create an editor user and a group manager for these tests.
     $this->editor_user = $this->backdropCreateUser(array('access content', 'edit any page content', 'edit any article content', 'create article content'));
@@ -128,7 +159,7 @@ class OgNodeAccess extends BackdropWebTestCase {
 
     // Create node to add to group.
     $settings = array(
-      'type' => 'article',
+      'type' => 'post',
       'uid' => $this->group_manager->uid,
     );
     $this->group_content = $this->backdropCreateNode($settings);
@@ -180,7 +211,7 @@ class OgNodeAccess extends BackdropWebTestCase {
     $this->backdropGet('node/add/article');
     $this->assertResponse('200', t('User can access node create with non-required field.'));
 
-    $instance = field_info_instance('node', OG_AUDIENCE_FIELD, 'article');
+    $instance = field_info_instance('node', OG_AUDIENCE_FIELD, 'post');
     $instance['required'] = TRUE;
     field_update_instance($instance);
 
@@ -327,46 +358,46 @@ class OgNodeAccess extends BackdropWebTestCase {
 /**
  * Test the Organic groups API and CRUD handling.
  */
-class OgMetaData extends BackdropWebTestCase {
+class OgMetaData extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('og', 'og_entity_test');
   }
 
   /**
    * Test the og_get_entity_groups() API function.
    */
   function testOgMembershipMetaData() {
-    // Add OG group field to the entity_test's "main" bundle.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    // Add OG group field to the og_entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
     // Add OG audience field to the node's "article" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
 
     // Add a second audience field.
-    og_create_field('og_ref_2', 'node', 'article', $og_field);
+    og_create_field('og_ref_2', 'node', 'post', $og_field);
 
     $user1 = $this->backdropCreateUser();
 
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $entity2 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity2);
+    $entity2 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity2);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $entity3 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity3);
+    $entity3 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity3);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
 
     // Create group entities.
     foreach (og_group_content_states() as $state => $value) {
@@ -374,17 +405,17 @@ class OgMetaData extends BackdropWebTestCase {
 
       // Assign article to the group.
       $values = array('entity_type' => 'node', 'entity' => $node);
-      og_group('entity_test', $entity1->pid, $values + array('state' => $state));
+      og_group('og_entity_test', $entity1->pid, $values + array('state' => $state));
       // Subscribe node to a second group, but with a different state, by
       // selecting the state code and incrementing by one (e.g. is the
       // state is "active" then the other-state will be "pending").
       $other_state = $state == OG_STATE_BLOCKED ? OG_STATE_ACTIVE : $state + 1;
       $values += array('state' => $other_state);
-      og_group('entity_test', $entity2->pid, $values);
+      og_group('og_entity_test', $entity2->pid, $values);
 
       // Subscribe node to third group, using a different field.
       $values += array('field_name' => 'og_ref_2');
-      og_group('entity_test', $entity3->pid, $values);
+      og_group('og_entity_test', $entity3->pid, $values);
 
       $wrapper = entity_metadata_wrapper('node', $node->nid);
       $this->assertEqual($wrapper->og_membership->count(), 3, t('Found all OG memberships.'));
@@ -413,18 +444,18 @@ class OgMetaData extends BackdropWebTestCase {
 /**
  * Test Group content handeling.
  */
-class OgGroupAndUngroup extends BackdropWebTestCase {
+class OgGroupAndUngroup extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('og', 'og_entity_test');
 
-    // Add OG group field to the entity_test's "main" bundle.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    // Add OG group field to the og_entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
     // Add OG audience field to the node's "article" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
   }
 
   /**
@@ -434,52 +465,52 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
 
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $entity2 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity2);
+    $entity2 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity2);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $entity3 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity3);
+    $entity3 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity3);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
 
     // Exception on OG membership for anonymous user.
     try {
-      og_membership_create('entity_test', $entity1->pid, 'user', 0, OG_AUDIENCE_FIELD)->save();
+      og_membership_create('og_entity_test', $entity1->pid, 'user', 0, OG_AUDIENCE_FIELD)->save();
       $this->fail('OG membership can be created for anonymous user.');
     }
     catch (OgException $e) {
       $this->pass('OG membership can not be created for anonymous user.');
     }
 
-    $this->assertFalse(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is not assigned to group1.'));
+    $this->assertFalse(og_is_member('og_entity_test', $entity1->pid, 'node', $node), t('Node is not assigned to group1.'));
     $values = array('entity_type' => 'node', 'entity' => $node);
-    og_group('entity_test', $entity1->pid, $values);
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
+    og_group('og_entity_test', $entity1->pid, $values);
+    $og_membership = og_get_membership('og_entity_test', $entity1->pid, 'node', $node->nid);
     $id = $og_membership->id;
-    $this->assertTrue(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is assigned to group1 with active state.'));
+    $this->assertTrue(og_is_member('og_entity_test', $entity1->pid, 'node', $node), t('Node is assigned to group1 with active state.'));
 
     // State changed.
     $values += array('state' => OG_STATE_BLOCKED);
-    og_group('entity_test', $entity1->pid, $values);
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
+    og_group('og_entity_test', $entity1->pid, $values);
+    $og_membership = og_get_membership('og_entity_test', $entity1->pid, 'node', $node->nid);
     $this->assertEqual($id, $og_membership->id, t('OG membership was updated.'));
-    $this->assertTrue(og_is_member('entity_test', $entity1->pid, 'node', $node, array(OG_STATE_BLOCKED)), t('Node is assigned to group1 with blocked state.'));
+    $this->assertTrue(og_is_member('og_entity_test', $entity1->pid, 'node', $node, array(OG_STATE_BLOCKED)), t('Node is assigned to group1 with blocked state.'));
 
     // Exception on existing OG membership.
     try {
-      og_membership_create('entity_test', $entity1->pid, 'node', $node->nid, OG_AUDIENCE_FIELD)->save();
+      og_membership_create('og_entity_test', $entity1->pid, 'node', $node->nid, OG_AUDIENCE_FIELD)->save();
       $this->fail('Saving multiple OG membership for same entity and group works.');
     }
     catch (OgException $e) {
@@ -488,22 +519,22 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
 
     // Add a second audience field.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
     $og_field['field']['cardinality'] = 2;
-    og_create_field('og_ref_2', 'node', 'article', $og_field);
+    og_create_field('og_ref_2', 'node', 'post', $og_field);
 
     // Re-group to another field.
     $values += array('field_name' => 'og_ref_2');
-    og_group('entity_test', $entity1->pid, $values);
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
+    og_group('og_entity_test', $entity1->pid, $values);
+    $og_membership = og_get_membership('og_entity_test', $entity1->pid, 'node', $node->nid);
     $this->assertNotEqual($id, $og_membership->id, t('OG membership was re-created.'));
     $this->assertEqual('og_ref_2', $og_membership->field_name, t('OG membership is registered under correct field.'));
 
 
     // Exception on field cardinality.
-    og_group('entity_test', $entity2->pid, $values);
+    og_group('og_entity_test', $entity2->pid, $values);
     try {
-      og_group('entity_test', $entity3->pid, $values);
+      og_group('og_entity_test', $entity3->pid, $values);
       $this->fail('Grouping beyond field cardinality works.');
     }
     catch (OgException $e) {
@@ -513,7 +544,7 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     // Exception as field-name is incorrect.
     $values['field_name'] = 'wrong-field-name';
     try {
-      og_group('entity_test', $entity1->pid, $values);
+      og_group('og_entity_test', $entity1->pid, $values);
       $this->fail('Grouping with incorrect field name works.');
     }
     catch (OgException $e) {
@@ -523,10 +554,10 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     // Exception on audience field, referencing wrong target type.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'node';
-    og_create_field('og_ref_3', 'node', 'article', $og_field);
+    og_create_field('og_ref_3', 'node', 'post', $og_field);
     $values['field_name'] = 'og_ref_3';
     try {
-      og_group('entity_test', $entity1->pid, $values);
+      og_group('og_entity_test', $entity1->pid, $values);
       $this->fail('Grouping with wrong target type works.');
     }
     catch (OgException $e) {
@@ -536,12 +567,12 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     // Exception on audience field, referencing correct target type, but wrong
     // bundles.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
     $og_field['field']['settings']['handler_settings']['target_bundles'] = array('test');
-    og_create_field('og_ref_4', 'node', 'article', $og_field);
+    og_create_field('og_ref_4', 'node', 'post', $og_field);
     $values['field_name'] = 'og_ref_4';
     try {
-      og_group('entity_test', $entity1->pid, $values);
+      og_group('og_entity_test', $entity1->pid, $values);
       $this->fail('Grouping with wrong target bundles works.');
     }
     catch (OgException $e) {
@@ -550,12 +581,12 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
 
 
     // Exception as user has no group-audience field.
-    $instance = field_info_instance('user', 'og_user_entity_test', 'user');
+    $instance = field_info_instance('user', 'og_user_og_entity_test', 'user');
     field_delete_instance($instance);
 
     try {
-      $entity2 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-      $wrapper = entity_metadata_wrapper('entity_test', $entity2);
+      $entity2 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+      $wrapper = entity_metadata_wrapper('og_entity_test', $entity2);
       $wrapper->{OG_GROUP_FIELD}->set(1);
       $wrapper->save();
       $this->fail('Grouping with no group-audience field in bundle works.');
@@ -565,13 +596,13 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     }
 
     // Ungroup node from group.
-    og_ungroup('entity_test', $entity1->pid, 'node', $node);
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
+    og_ungroup('og_entity_test', $entity1->pid, 'node', $node);
+    $og_membership = og_get_membership('og_entity_test', $entity1->pid, 'node', $node->nid);
     $this->assertFalse($og_membership, t('Node was ungrouped from group.'));
 
     // Delete node and confirm memberships were deleted.
     $values = array('entity_type' => 'node', 'entity' => $node);
-    og_group('entity_test', $entity1->pid, $values);
+    og_group('og_entity_test', $entity1->pid, $values);
     $nid = $node->nid;
 
     // Re-load node, to make sure we are deleting the most up-to-date one,
@@ -582,21 +613,21 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
 
     // Test creating a non-saved OG membership.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
 
-    $og_membership = og_group('entity_test', $entity1->pid, $values);
+    $og_membership = og_group('og_entity_test', $entity1->pid, $values);
     $this->assertTrue($og_membership->id, 'New OG membership was created and saved.');
 
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
     $values = array('entity_type' => 'node', 'entity' => $node);
 
-    $og_membership = og_group('entity_test', $entity1->pid, $values, FALSE);
+    $og_membership = og_group('og_entity_test', $entity1->pid, $values, FALSE);
     $this->assertTrue(empty($og_membership->id), 'New OG membership was created but not saved.');
   }
 
@@ -605,16 +636,16 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
    */
   function testGroupManagerDefaultRoles() {
     // Get only the admin role.
-    $og_roles = og_roles('entity_test', 'main', 0, FALSE, FALSE);
-    config_set('og.settings', 'og_group_manager_default_rids_entity_test_main', array_keys($og_roles));
+    $og_roles = og_roles('og_entity_test', 'main', 0, FALSE, FALSE);
+    config_set('og.settings', 'og_group_manager_default_rids_og_entity_test_main', array_keys($og_roles));
     $user1 = $this->backdropCreateUser();
 
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $user_roles = og_get_user_roles('entity_test', $entity1->pid, $user1->uid, FALSE);
+    $user_roles = og_get_user_roles('og_entity_test', $entity1->pid, $user1->uid, FALSE);
     $this->assertEqual($og_roles, $user_roles, t('Group manager was granted default role.'));
   }
 
@@ -626,13 +657,13 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
 
     // Create the group; the group owner is the previously created user.
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     // Ensure that the user owner membership for the group has active status.
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'user', $user1->uid);
+    $og_membership = og_get_membership('og_entity_test', $entity1->pid, 'user', $user1->uid);
     $this->assertEqual($og_membership->state, OG_STATE_ACTIVE, 'Owner Membership status is Active');
 
     // Move the user owner membership to blocked.
@@ -643,7 +674,7 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
     $this->assertEqual($og_membership->state, OG_STATE_BLOCKED, 'Owner Membership status is Blocked');
 
     // Save the group entity.
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->save();
 
     // Ensure that the user owner membership for the group still has blocked
@@ -654,17 +685,17 @@ class OgGroupAndUngroup extends BackdropWebTestCase {
 
 }
 
-class OgPermissionsTestCase extends BackdropWebTestCase {
+class OgPermissionsTestCase extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
-    // Add OG group field to the entity_test's "main" bundle.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    parent::setUp('og', 'og_entity_test');
+    // Add OG group field to the og_entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
     // Add OG audience field to the node's "article" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
-    og_create_field(OG_AUDIENCE_FIELD, 'node', 'article', $og_field);
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
+    og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
   }
 
 
@@ -676,25 +707,25 @@ class OgPermissionsTestCase extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
 
     // Create an entity.
-    $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $entity = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     // Associate user to the group.
     $user2 = $this->backdropCreateUser();
     $values = array('entity_type' => 'user', 'entity' => $user2);
-    og_group('entity_test', $entity->pid, $values);
+    og_group('og_entity_test', $entity->pid, $values);
 
     // Assert the user is registered to the new group.
-    $this->assertTrue(og_is_member('entity_test', $entity->pid, 'user', $user2), t('User is registered to the new group.'));
+    $this->assertTrue(og_is_member('og_entity_test', $entity->pid, 'user', $user2), t('User is registered to the new group.'));
 
     // Verify current permissions.
-    $this->assertFalse(og_user_access('entity_test', $entity->pid, 'update own article content', $user2), t('User does not have "update own article content" permission.'));
-    $this->assertFalse(og_user_access('entity_test', $entity->pid, 'delete own article content', $user2), t('User does not have "delete own article content" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update own article content', $user2), t('User does not have "update own article content" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'delete own article content', $user2), t('User does not have "delete own article content" permission.'));
 
     // Change permissions to authenticated member.
-    $og_roles = array_flip(og_roles('entity_test', 'main', $entity->pid));
+    $og_roles = array_flip(og_roles('og_entity_test', 'main', $entity->pid));
     // Authenticated role ID.
     $rid = $og_roles[OG_AUTHENTICATED_ROLE];
 
@@ -704,8 +735,8 @@ class OgPermissionsTestCase extends BackdropWebTestCase {
     og_role_change_permissions($rid, $permissions);
 
     // Verify proper permission changes.
-    $this->assertFalse(og_user_access('entity_test', $entity->pid, 'update own article content', $user2), t('User still does not have "update own article content" permission.'));
-    $this->assertTrue(og_user_access('entity_test', $entity->pid, 'delete own article content', $user2), t('User now has "delete own article content" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update own article content', $user2), t('User still does not have "update own article content" permission.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'delete own article content', $user2), t('User now has "delete own article content" permission.'));
 
     $permissions = array(
       'delete own article content' => 0,
@@ -713,8 +744,8 @@ class OgPermissionsTestCase extends BackdropWebTestCase {
     );
     og_role_change_permissions($rid, $permissions);
 
-    $this->assertTrue(og_user_access('entity_test', $entity->pid, 'delete own article content', $user2), t('User still has "delete own article content" as they have "administer group" permission.'));
-    $this->assertTrue(og_user_access('entity_test', $entity->pid, 'administer group', $user2), t('User has "administer group" permission.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'delete own article content', $user2), t('User still has "delete own article content" as they have "administer group" permission.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'administer group', $user2), t('User has "administer group" permission.'));
   }
 
   /**
@@ -725,44 +756,44 @@ class OgPermissionsTestCase extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
 
     // Create an entity.
-    $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $entity = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     // Associate user to the group, and grant "admin" role.
     $user2 = $this->backdropCreateUser();
     $values = array('entity_type' => 'user', 'entity' => $user2);
-    og_group('entity_test', $entity->pid, $values);
-    $og_roles = og_roles('entity_test', 'main');
+    og_group('og_entity_test', $entity->pid, $values);
+    $og_roles = og_roles('og_entity_test', 'main');
 
     $rid = array_search(OG_ADMINISTRATOR_ROLE, $og_roles);
-    og_role_grant('entity_test', $entity->pid, $user2->uid, $rid);
+    og_role_grant('og_entity_test', $entity->pid, $user2->uid, $rid);
 
     // Active member.
-    $roles = og_get_user_roles('entity_test', $entity->pid, $user2->uid);
+    $roles = og_get_user_roles('og_entity_test', $entity->pid, $user2->uid);
     $expected_result = array(
       array_search(OG_AUTHENTICATED_ROLE, $og_roles) => OG_AUTHENTICATED_ROLE,
       array_search(OG_ADMINISTRATOR_ROLE, $og_roles) => OG_ADMINISTRATOR_ROLE,
     );
     $this->assertEqual($roles, $expected_result, 'Active member has also the admin role.');
-    $this->assertTrue(og_user_access('entity_test', $entity->pid, 'update group', $user2), 'Active member has access.');
+    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'update group', $user2), 'Active member has access.');
 
     // Pending member.
     $values['state'] = OG_STATE_PENDING;
-    og_group('entity_test', $entity->pid, $values);
-    $roles = og_get_user_roles('entity_test', $entity->pid, $user2->uid);
+    og_group('og_entity_test', $entity->pid, $values);
+    $roles = og_get_user_roles('og_entity_test', $entity->pid, $user2->uid);
     $rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
     $expected_result = array($rid => OG_ANONYMOUS_ROLE);
     $this->assertEqual($roles, $expected_result, 'Pending member has non-member role.');
-    $this->assertFalse(og_user_access('entity_test', $entity->pid, 'update group', $user2), 'Pending member has no access.');
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update group', $user2), 'Pending member has no access.');
 
     // Blocked member.
     $values['state'] = OG_STATE_BLOCKED;
-    og_group('entity_test', $entity->pid, $values);
-    $roles = og_get_user_roles('entity_test', $entity->pid, $user2->uid);
+    og_group('og_entity_test', $entity->pid, $values);
+    $roles = og_get_user_roles('og_entity_test', $entity->pid, $user2->uid);
     $this->assertEqual($roles,  array(), 'Blocked member has no roles.');
-    $this->assertFalse(og_user_access('entity_test', $entity->pid, 'update group', $user2), 'Blocked member has no access.');
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update group', $user2), 'Blocked member has no access.');
   }
 
   function testGrantRolesTwiceForPendingUsers() {
@@ -770,29 +801,29 @@ class OgPermissionsTestCase extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
 
     // Create an entity.
-    $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $entity = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $og_roles = og_roles('entity_test', 'main');
+    $og_roles = og_roles('og_entity_test', 'main');
 
     //Add the user to the group.
     $values = array('entity_type' => 'user', 'entity' => $user1, 'state' => OG_STATE_PENDING);
     $rid = array_search(OG_ADMINISTRATOR_ROLE, $og_roles);
-    og_group('entity_test', $entity->pid, $values);
+    og_group('og_entity_test', $entity->pid, $values);
 
     // Try granting the admin role to a pending user twice.
-    og_role_grant('entity_test', $entity->pid, $user1->uid, $rid);
-    og_role_grant('entity_test', $entity->pid, $user1->uid, $rid);
+    og_role_grant('og_entity_test', $entity->pid, $user1->uid, $rid);
+    og_role_grant('og_entity_test', $entity->pid, $user1->uid, $rid);
     $this->pass('Granting a role twice should not throw an exception.');
   }
 }
 
-class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
+class OgDefaultAccessFieldTestCase extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('og', 'og_entity_test');
   }
 
 
@@ -803,53 +834,53 @@ class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
     // Create user.
     $user1 = $this->backdropCreateUser();
 
-    // Add OG group field to the entity_test's "main" bundle.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    // Add OG group field to the og_entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
-    $og_roles = og_roles('entity_test', 'main');
+    $og_roles = og_roles('og_entity_test', 'main');
 
     // Group without default access field.
-    $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $entity = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
-    $this->assertEqual($og_roles, og_roles('entity_test', 'main', $entity->pid), t('Group without default access field is assigned to the global roles and permissions settings.'));
+    $this->assertEqual($og_roles, og_roles('og_entity_test', 'main', $entity->pid), t('Group without default access field is assigned to the global roles and permissions settings.'));
 
-    // Add default access field to the entity_test's "main" bundle.
-    og_create_field(OG_DEFAULT_ACCESS_FIELD, 'entity_test', 'main');
+    // Add default access field to the og_entity_test's "main" bundle.
+    og_create_field(OG_DEFAULT_ACCESS_FIELD, 'og_entity_test', 'main');
 
     // Group with default access field disabled.
-    $entity = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $entity = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
-    $this->assertEqual($og_roles, og_roles('entity_test', 'main', $entity->pid), t('Group with default access field disabled is assigned to the global roles and permissions settings.'));
+    $this->assertEqual($og_roles, og_roles('og_entity_test', 'main', $entity->pid), t('Group with default access field disabled is assigned to the global roles and permissions settings.'));
 
     // Add admin role to a user.
     $rid = array_search(OG_ADMINISTRATOR_ROLE, $og_roles);
-    og_role_grant('entity_test', $entity->pid, $user1->uid, $rid);
-    $user_roles = og_get_user_roles('entity_test', $entity->pid, $user1->uid);
+    og_role_grant('og_entity_test', $entity->pid, $user1->uid, $rid);
+    $user_roles = og_get_user_roles('og_entity_test', $entity->pid, $user1->uid);
     $this->assertTrue(array_search(OG_ADMINISTRATOR_ROLE, $user_roles), t('User has default "admin" role.'));
 
     // Group with default access field enabled.
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(1);
     $wrapper->save();
-    $new_og_roles = og_roles('entity_test', 'main', $entity->pid);
+    $new_og_roles = og_roles('og_entity_test', 'main', $entity->pid);
     $this->assertNotEqual($og_roles, $new_og_roles, t('Group with default access field enabled has own roles and permissions settings.'));
 
     // Assert the newley created admin role was mapped to the default one.
-    $user_roles = og_get_user_roles('entity_test', $entity->pid, $user1->uid, FALSE);
+    $user_roles = og_get_user_roles('og_entity_test', $entity->pid, $user1->uid, FALSE);
     $this->assertTrue(array_search(OG_ADMINISTRATOR_ROLE, $user_roles), t('User has overriden "admin" role.'));
 
     // Disable existing group's default access field.
     config_set('og.settings', 'og_maintain_overridden_roles', TRUE);
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
-    $this->assertEqual($og_roles, og_roles('entity_test', 'main', $entity->pid), t('Group with enabled default access field that was disabled is assigned to the global roles and permissions settings.'));
+    $this->assertEqual($og_roles, og_roles('og_entity_test', 'main', $entity->pid), t('Group with enabled default access field that was disabled is assigned to the global roles and permissions settings.'));
 
     // Assert admin role was maintained from the overriden group.
-    $user_roles = og_get_user_roles('entity_test', $entity->pid, $user1->uid, FALSE);
+    $user_roles = og_get_user_roles('og_entity_test', $entity->pid, $user1->uid, FALSE);
     $this->assertTrue(array_search(OG_ADMINISTRATOR_ROLE, $user_roles), t('"admin" role maintained from overriden group.'));
 
     // Override group.
@@ -861,7 +892,7 @@ class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
     $wrapper->{OG_DEFAULT_ACCESS_FIELD}->set(0);
     $wrapper->save();
 
-    $user_roles = og_get_user_roles('entity_test', $entity->pid, $user1->uid, FALSE);
+    $user_roles = og_get_user_roles('og_entity_test', $entity->pid, $user1->uid, FALSE);
     $this->assertFalse(array_search(OG_ADMINISTRATOR_ROLE, $user_roles), t('"admin" role not maintained from overriden group.'));
   }
 }
@@ -869,7 +900,7 @@ class OgDefaultAccessFieldTestCase extends BackdropWebTestCase {
 /**
  * Test the complex widget.
  */
-class OgFieldWidgetTestCase extends BackdropWebTestCase {
+class OgFieldWidgetTestCase extends OgTestBase {
 
   function setUp() {
     parent::setUp('og');
@@ -1047,47 +1078,47 @@ class OgFieldWidgetTestCase extends BackdropWebTestCase {
 /**
  * Test the revocation of group roles.
  */
-class OgRoleRevoke extends BackdropWebTestCase {
+class OgRoleRevoke extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('og', 'og_entity_test');
   }
 
   function testOgRoleRevoke()  {
     // Create a user.
     $user1 = $this->backdropCreateUser();
 
-    // Add OG group field to the entity_test's "main" bundle.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    // Add OG group field to the og_entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
     // Create two groups entity1 and entity2.
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $entity2 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity2);
+    $entity2 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity2);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     // Create a role named 'role1'.
-    $role1 = og_role_create('role1', 'entity_test', 0, 'main');
+    $role1 = og_role_create('role1', 'og_entity_test', 0, 'main');
     og_role_save($role1);
 
     // Create a role named 'role2'.
-    $role2 = og_role_create('role2', 'entity_test', 0, 'main');
+    $role2 = og_role_create('role2', 'og_entity_test', 0, 'main');
     og_role_save($role2);
 
     // Grant 'role1' to user1 at entity1 and 'role2' to user1 at entity2
-    og_role_grant('entity_test', $entity1->pid, $user1->uid, $role1->rid);
-    og_role_grant('entity_test', $entity2->pid, $user1->uid, $role2->rid);
+    og_role_grant('og_entity_test', $entity1->pid, $user1->uid, $role1->rid);
+    og_role_grant('og_entity_test', $entity2->pid, $user1->uid, $role2->rid);
 
     // Unsubscribe user1 from entity1.
-    og_ungroup('entity_test', $entity1->pid, 'user', $user1->uid);
+    og_ungroup('og_entity_test', $entity1->pid, 'user', $user1->uid);
 
-    $this->assertFalse(og_get_user_roles('entity_test', $entity1->pid, $user1->uid, FALSE), t('User is unsubscribed from group, so role was revoked'));
-    $this->assertTrue(og_get_user_roles('entity_test', $entity2->pid, $user1->uid, FALSE), t('User is still subscribed to group, so return value is not empty'));
+    $this->assertFalse(og_get_user_roles('og_entity_test', $entity1->pid, $user1->uid, FALSE), t('User is unsubscribed from group, so role was revoked'));
+    $this->assertTrue(og_get_user_roles('og_entity_test', $entity2->pid, $user1->uid, FALSE), t('User is still subscribed to group, so return value is not empty'));
 
     $uid = $user1->uid;
     // Delete user1.
@@ -1101,10 +1132,10 @@ class OgRoleRevoke extends BackdropWebTestCase {
 /**
  * Test queying group-audience fields using entityFieldQuery.
  */
-class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
+class OgEntityFieldQueryTestCase extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('og', 'entity', 'og_entity_test', 'entity_plus', 'entity_ui');
 
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
@@ -1115,17 +1146,17 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
     $group_content_type = $type->type;
 
     og_create_field(OG_GROUP_FIELD, 'node', $group_type);
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
     // Add audience field to reference node.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     og_create_field('og_node', 'node', $group_content_type, $og_field);
-    og_create_field('og_node', 'entity_test', 'test', $og_field);
+    og_create_field('og_node', 'og_entity_test', 'test', $og_field);
 
     // Add audience field to reference entity-test.
-    $og_field['field']['settings']['target_type'] = 'entity_test';
-    og_create_field('og_entity_test', 'node', $group_content_type, $og_field);
-    og_create_field('og_entity_test', 'user', 'user', $og_field);
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
+    og_create_field('og_og_entity_test', 'node', $group_content_type, $og_field);
+    og_create_field('og_og_entity_test', 'user', 'user', $og_field);
 
 
     // Create a non-group audience, entity reference field.
@@ -1151,8 +1182,8 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
     field_create_instance($instance);
 
     // Create two groups.
-    $group1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $group1);
+    $group1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $group1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
@@ -1179,14 +1210,14 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
       'entity' => $node,
     );
 
-    og_group('entity_test', $group1, $values);
+    og_group('og_entity_test', $group1, $values);
     og_group('node', $group2, $values);
 
-    $entity_test = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
-    $entity_test->save();
+    $og_entity_test = entity_create('og_entity_test', array('name' => 'test', 'uid' => $user1->uid));
+    $og_entity_test->save();
     $values = array(
-      'entity_type' => 'entity_test',
-      'entity' => $entity_test,
+      'entity_type' => 'og_entity_test',
+      'entity' => $og_entity_test,
     );
     og_group('node', $group2, $values);
 
@@ -1201,7 +1232,7 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
     $this->node = $node;
     $this->user1 = $user1;
     $this->user2 = $user2;
-    $this->entity_test = $entity_test;
+    $this->og_entity_test = $og_entity_test;
   }
 
   /**
@@ -1213,7 +1244,7 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
    * - Non-audience field first, with single group audience.
    * - Multiple entity types in entityCondition().
    * - No entity property.
-   * - Non-node entity without revision table (e.g. entity_test).
+   * - Non-node entity without revision table (e.g. og_entity_test).
    * - Non-node entity without revision table and without bundles (e.g. user).
    * - Count query.
    */
@@ -1222,7 +1253,7 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
     $group2 = $this->group2;
     $node = $this->node;
     $user1 = $this->user1;
-    $entity_test = $this->entity_test;
+    $og_entity_test = $this->og_entity_test;
 
     // Single group audience.
     $query = new EntityFieldQuery();
@@ -1240,7 +1271,7 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('type', $node->type)
       ->fieldCondition('og_node', 'target_id', $group2->nid)
-      ->fieldCondition('og_entity_test', 'target_id', $group1->pid)
+      ->fieldCondition('og_og_entity_test', 'target_id', $group1->pid)
       ->execute();
 
     $this->assertEqual(array_keys($result['node']), array($node->nid), 'Multiple group audience query is correct.');
@@ -1289,17 +1320,17 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
     // Non-node entity without revision table.
     $query = new EntityFieldQuery();
     $result = $query
-      ->entityCondition('entity_type', 'entity_test')
+      ->entityCondition('entity_type', 'og_entity_test')
       ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->execute();
 
-    $this->assertEqual(array_keys($result['entity_test']), array($entity_test->pid), 'Non-node entity without revision table query is correct.');
+    $this->assertEqual(array_keys($result['og_entity_test']), array($og_entity_test->pid), 'Non-node entity without revision table query is correct.');
 
     // Non-node entity without revision table and without bundles.
     $query = new EntityFieldQuery();
     $result = $query
       ->entityCondition('entity_type', 'user')
-      ->fieldCondition('og_entity_test', 'target_id', $group2->nid)
+      ->fieldCondition('og_og_entity_test', 'target_id', $group2->nid)
       ->execute();
 
     $expected_values = array(
@@ -1325,10 +1356,10 @@ class OgEntityFieldQueryTestCase extends BackdropWebTestCase {
 /**
  * EntityFieldQuery FieldConditions with multiple group content entity types.
  */
-class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
+class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og', 'entity_feature');
+    parent::setUp('og', 'og_entity_test');
 
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
@@ -1345,7 +1376,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
     og_create_field(OG_AUDIENCE_FIELD, 'node', $this->group_content_type, $og_field);
     // Add audience field to group content test entity type.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    og_create_field(OG_AUDIENCE_FIELD, 'entity_test', 'main', $og_field);
+    og_create_field(OG_AUDIENCE_FIELD, 'og_entity_test', 'main', $og_field);
 
     // Create a simple text list field.
     $field = array(
@@ -1418,15 +1449,15 @@ class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
     // We need to create enough test entities so that we get some whose IDs are
     // the same as the group content nodes.
     foreach (range(1, 5) as $i) {
-      $entity_test = entity_create('entity_test', array(
+      $og_entity_test = entity_create('og_entity_test', array(
         // Weirdly, 'name' is the bundle key.
         'name' => 'main',
         'uid' => $user1->uid,
       ));
-      $entity_test->save();
+      $og_entity_test->save();
       $values = array(
-        'entity_type' => 'entity_test',
-        'entity' => $entity_test,
+        'entity_type' => 'og_entity_test',
+        'entity' => $og_entity_test,
       );
       og_group('node', $group1, $values);
     }
@@ -1484,7 +1515,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends BackdropWebTestCase {
 /**
  * Test group-audience field auto-create.
  */
-class OgAudienceFieldAutoCreateTestCase extends BackdropWebTestCase {
+class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
 
   function setUp() {
     parent::setUp('og');
@@ -1513,21 +1544,20 @@ class OgAudienceFieldAutoCreateTestCase extends BackdropWebTestCase {
   }
 }
 
-
-class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
+class OgBehaviorHandlerTestCase  extends OgTestBase {
 
   function setUp() {
-    parent::setUp('og_test', 'entity_feature');
+    parent::setUp('og_test', 'og_entity_test');
 
-    // Add OG group field to the entity_test's "main" bundle.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    // Add OG group field to the og_entity_test's "main" bundle.
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
     $type = $this->backdropCreateContentType(array('type' => 'behavior'));
     $this->group_content = $type->type;
 
     // Add OG audience field to the new bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['settings']['target_type'] = 'entity_test';
+    $og_field['field']['settings']['target_type'] = 'og_entity_test';
     og_create_field(OG_AUDIENCE_FIELD, 'node', $type->type, $og_field);
   }
 
@@ -1538,8 +1568,8 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
 
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
@@ -1550,12 +1580,12 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
 
     $wrapper = entity_metadata_wrapper('node', $node);
 
-    $this->assertFalse(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is not assigned to group1.'));
+    $this->assertFalse(og_is_member('og_entity_test', $entity1->pid, 'node', $node), t('Node is not assigned to group1.'));
     $wrapper->{OG_AUDIENCE_FIELD}[] = $entity1->pid;
     $wrapper->save();
-    $og_membership = og_get_membership('entity_test', $entity1->pid, 'node', $node->nid);
+    $og_membership = og_get_membership('og_entity_test', $entity1->pid, 'node', $node->nid);
     $id = $og_membership->id;
-    $this->assertTrue(og_is_member('entity_test', $entity1->pid, 'node', $node), t('Node is assigned to group1 with active state.'));
+    $this->assertTrue(og_is_member('og_entity_test', $entity1->pid, 'node', $node), t('Node is assigned to group1 with active state.'));
 
     $wrapper->{OG_AUDIENCE_FIELD}->set(NULL);
     $wrapper->save();
@@ -1569,8 +1599,8 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
 
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
@@ -1579,19 +1609,19 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
     $settings['uid'] = $user2->uid;
     $node = $this->backdropCreateNode($settings);
 
-    og_group('entity_test', $entity1, array('entity_type' => 'node', 'entity' => $node));
-    $node->og_group_on_save = array('group_type' => 'entity_test', 'gid' => $entity1->pid);
+    og_group('og_entity_test', $entity1, array('entity_type' => 'node', 'entity' => $node));
+    $node->og_group_on_save = array('group_type' => 'og_entity_test', 'gid' => $entity1->pid);
     node_save($node);
 
     $this->assertFalse(og_get_entity_groups('node', $node), 'Widget behavior removed group association as expected.');
 
     $node = node_load($node->nid);
-    $node->og_group_on_save = array('group_type' => 'entity_test', 'gid' => $entity1->pid);
+    $node->og_group_on_save = array('group_type' => 'og_entity_test', 'gid' => $entity1->pid);
     $node->skip_og_membership = TRUE;
     node_save($node);
 
     $gids = og_get_entity_groups('node', $node);
-    $this->assertEqual(array_values($gids['entity_test']), array($entity1->pid), 'Widget behavior was skipped and removed group association as expected.');
+    $this->assertEqual(array_values($gids['og_entity_test']), array($entity1->pid), 'Widget behavior was skipped and removed group association as expected.');
   }
 
   /**
@@ -1610,13 +1640,13 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
     $user3 = $this->backdropCreateUser($permissions);
 
     // Create a group.
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    og_group('entity_test', $entity1, array('entity_type' => 'user', 'entity' => $user2));
-    og_group('entity_test', $entity1, array('entity_type' => 'user', 'entity' => $user3));
+    og_group('og_entity_test', $entity1, array('entity_type' => 'user', 'entity' => $user2));
+    og_group('og_entity_test', $entity1, array('entity_type' => 'user', 'entity' => $user3));
 
     // Post a node, state should be active.
     $type = str_replace('_', '-', $this->group_content);
@@ -1629,7 +1659,7 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
     $this->backdropPost('node/add/' . $type, $edit, t('Save'));
 
     $gids = og_get_entity_groups('node', 1);
-    $id = key($gids['entity_test']);
+    $id = key($gids['og_entity_test']);
     $og_membership = og_membership_load($id);
     $this->assertEqual($og_membership->state, OG_STATE_ACTIVE, 'Memebership status is Active');
 
@@ -1639,7 +1669,7 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
     $edit['title'] = 'state-pending';
     $this->backdropPost('node/add/' . $type, $edit, t('Save'));
     $gids = og_get_entity_groups('node', 2, array(OG_STATE_PENDING));
-    $id = key($gids['entity_test']);
+    $id = key($gids['og_entity_test']);
     $og_membership = og_membership_load($id);
     $this->assertEqual($og_membership->state, OG_STATE_PENDING, 'Memebership status is Active');
   }
@@ -1648,7 +1678,7 @@ class OgBehaviorHandlerTestCase  extends BackdropWebTestCase {
 /**
  * Testing for deleting orphans group content.
  */
-class OgDeleteOrphansTestCase extends BackdropWebTestCase {
+class OgDeleteOrphansTestCase extends OgTestBase {
 
   public $group_type;
   public $node_type;
@@ -1818,7 +1848,7 @@ class OgDeleteOrphansTestCase extends BackdropWebTestCase {
 /**
  * Testing publishing content in a group for non members users.
  */
-class OgNonMembersPublishingContentTestCase extends BackdropWebTestCase {
+class OgNonMembersPublishingContentTestCase extends OgTestBase {
 
   public $group;
   public $user;
@@ -1904,7 +1934,8 @@ class OgNonMembersPublishingContentTestCase extends BackdropWebTestCase {
  * Verify that users only with OG permissions can post only inside a group
  *
  */
-class OgUserCanPublishGroupContentTypeOnlyInGroup extends BackdropWebTestCase {
+class OgUserCanPublishGroupContentTypeOnlyInGroup extends OgTestBase {
+
   public $group;
   public $site_user;
   public $group_user;
@@ -2027,7 +2058,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends BackdropWebTestCase {
 /**
  * Test for publishing content into group the user is not a member.
  */
-class OgAutoCompleteAccessibleGroupsValidation extends BackdropWebTestCase {
+class OgAutoCompleteAccessibleGroupsValidation extends OgTestBase {
 
   var $dummy_content_type;
 
@@ -2038,7 +2069,8 @@ class OgAutoCompleteAccessibleGroupsValidation extends BackdropWebTestCase {
   var $group_member;
 
   function setUp() {
-    parent::setUp('og');
+    parent::setUp('og', 'entity_plus', 'entity_ui', 'entityreference');
+    debug('pass');
 
     // Create group content.
     $this->backdropCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
@@ -2109,7 +2141,7 @@ class OgAutoCompleteAccessibleGroupsValidation extends BackdropWebTestCase {
 /**
  * Test for publishing content using a select widget.
  */
-class OgSelectAccessibleGroupsValidation extends BackdropWebTestCase {
+class OgSelectAccessibleGroupsValidation extends OgTestBase {
 
   function setUp() {
     parent::setUp('og');
@@ -2176,7 +2208,7 @@ class OgSelectAccessibleGroupsValidation extends BackdropWebTestCase {
 /**
  * Test group-audience field access settings.
  */
-class OgAudienceFieldAccessOverrideTestCase extends BackdropWebTestCase {
+class OgAudienceFieldAccessOverrideTestCase extends OgTestBase {
 
   function setUp() {
     parent::setUp('og');
@@ -2216,7 +2248,7 @@ class OgAudienceFieldAccessOverrideTestCase extends BackdropWebTestCase {
 /**
  * Verify OG group ref field support delta after saving.
  */
-class OgAudienceFieldDeltaTestCase extends BackdropWebTestCase {
+class OgAudienceFieldDeltaTestCase extends OgTestBase {
 
   function setUp() {
     parent::setUp('og');

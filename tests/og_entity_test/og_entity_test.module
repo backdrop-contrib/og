@@ -159,7 +159,7 @@ function og_entity_test_entity_delete($entity, $entity_type) {
  * Implements hook_og_entity_test_type_insert().
  */
 function og_entity_test_og_entity_test_type_insert($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_insert'][] = $entity->id;
+  $_SESSION['entity_hook_test']['og_entity_test_type_insert'][] = $entity->id();
 }
 
 /**

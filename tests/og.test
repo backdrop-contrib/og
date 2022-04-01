@@ -670,7 +670,7 @@ class OgGroupAndUngroup extends OgTestBase {
     $og_membership->state = OG_STATE_BLOCKED;
     $og_membership->save();
 
-    $og_membership = og_membership_load($og_membership->identifier());
+    $og_membership = og_membership_load($og_membership->id());
     $this->assertEqual($og_membership->state, OG_STATE_BLOCKED, 'Owner Membership status is Blocked');
 
     // Save the group entity.
@@ -679,7 +679,7 @@ class OgGroupAndUngroup extends OgTestBase {
 
     // Ensure that the user owner membership for the group still has blocked
     // status.
-    $og_membership = og_membership_load($og_membership->identifier());
+    $og_membership = og_membership_load($og_membership->id());
     $this->assertEqual($og_membership->state, OG_STATE_BLOCKED, 'Owner Membership status is Blocked');
   }
 

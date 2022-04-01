@@ -159,14 +159,14 @@ function og_entity_test_entity_delete($entity, $entity_type) {
  * Implements hook_og_entity_test_type_insert().
  */
 function og_entity_test_og_entity_test_type_insert($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_insert'][] = $entity->identifier();
+  $_SESSION['entity_hook_test']['og_entity_test_type_insert'][] = $entity->id;
 }
 
 /**
  * Implements hook_og_entity_test_type_update().
  */
 function og_entity_test_og_entity_test_type_update($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_update'][] = $entity->identifier();
+  $_SESSION['entity_hook_test']['og_entity_test_type_update'][] = $entity->id();
 
   // Determine changes on update.
   if (!empty($entity->original) && $entity->original->label == 'test_changes') {
@@ -180,7 +180,7 @@ function og_entity_test_og_entity_test_type_update($entity) {
  * Implements hook_og_entity_test_type_delete().
  */
 function og_entity_test_og_entity_test_type_delete($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_delete'][] = $entity->identifier();
+  $_SESSION['entity_hook_test']['og_entity_test_type_delete'][] = $entity->id();
 }
 
 /**

@@ -141,12 +141,12 @@ class OgNodeAccess extends OgTestBase {
     // Add OG group field to a the node's "page" bundle.
     og_create_field(OG_GROUP_FIELD, 'node', 'page');
 
-    // Add OG audience field to the node's "article" bundle.
+    // Add OG audience field to the node's "post" bundle.
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'post');
 
     // Create an editor user and a group manager for these tests.
-    $this->editor_user = $this->backdropCreateUser(array('access content', 'edit any page content', 'edit any article content', 'create article content'));
-    $this->group_manager = $this->backdropCreateUser(array('access content', 'create page content', 'edit own article content', 'edit own page content'));
+    $this->editor_user = $this->backdropCreateUser(array('access content', 'edit any page content', 'edit any post content', 'create post content'));
+    $this->group_manager = $this->backdropCreateUser(array('access content', 'create page content', 'edit own post content', 'edit own page content'));
 
     // Create group node.
     $settings = array(
@@ -208,14 +208,14 @@ class OgNodeAccess extends OgTestBase {
     $editor_user = $this->editor_user;
     $this->backdropLogin($editor_user);
 
-    $this->backdropGet('node/add/article');
+    $this->backdropGet('node/add/post');
     $this->assertResponse('200', t('User can access node create with non-required field.'));
 
     $instance = field_info_instance('node', OG_AUDIENCE_FIELD, 'post');
     $instance['required'] = TRUE;
     field_update_instance($instance);
 
-    $this->backdropGet('node/add/article');
+    $this->backdropGet('node/add/post');
     $this->assertResponse('403', t('User cannot access node create with required field.'));
 
     // Test OG's create permission for a group member.
@@ -224,24 +224,24 @@ class OgNodeAccess extends OgTestBase {
     $roles = array_flip(og_roles('node', 'page'));
 
     $permissions = array(
-      'create article content' => 0,
-      'update own article content' => 1,
-      'update any article content' => 1,
+      'create post content' => 0,
+      'update own post content' => 1,
+      'update any post content' => 1,
     );
 
     // Add update permission.
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
-    $this->backdropGet('node/add/article');
+    $this->backdropGet('node/add/post');
     $this->assertResponse('403', 'Group member cannot create node.');
 
     // Add create permission.
     $permissions = array(
-      'create article content' => 1,
-      'update own article content' => 0,
-      'update any article content' => 0,
+      'create post content' => 1,
+      'update own post content' => 0,
+      'update any post content' => 0,
     );
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
-    $this->backdropGet('node/add/article');
+    $this->backdropGet('node/add/post');
     $this->assertResponse('200', 'Group member can create node.');
   }
 
@@ -291,12 +291,12 @@ class OgNodeAccess extends OgTestBase {
 
     // Add create permission.
     $permissions = array(
-      'create article content' => 1,
-      'update own article content' => 0,
-      'update any article content' => 0,
+      'create post content' => 1,
+      'update own post content' => 0,
+      'update any post content' => 0,
     );
     og_role_change_permissions($roles[OG_AUTHENTICATED_ROLE], $permissions);
-    $this->backdropGet('node/add/article');
+    $this->backdropGet('node/add/post');
     $this->assertResponse('200', 'Group member can create node.');
   }
 
@@ -319,8 +319,8 @@ class OgNodeAccess extends OgTestBase {
     // Allow member to update and create.
     $og_roles = array_flip(og_roles('node', 'page'));
     $permissions = array(
-      'create article content' => 1,
-      'update any article content' => 1,
+      'create post content' => 1,
+      'update any post content' => 1,
     );
     og_role_change_permissions($og_roles[OG_AUTHENTICATED_ROLE], $permissions);
 
@@ -336,8 +336,8 @@ class OgNodeAccess extends OgTestBase {
     // Allow member to update but not create.
     $og_roles = array_flip(og_roles('node', 'page'));
     $permissions = array(
-      'create article content' => 0,
-      'update any article content' => 1,
+      'create post content' => 0,
+      'update any post content' => 1,
     );
     og_role_change_permissions($og_roles[OG_AUTHENTICATED_ROLE], $permissions);
 
@@ -371,7 +371,7 @@ class OgMetaData extends OgTestBase {
     // Add OG group field to the og_entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
-    // Add OG audience field to the node's "article" bundle.
+    // Add OG audience field to the node's "post" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
@@ -403,7 +403,7 @@ class OgMetaData extends OgTestBase {
     foreach (og_group_content_states() as $state => $value) {
       $node = $this->backdropCreateNode($settings);
 
-      // Assign article to the group.
+      // Assign post to the group.
       $values = array('entity_type' => 'node', 'entity' => $node);
       og_group('og_entity_test', $entity1->pid, $values + array('state' => $state));
       // Subscribe node to a second group, but with a different state, by
@@ -452,7 +452,7 @@ class OgGroupAndUngroup extends OgTestBase {
     // Add OG group field to the og_entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
-    // Add OG audience field to the node's "article" bundle.
+    // Add OG audience field to the node's "post" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
@@ -692,7 +692,7 @@ class OgPermissionsTestCase extends OgTestBase {
     // Add OG group field to the og_entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
-    // Add OG audience field to the node's "article" bundle.
+    // Add OG audience field to the node's "post" bundle.
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
     $og_field['field']['settings']['target_type'] = 'og_entity_test';
     og_create_field(OG_AUDIENCE_FIELD, 'node', 'post', $og_field);
@@ -721,8 +721,8 @@ class OgPermissionsTestCase extends OgTestBase {
     $this->assertTrue(og_is_member('og_entity_test', $entity->pid, 'user', $user2), t('User is registered to the new group.'));
 
     // Verify current permissions.
-    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update own article content', $user2), t('User does not have "update own article content" permission.'));
-    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'delete own article content', $user2), t('User does not have "delete own article content" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update own post content', $user2), t('User does not have "update own post content" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'delete own post content', $user2), t('User does not have "delete own post content" permission.'));
 
     // Change permissions to authenticated member.
     $og_roles = array_flip(og_roles('og_entity_test', 'main', $entity->pid));
@@ -730,21 +730,21 @@ class OgPermissionsTestCase extends OgTestBase {
     $rid = $og_roles[OG_AUTHENTICATED_ROLE];
 
     $permissions = array(
-      'delete own article content' => 1,
+      'delete own post content' => 1,
     );
     og_role_change_permissions($rid, $permissions);
 
     // Verify proper permission changes.
-    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update own article content', $user2), t('User still does not have "update own article content" permission.'));
-    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'delete own article content', $user2), t('User now has "delete own article content" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity->pid, 'update own post content', $user2), t('User still does not have "update own post content" permission.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'delete own post content', $user2), t('User now has "delete own post content" permission.'));
 
     $permissions = array(
-      'delete own article content' => 0,
+      'delete own post content' => 0,
       'administer group' => 1,
     );
     og_role_change_permissions($rid, $permissions);
 
-    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'delete own article content', $user2), t('User still has "delete own article content" as they have "administer group" permission.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'delete own post content', $user2), t('User still has "delete own post content" as they have "administer group" permission.'));
     $this->assertTrue(og_user_access('og_entity_test', $entity->pid, 'administer group', $user2), t('User has "administer group" permission.'));
   }
 

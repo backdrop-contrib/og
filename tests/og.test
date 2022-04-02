@@ -4,8 +4,9 @@
 class OgTestBase extends BackdropWebTestCase {
   public $og_entity_types;
 
-  function setUp() {
-    parent::setUp('entity_plus', 'entity_ui', 'entityreference', 'og', 'og_entity_test');
+  function setUp($modules = array()) {
+    $modules += array('entity_plus', 'entity_ui', 'entityreference', 'og', 'og_entity_test');
+    parent::setUp($modules);
 
     $types['main'] = entity_create('og_entity_test_type', array(
       'name' => 'main',
@@ -33,8 +34,8 @@ class OgTestBase extends BackdropWebTestCase {
 
 class OgAccess extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
   }
 
   /**
@@ -135,8 +136,8 @@ class OgAccess extends OgTestBase {
  */
 class OgNodeAccess extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Add OG group field to a the node's "page" bundle.
     og_create_field(OG_GROUP_FIELD, 'node', 'page');
@@ -360,8 +361,8 @@ class OgNodeAccess extends OgTestBase {
  */
 class OgMetaData extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
   }
 
   /**
@@ -446,8 +447,8 @@ class OgMetaData extends OgTestBase {
  */
 class OgGroupAndUngroup extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Add OG group field to the og_entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
@@ -687,8 +688,8 @@ class OgGroupAndUngroup extends OgTestBase {
 
 class OgPermissionsTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
     // Add OG group field to the og_entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
 
@@ -822,8 +823,8 @@ class OgPermissionsTestCase extends OgTestBase {
 
 class OgDefaultAccessFieldTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
   }
 
 
@@ -902,8 +903,8 @@ class OgDefaultAccessFieldTestCase extends OgTestBase {
  */
 class OgFieldWidgetTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Add OG group field to a the node's "group" bundle.
     $this->backdropCreateContentType(array('type' => 'group'));
@@ -1080,8 +1081,8 @@ class OgFieldWidgetTestCase extends OgTestBase {
  */
 class OgRoleRevoke extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
   }
 
   function testOgRoleRevoke()  {
@@ -1134,8 +1135,8 @@ class OgRoleRevoke extends OgTestBase {
  */
 class OgEntityFieldQueryTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'entity', 'og_entity_test', 'entity_plus', 'entity_ui');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
@@ -1358,8 +1359,8 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
  */
 class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser();
@@ -1517,8 +1518,8 @@ class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
  */
 class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
   }
 
   /**
@@ -1546,8 +1547,8 @@ class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
 
 class OgBehaviorHandlerTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og_test', 'og_entity_test');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Add OG group field to the og_entity_test's "main" bundle.
     og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
@@ -1683,8 +1684,10 @@ class OgDeleteOrphansTestCase extends OgTestBase {
   public $group_type;
   public $node_type;
 
-  function setUp() {
-    parent::setUp('og_test');
+  function setUp($modules = array()) {
+    $modules[] = 'og_test';
+    parent::setUp($modules);
+    //module_enable(array('og_test'));
 
     // Create a group content type.
     $group = $this->backdropCreateContentType();
@@ -1854,8 +1857,10 @@ class OgNonMembersPublishingContentTestCase extends OgTestBase {
   public $user;
   public $adminUser;
 
-  public function setUp() {
-    parent::setUp('og_test', 'entityreference_prepopulate');
+  public function setUp($modules = array()) {
+    $modules[] = 'og_test';
+    $modules[] = 'entityreference_prepopulate';
+    parent::setUp($modules);
 
     // Creating a user.
     $this->user = $this->backdropCreateUser();
@@ -1941,8 +1946,8 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends OgTestBase {
   public $group_user;
   public $group_content;
 
-  public function setUp() {
-    parent::setUp('og');
+  public function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Create a group content type.
     $group = $this->backdropCreateContentType();
@@ -2068,8 +2073,8 @@ class OgAutoCompleteAccessibleGroupsValidation extends OgTestBase {
   var $group_owner;
   var $group_member;
 
-  function setUp() {
-    parent::setUp('og', 'entity_plus', 'entity_ui', 'entityreference');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
     debug('pass');
 
     // Create group content.
@@ -2143,8 +2148,8 @@ class OgAutoCompleteAccessibleGroupsValidation extends OgTestBase {
  */
 class OgSelectAccessibleGroupsValidation extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Create group content.
     $this->backdropCreateContentType(array( 'name' => 'Group content', 'type' => 'group_content'));
@@ -2210,8 +2215,8 @@ class OgSelectAccessibleGroupsValidation extends OgTestBase {
  */
 class OgAudienceFieldAccessOverrideTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
   }
 
   /**
@@ -2250,8 +2255,8 @@ class OgAudienceFieldAccessOverrideTestCase extends OgTestBase {
  */
 class OgAudienceFieldDeltaTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     $this->groupType = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $this->groupType->type);

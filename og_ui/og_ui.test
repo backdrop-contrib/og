@@ -4,7 +4,7 @@
 class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
 
   function setUp() {
-    parent::setUp('og_ui', 'entity_feature');
+    parent::setUp('og_ui', 'og_entity_test');
 
     // Add OG group fields.
     og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
@@ -135,7 +135,7 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
 class OgUiSubscribeTestCase extends BackdropWebTestCase {
 
   function setUp() {
-    parent::setUp('og_ui', 'entity_feature');
+    parent::setUp('og_ui', 'og_entity_test');
     // Add OG group field.
     og_create_field(OG_GROUP_FIELD, 'node', 'post');
   }
@@ -203,7 +203,7 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
   public $entity;
 
   function setUp() {
-    parent::setUp('og_ui', 'entity_feature');
+    parent::setUp('og_ui', 'og_entity_test');
     // Add OG group field.
     og_create_field(OG_GROUP_FIELD, 'entity_test', 'test');
 

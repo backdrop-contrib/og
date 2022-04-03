@@ -1,13 +1,13 @@
 <?php
 
 
-class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
+class OgUiUserPermissionsTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og_ui', 'entity_feature');
+  public function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Add OG group fields.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'main');
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
   }
 
   /**
@@ -24,40 +24,40 @@ class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
     $this->backdropLogin($admin_user);
 
     // Create a group.
-    $entity1 = entity_create('entity_test', array('name' => 'main', 'uid' => $admin_user->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity1);
+    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $admin_user->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
-    $this->assertTrue(og_user_access('entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission.'));
 
     // Remove a permission.
-    $this->backdropPost('admin/config/group/permissions/entity_test/main', array('1[subscribe]' => FALSE), t('Save permissions'));
+    $this->backdropPost('admin/config/group/permissions/og_entity_test/main', array('1[subscribe]' => FALSE), t('Save permissions'));
     $this->assertText(t('The changes have been saved.'), t('Successful save message displayed.'));
 
     // FIXME: There is an og_invalidate_cache() on permissions granting
     // and revoking, but somehow, we need to do it manually here.
     og_invalidate_cache();
 
-    $this->assertFalse(og_user_access('entity_test', $entity1->pid, 'subscribe', $web_user), t('User now does not have "subscribe" permission.'));
+    $this->assertFalse(og_user_access('og_entity_test', $entity1->pid, 'subscribe', $web_user), t('User now does not have "subscribe" permission.'));
 
     // Re-add permission.
-    $this->backdropPost('admin/config/group/permissions/entity_test/main', array('1[subscribe]' => TRUE), t('Save permissions'));
+    $this->backdropPost('admin/config/group/permissions/og_entity_test/main', array('1[subscribe]' => TRUE), t('Save permissions'));
 
     // FIXME: There is an og_invalidate_cache() on permissions granting
     // and revoking, but somehow, we need to do it manually here.
     og_invalidate_cache();
-    $this->assertTrue(og_user_access('entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission again.'));
+    $this->assertTrue(og_user_access('og_entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission again.'));
   }
 }
 
-class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
+class OgUiAdminPermissionsTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og_ui');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
 
     // Add OG group fields.
-    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+    og_create_field(OG_GROUP_FIELD, 'node', 'post');
   }
 
   /**
@@ -69,7 +69,7 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
 
     $settings = array();
     $settings['uid'] = $user1->uid;
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $node = $this->backdropCreateNode($settings);
 
@@ -86,7 +86,7 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
       'manage permissions',
     );
 
-    $roles = og_roles('node', 'article');
+    $roles = og_roles('node', 'post');
     $auth_rid = array_search(OG_ANONYMOUS_ROLE, $roles);
     foreach ($perms as $perm) {
       // Add an admin permission to allow the user to access to the admin tabs.
@@ -108,12 +108,12 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
 
     $settings = array();
     $settings['uid'] = $user1->uid;
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $node = $this->backdropCreateNode($settings);
 
     $this->backdropLogin($user2);
-    $roles = og_roles('node', 'article');
+    $roles = og_roles('node', 'post');
     $auth_rid = array_search(OG_ANONYMOUS_ROLE, $roles);
     $text = t('Warning: Give to trusted roles only; this permission has security implications in the group context.');
 
@@ -132,12 +132,12 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
   }
 }
 
-class OgUiSubscribeTestCase extends BackdropWebTestCase {
+class OgUiSubscribeTestCase extends OgTestBase {
 
-  function setUp() {
-    parent::setUp('og_ui', 'entity_feature');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
     // Add OG group field.
-    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+    og_create_field(OG_GROUP_FIELD, 'node', 'post');
   }
 
   /**
@@ -150,7 +150,7 @@ class OgUiSubscribeTestCase extends BackdropWebTestCase {
 
     // Create a group.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user1->uid;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $node = $this->backdropCreateNode($settings);
@@ -183,7 +183,7 @@ class OgUiSubscribeTestCase extends BackdropWebTestCase {
     $this->assertFalse(og_is_member('node', $node->nid, 'user', $user2, array(OG_STATE_ACTIVE, OG_STATE_PENDING)), t('User unsubscribed from group.'));
 
     // Change global permissions to allow user to subscribe without approval.
-    $og_roles = og_roles('node', 'article');
+    $og_roles = og_roles('node', 'post');
     $rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
     og_role_change_permissions($rid, array('subscribe without approval' => 1));
 
@@ -196,24 +196,24 @@ class OgUiSubscribeTestCase extends BackdropWebTestCase {
   }
 }
 
-class OgUiManagePeopleTestCase extends BackdropWebTestCase {
+class OgUiManagePeopleTestCase extends OgTestBase {
 
   public $user1;
   public $user2;
   public $entity;
 
-  function setUp() {
-    parent::setUp('og_ui', 'entity_feature');
+  function setUp($modules = array()) {
+    parent::setUp($modules);
     // Add OG group field.
-    og_create_field(OG_GROUP_FIELD, 'entity_test', 'test');
+    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'test');
 
     // Create users.
     $this->user1 = $this->backdropCreateUser();
     $this->user2 = $this->backdropCreateUser();
 
     // Create a group.
-    $this->entity = entity_create('entity_test', array('name' => 'test', 'uid' => $this->user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $this->entity);
+    $this->entity = entity_create('og_entity_test', array('name' => 'test', 'uid' => $this->user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $this->entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
@@ -226,23 +226,23 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
     $this->backdropLogin($this->user1);
 
     // Add user2 to the group.
-    $this->assertFalse(og_is_member('entity_test', $this->entity->pid, 'user', $this->user2), 'User is not a group member');
+    $this->assertFalse(og_is_member('og_entity_test', $this->entity->pid, 'user', $this->user2), 'User is not a group member');
     $edit = array();
     $edit['name'] = $this->user2->name;
-    $this->backdropPost('group/entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
+    $this->backdropPost('group/og_entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
 
     // Reload user.
     og_invalidate_cache();
-    $this->assertTrue(og_is_member('entity_test', $this->entity->pid, 'user', $this->user2), 'User was added to the group.');
+    $this->assertTrue(og_is_member('og_entity_test', $this->entity->pid, 'user', $this->user2), 'User was added to the group.');
 
     // Add the same user twice.
-    $this->backdropPost('group/entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
+    $this->backdropPost('group/og_entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
     $this->assertText(t('User @name is already subscribed to group.', array('@name' => user_format_name($this->user2))), 'User can not be added twice.');
 
     // Add non-existing user.
     $edit = array();
     $edit['name'] = $this->randomName();
-    $this->backdropPost('group/entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
+    $this->backdropPost('group/og_entity_test/' . $this->entity->pid . '/admin/people/add-user', $edit, t('Add users'));
     $this->assertText(t('You have entered an invalid user name.'), t('Invalid user name not added to group.'));
   }
 
@@ -253,12 +253,12 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
     $this->backdropLogin($this->user1);
 
     // Group the user to the group.
-    $membership = og_group('entity_test', $this->entity->pid, array('entity' => $this->user2));
+    $membership = og_group('og_entity_test', $this->entity->pid, array('entity' => $this->user2));
 
     // Updating the state status.
     $states = og_group_content_states();
     foreach ($states as $state => $title) {
-      $this->backdropPost('group/entity_test/' . $this->entity->pid . '/admin/people/edit-membership/' . $membership->id, array('state' => $state), t('Update membership'));
+      $this->backdropPost('group/og_entity_test/' . $this->entity->pid . '/admin/people/edit-membership/' . $membership->id, array('state' => $state), t('Update membership'));
 
       // Reset the static cache for a fresh OG membership object.
       backdrop_static_reset();
@@ -276,8 +276,8 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
     $this->backdropLogin($this->user1);
 
     // Group the user to the group.
-    $membership = og_group('entity_test', $this->entity->pid, array('entity' => $this->user2));
-    $this->backdropPost('group/entity_test/' . $this->entity->pid . '/admin/people/delete-membership/' . $membership->id, array(), t('Remove'));
+    $membership = og_group('og_entity_test', $this->entity->pid, array('entity' => $this->user2));
+    $this->backdropPost('group/og_entity_test/' . $this->entity->pid . '/admin/people/delete-membership/' . $membership->id, array(), t('Remove'));
 
     // Verify the membership was removed.
     $this->assertText('The membership was removed.');
@@ -300,7 +300,7 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
       'field_name' => 'group_audience_entity_test_test',
       'type' => 'entityreference',
       'settings' => array(
-        'target_type' => 'entity_test',
+        'target_type' => 'og_entity_test',
         'handler' => 'og',
         'handler_settings' => array(
           'target_bundles' => array('test'),
@@ -318,7 +318,7 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
       'field_name' => 'group_audience_entity_test_test2',
       'type' => 'entityreference',
       'settings' => array(
-        'target_type' => 'entity_test',
+        'target_type' => 'og_entity_test',
         'handler' => 'og',
         'handler_settings' => array(
           'target_bundles' => array('test2'),
@@ -351,21 +351,21 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
 
     // Create a group belonging to the 'test' bundle of the 'entity_test' entity
     // type.
-    $entity = entity_create('entity_test', array('name' => 'test', 'uid' => $user1->uid));
-    $wrapper = entity_metadata_wrapper('entity_test', $entity);
+    $entity = entity_create('og_entity_test', array('name' => 'test', 'uid' => $user1->uid));
+    $wrapper = entity_metadata_wrapper('og_entity_test', $entity);
     $wrapper->{OG_GROUP_FIELD}->set(1);
     $wrapper->save();
 
     // Because only one of the three fields applies to this entity type and
     // bundle, no select box should be shown.
-    $this->backdropGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->backdropGet('group/og_entity_test/' . $entity->pid . '/admin/people/add-user');
     $this->assertNoField('edit-field-name');
 
     // Temporarily change the second field to apply to this bundle. Now the
     // select box should be shown.
     $field['group_audience_entity_test_test2']['settings']['handler_settings']['target_bundles'] = array('test');
     field_update_field($field['group_audience_entity_test_test2']);
-    $this->backdropGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->backdropGet('group/og_entity_test/' . $entity->pid . '/admin/people/add-user');
     $this->assertField('edit-field-name');
     $elements = $this->xpath('//select[@id="edit-field-name"]//option');
     $this->assertEqual(count($elements), 2, '2 options available for selection');
@@ -377,14 +377,14 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
     // Revert the field settings to the previous state.
     $field['group_audience_entity_test_test2']['settings']['handler_settings']['target_bundles'] = array('test2');
     field_update_field($field['group_audience_entity_test_test2']);
-    $this->backdropGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->backdropGet('group/og_entity_test/' . $entity->pid . '/admin/people/add-user');
     $this->assertNoField('edit-field-name');
 
     // Change the third field to apply to this entity type. In this case the
     // select box should be shown, as well.
     $field['group_audience_entity_test2']['settings']['target_type'] = 'entity_test';
     field_update_field($field['group_audience_entity_test2']);
-    $this->backdropGet('group/entity_test/' . $entity->pid . '/admin/people/add-user');
+    $this->backdropGet('group/og_entity_test/' . $entity->pid . '/admin/people/add-user');
     $this->assertField('edit-field-name');
     $elements = $this->xpath('//select[@id="edit-field-name"]//option');
     $this->assertEqual(count($elements), 2, '2 options available for selection');
@@ -398,18 +398,18 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
    * Tests that invalid group IDs in the menu path do not cause exceptions.
    */
   public function testOgUiPath() {
-    $this->backdropGet('entity_test/' . $this->entity->pid . 'invalid/group');
+    $this->backdropGet('og_entity_test/' . $this->entity->pid . 'invalid/group');
     $this->assertResponse(403);
     // Numeric values that are not consist of decimal characters are forbidden.
     // 0x1 for instance is equivalent to 1
     // http://php.net/manual/en/language.types.integer.php
-    $this->backdropGet('entity_test/0x' . $this->entity->pid . '/group');
+    $this->backdropGet('og_entity_test/0x' . $this->entity->pid . '/group');
     $this->assertResponse(403);
     // Non-existing groups return 404 however.
-    $this->backdropGet('entity_test/666');
+    $this->backdropGet('og_entity_test/666');
     $this->assertResponse(404);
     // For the same, admin area returns 403.
-    $this->backdropGet('entity_test/666/group');
+    $this->backdropGet('og_entity_test/666/group');
     $this->assertResponse(403);
 
   }
@@ -418,12 +418,13 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
 /**
  * Joining to a private group status.
  */
-class OgUiPrivateGroupStatus extends BackdropWebTestCase {
+class OgUiPrivateGroupStatus extends OgTestBase {
   public $user;
   public $group;
 
-  public function setUp() {
-    parent::setUp(array('og', 'og_access', 'og_ui'));
+  public function setUp($modules = array()) {
+    $modules[] = 'og_access';
+    parent::setUp($modules);
     node_access_rebuild();
 
     // Creating the content type and the necessary fields for this test.

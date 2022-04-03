@@ -1,5 +1,40 @@
 <?php
+/**
+ * @file
+ * Functional tests for the Organic Groups UI.
+ */
 
+/**
+ * Copy of OgTestBase.
+ */
+class OgUiTestBase extends BackdropWebTestCase {
+  public $og_entity_types;
+
+  function setUp($modules = array()) {
+    $modules += array('entity_plus', 'entity_ui', 'entityreference', 'og', 'og_entity_test', 'og_ui');
+    parent::setUp($modules);
+
+    $types['main'] = entity_create('og_entity_test_type', array(
+      'name' => 'main',
+      'label' => t('Main test type'),
+      'weight' => 0,
+      'locked' => TRUE,
+    ));
+    $types['test'] = entity_create('og_entity_test_type', array(
+      'name' => 'test',
+      'label' => 'label',
+      'weight' => 0,
+    ));
+    $types['test2'] = entity_create('og_entity_test_type', array(
+      'name' => 'test2',
+      'label' => 'label2',
+      'weight' => 2,
+    ));
+
+    // This may not be necessary.
+    $this->og_entity_types = $types;
+  }
+}
 
 class OgUiUserPermissionsTestCase extends OgTestBase {
 
@@ -51,7 +86,7 @@ class OgUiUserPermissionsTestCase extends OgTestBase {
   }
 }
 
-class OgUiAdminPermissionsTestCase extends OgTestBase {
+class OgUiAdminPermissionsTestCase extends OgUiTestBase {
 
   function setUp($modules = array()) {
     parent::setUp($modules);
@@ -132,7 +167,7 @@ class OgUiAdminPermissionsTestCase extends OgTestBase {
   }
 }
 
-class OgUiSubscribeTestCase extends OgTestBase {
+class OgUiSubscribeTestCase extends OgUiTestBase {
 
   function setUp($modules = array()) {
     parent::setUp($modules);
@@ -196,7 +231,7 @@ class OgUiSubscribeTestCase extends OgTestBase {
   }
 }
 
-class OgUiManagePeopleTestCase extends OgTestBase {
+class OgUiManagePeopleTestCase extends OgUiTestBase {
 
   public $user1;
   public $user2;
@@ -418,7 +453,7 @@ class OgUiManagePeopleTestCase extends OgTestBase {
 /**
  * Joining to a private group status.
  */
-class OgUiPrivateGroupStatus extends OgTestBase {
+class OgUiPrivateGroupStatus extends OgUiTestBase {
   public $user;
   public $group;
 

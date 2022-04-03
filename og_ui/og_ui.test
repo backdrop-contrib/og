@@ -57,7 +57,7 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
     parent::setUp('og_ui');
 
     // Add OG group fields.
-    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+    og_create_field(OG_GROUP_FIELD, 'node', 'post');
   }
 
   /**
@@ -69,7 +69,7 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
 
     $settings = array();
     $settings['uid'] = $user1->uid;
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $node = $this->backdropCreateNode($settings);
 
@@ -86,7 +86,7 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
       'manage permissions',
     );
 
-    $roles = og_roles('node', 'article');
+    $roles = og_roles('node', 'post');
     $auth_rid = array_search(OG_ANONYMOUS_ROLE, $roles);
     foreach ($perms as $perm) {
       // Add an admin permission to allow the user to access to the admin tabs.
@@ -108,12 +108,12 @@ class OgUiAdminPermissionsTestCase extends BackdropWebTestCase {
 
     $settings = array();
     $settings['uid'] = $user1->uid;
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $node = $this->backdropCreateNode($settings);
 
     $this->backdropLogin($user2);
-    $roles = og_roles('node', 'article');
+    $roles = og_roles('node', 'post');
     $auth_rid = array_search(OG_ANONYMOUS_ROLE, $roles);
     $text = t('Warning: Give to trusted roles only; this permission has security implications in the group context.');
 
@@ -137,7 +137,7 @@ class OgUiSubscribeTestCase extends BackdropWebTestCase {
   function setUp() {
     parent::setUp('og_ui', 'entity_feature');
     // Add OG group field.
-    og_create_field(OG_GROUP_FIELD, 'node', 'article');
+    og_create_field(OG_GROUP_FIELD, 'node', 'post');
   }
 
   /**
@@ -150,7 +150,7 @@ class OgUiSubscribeTestCase extends BackdropWebTestCase {
 
     // Create a group.
     $settings = array();
-    $settings['type'] = 'article';
+    $settings['type'] = 'post';
     $settings['uid'] = $user1->uid;
     $settings[OG_GROUP_FIELD][LANGUAGE_NONE][0]['value'] = 1;
     $node = $this->backdropCreateNode($settings);
@@ -183,7 +183,7 @@ class OgUiSubscribeTestCase extends BackdropWebTestCase {
     $this->assertFalse(og_is_member('node', $node->nid, 'user', $user2, array(OG_STATE_ACTIVE, OG_STATE_PENDING)), t('User unsubscribed from group.'));
 
     // Change global permissions to allow user to subscribe without approval.
-    $og_roles = og_roles('node', 'article');
+    $og_roles = og_roles('node', 'post');
     $rid = array_search(OG_ANONYMOUS_ROLE, $og_roles);
     og_role_change_permissions($rid, array('subscribe without approval' => 1));
 

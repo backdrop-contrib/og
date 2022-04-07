@@ -407,6 +407,7 @@ function og_context_config_info() {
     'label' => t('Organic groups context settings'),
     'group' => t('Configuration'),
   );
+  return $prefixes;
 }
 
 /**

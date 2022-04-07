@@ -509,6 +509,7 @@ function og_config_info() {
     'label' => t('Organic groups settings'),
     'group' => t('Configuration'),
   );
+  return $prefixes;
 }
 
 /**

@@ -152,7 +152,7 @@ class OgBehaviorHandler extends EntityReferenceBehaviorHandler {
    *   Array with all the differences, or an empty array if none found.
    */
   public function groupAudiencegetDiff($entity_type, $entity, $field, $instance, $langcode, $items) {
-    $return = FALSE;
+    $return = array();
 
     $field_name = $field['field_name'];
     $wrapper = entity_metadata_wrapper($entity_type, $entity);

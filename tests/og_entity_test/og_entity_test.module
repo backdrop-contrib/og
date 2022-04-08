@@ -29,6 +29,8 @@ function og_entity_test_entity_info() {
       'bundle keys' => array(
         'bundle' => 'name',
       ),
+      'field cache' => FALSE,
+      'entity cache' => TRUE,
       'module' => 'og_entity_test',
     ),
     'og_entity_test_type' => array(
@@ -77,12 +79,6 @@ function og_entity_test_entity_info() {
     $return['og_entity_test']['bundles'][$name] = array(
       'label' => $type->label,
     );
-  }
-
-  // Support entity cache module.
-  if (module_exists('entitycache')) {
-    $return['og_entity_test']['field cache'] = FALSE;
-    $return['og_entity_test']['entity cache'] = TRUE;
   }
 
   return $return;

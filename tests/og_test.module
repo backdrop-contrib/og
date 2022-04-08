@@ -122,7 +122,7 @@ function og_test_my_content() {
  * @see OgBehaviorHandlerTestCase::testSetStateOnInsert()
  */
 function og_test_form_alter(&$form, $form_state) {
-  if ($form_state['build_info']['base_form_id'] != 'node_form' || $form['#bundle'] != 'behavior') {
+  if (empty($form_state['build_info']['base_form_id']) || $form_state['build_info']['base_form_id'] != 'node_form' || $form['#bundle'] != 'behavior') {
     return;
   }
 

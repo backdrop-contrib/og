@@ -165,5 +165,18 @@ function og_entity_test_schema() {
   );
   $schema['og_entity_test2_revision']['primary key'] = array('revision_id');
 
+  // Cache bins for Entity-cache module.
+  $cache_schema = backdrop_get_schema_unprocessed('system', 'cache');
+  $types = array(
+    'og_entity_test',
+    'og_entity_test_type',
+    'og_entity_test2',
+  );
+
+  foreach ($types as $type) {
+    $schema["cache_entity_$type"] = $cache_schema;
+    $schema["cache_entity_$type"]['description'] = "Cache table used to store $type entity records.";
+  }
+
   return $schema;
 }

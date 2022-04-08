@@ -121,8 +121,8 @@ class OgMembership extends Entity {
     // Clear the group content entity field cache.
     cache_clear_all('field:' . $this->entity_type . ':' . $this->etid, 'cache_field');
 
-    // Supporting the entity cache module.
-    if (module_exists('entitycache') && db_table_exists('cache_entity_' . $this->entity_type)) {
+    // Supporting the entity cache.
+    if (db_table_exists('cache_entity_' . $this->entity_type)) {
       cache_clear_all($this->etid, 'cache_entity_' . $this->entity_type);
     }
   }

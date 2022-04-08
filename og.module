@@ -2118,6 +2118,13 @@ function og_group($group_type, $gid, $values = array(), $save_created = TRUE) {
     // Save the membership for update, or if the OG membership is new when
     // "save-created" is TRUE.
     $og_membership->save();
+
+    // Also populate the group audience field on the entity for data
+    // consistency.
+    // @see https://www.drupal.org/project/og/issues/2148047
+    if ($field_name) {
+      $wrapper->{$field_name}[] = $gid;
+    }
   }
 
   return $og_membership;

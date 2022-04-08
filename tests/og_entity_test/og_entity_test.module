@@ -29,6 +29,8 @@ function og_entity_test_entity_info() {
       'bundle keys' => array(
         'bundle' => 'name',
       ),
+      'field cache' => FALSE,
+      'entity cache' => TRUE,
       'module' => 'og_entity_test',
     ),
     'og_entity_test_type' => array(
@@ -77,12 +79,6 @@ function og_entity_test_entity_info() {
     $return['og_entity_test']['bundles'][$name] = array(
       'label' => $type->label,
     );
-  }
-
-  // Support entity cache module.
-  if (module_exists('entitycache')) {
-    $return['og_entity_test']['field cache'] = FALSE;
-    $return['og_entity_test']['entity cache'] = TRUE;
   }
 
   return $return;
@@ -159,14 +155,14 @@ function og_entity_test_entity_delete($entity, $entity_type) {
  * Implements hook_og_entity_test_type_insert().
  */
 function og_entity_test_og_entity_test_type_insert($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_insert'][] = $entity->identifier();
+  $_SESSION['entity_hook_test']['og_entity_test_type_insert'][] = $entity->id();
 }
 
 /**
  * Implements hook_og_entity_test_type_update().
  */
 function og_entity_test_og_entity_test_type_update($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_update'][] = $entity->identifier();
+  $_SESSION['entity_hook_test']['og_entity_test_type_update'][] = $entity->id();
 
   // Determine changes on update.
   if (!empty($entity->original) && $entity->original->label == 'test_changes') {
@@ -180,7 +176,7 @@ function og_entity_test_og_entity_test_type_update($entity) {
  * Implements hook_og_entity_test_type_delete().
  */
 function og_entity_test_og_entity_test_type_delete($entity) {
-  $_SESSION['entity_hook_test']['og_entity_test_type_delete'][] = $entity->identifier();
+  $_SESSION['entity_hook_test']['og_entity_test_type_delete'][] = $entity->id();
 }
 
 /**

@@ -630,7 +630,7 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
           $message = format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups');
           $element[0] = array(
             '#type' => 'markup',
-            '#markup' => '<span class="group other"' . $message . '</span>',
+            '#markup' => '<span class="group other">' . $message . '</span>',
           );
           return $element;
         }

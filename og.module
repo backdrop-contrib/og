@@ -1423,7 +1423,8 @@ function og_query_og_membership_alter(QueryAlterableInterface $query) {
 
   // Find the group-audience fields.
   $field_names = array();
-  foreach ($query->alterMetaData['entity_field_query']->fieldConditions as $values) {
+  $alter_metadata = $query->getMetadata('entity_field_query');
+  foreach ($alter_metadata->fieldConditions as $values) {
     $field_name = $values['field']['field_name'];
     if (og_is_group_audience_field($field_name)) {
       $field_names[] = $field_name;
@@ -1464,7 +1465,8 @@ function og_query_og_membership_alter(QueryAlterableInterface $query) {
     }
   }
 
-  $entity_type = $query->alterMetaData['entity_field_query']->entityConditions['entity_type']['value'];
+  $alter_metadata = $query->getMetadata('entity_field_query');
+  $entity_type = $alter_metadata->entityConditions['entity_type']['value'];
   $entity_type = is_array($entity_type) ? $entity_type[0] : $entity_type;
   $entity_info = entity_get_info($entity_type);
   $id = $entity_info['entity keys']['id'];
@@ -1534,7 +1536,8 @@ function og_query_og_membership_alter(QueryAlterableInterface $query) {
     // restrict the join by this. Otherwise, we would bring in the IDs of
     // entities of other types if they happen to match on the base table entity
     // ID.
-    $query_base_entity_type = $query->alterMetaData['entity_field_query']->entityConditions['entity_type']['value'];
+    $alter_metadata = $query->getMetadata('entity_field_query');
+    $query_base_entity_type = $alter_metadata->entityConditions['entity_type']['value'];
     if (empty($query_base_entity_type)) {
       // It's possible to have no entity type specified: join without it.
       $query->join('og_membership', 'ogm', "ogm.etid = $base_table_alias.entity_id");

@@ -29,7 +29,7 @@ function og_register_query_og_alter(QueryAlterableInterface $query) {
     return;
   }
 
-  $handler = $query->alterMetaData['entityreference_selection_handler'];
+  $handler = $query->getMetaData['entityreference_selection_handler'];
   $field = $handler->field;
   $instance = $handler->instance;
 

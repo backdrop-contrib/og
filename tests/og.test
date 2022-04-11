@@ -515,7 +515,6 @@ class OgGroupAndUngroup extends OgTestBase {
       $this->fail('Saving multiple OG membership for same entity and group works.');
     }
     catch (OgException $e) {
-      // @todo this has to be done differently - the exception bubbles through.
       $this->pass('Saving multiple OG membership for same entity and group does not work.');
     }
 
@@ -1924,8 +1923,7 @@ class OgNonMembersPublishingContentTestCase extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('title', 'foo')
-      // @todo fieldCondition on OG_AUDIENCE_FIELD do not work in Backdrop.
-      //->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group->nid)
+      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group->nid)
       ->execute();
 
     $this->assertTrue(!empty($result['node']), 'The node was added to the group.');
@@ -2014,8 +2012,7 @@ class OgUserCanPublishGroupContentTypeOnlyInGroup extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('title', $node_title)
-      // @todo Why is this fieldCondition a killer - even with literal values.
-      //->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group->nid)
+      ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group->nid)
       ->execute();
     $nids = array_keys($result['node']);
     $node_title = $this->randomName();

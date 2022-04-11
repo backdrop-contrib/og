@@ -1264,8 +1264,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('type', $node->type)
-      // No such field?
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->execute();
 
     $this->assertEqual(array_keys($result['node']), array($node->nid), 'Single group audience query is correct.');
@@ -1275,9 +1274,8 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('type', $node->type)
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
-      // @todo no such field.
-      //->fieldCondition('og_og_entity_test', 'target_id', $group1->pid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_og_entity_test', 'target_id', $group1->pid)
       ->execute();
 
     $this->assertEqual(array_keys($result['node']), array($node->nid), 'Multiple group audience query is correct.');
@@ -1287,7 +1285,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('type', $node->type)
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->fieldCondition('node_reference', 'target_id', $group2->nid)
       ->execute();
 
@@ -1299,7 +1297,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('type', $node->type)
       ->fieldCondition('node_reference', 'target_id', $group2->nid)
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->execute();
 
     $this->assertEqual(array_keys($result['node']), array($node->nid), 'Non-audience field first, with single group audience query is correct.');
@@ -1309,7 +1307,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', array('node', 'user'), 'IN')
       ->fieldCondition('node_reference', 'target_id', $group2->nid)
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->execute();
 
     $this->assertEqual(array_keys($result['node']), array($node->nid), 'Multiple entity types in entityCondition() query is correct.');
@@ -1318,7 +1316,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $query = new EntityFieldQuery();
     $result = $query
       ->entityCondition('entity_type', 'node')
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->execute();
 
     $this->assertEqual(array_keys($result['node']), array($node->nid), 'No entity property query is correct.');
@@ -1327,7 +1325,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $query = new EntityFieldQuery();
     $result = $query
       ->entityCondition('entity_type', 'og_entity_test')
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->execute();
 
     $this->assertEqual(array_keys($result['og_entity_test']), array($og_entity_test->pid), 'Non-node entity without revision table query is correct.');
@@ -1336,7 +1334,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $query = new EntityFieldQuery();
     $result = $query
       ->entityCondition('entity_type', 'user')
-      //->fieldCondition('og_og_entity_test', 'target_id', $group2->nid)
+      ->fieldCondition('og_og_entity_test', 'target_id', $group2->nid)
       ->execute();
 
     $expected_values = array(
@@ -1350,7 +1348,7 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
     $result = $query
       ->entityCondition('entity_type', 'node')
       ->propertyCondition('type', $node->type)
-      //->fieldCondition('og_node', 'target_id', $group2->nid)
+      ->fieldCondition('og_node', 'target_id', $group2->nid)
       ->count()
       ->execute();
 
@@ -1491,10 +1489,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node');
     $query->entityCondition('bundle', $this->group_content_type);
-    // Condition on the group audience field.
-    // @todo Points to empty field table (also in D7, but breaks in B).
-    // No fieldCondition on OG_AUDIENCE_FIELD type works.
-    //$query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group1->nid);
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group1->nid);
     $result = $query->execute();
 
     $this->assertEqual(count($result['node']), 1, "The correct number of nodes was returned for the query with only the OG field condition.");
@@ -1503,8 +1498,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
     $query = new EntityFieldQuery();
     $query->entityCondition('entity_type', 'node');
     $query->entityCondition('bundle', $this->group_content_type);
-    // Condition on the group audience field.
-    //$query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group1->nid);
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group1->nid);
     $query->fieldCondition('list_text', 'value', 'red');
     $result = $query->execute();
 
@@ -1516,8 +1510,7 @@ class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
     $query->entityCondition('entity_type', 'node');
     $query->entityCondition('bundle', $this->group_content_type);
     $query->fieldCondition('list_text', 'value', 'red');
-    // Condition on the group audience field.
-    //$query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group1->nid);
+    $query->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $this->group1->nid);
     $result = $query->execute();
 
     $this->assertEqual(count($result['node']), 1, "The correct number of nodes was returned for the query with the OG field condition second.");

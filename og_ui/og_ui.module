@@ -288,11 +288,12 @@ function og_ui_menu() {
  * @see og_ui_menu()
  */
 function og_ui_field_create_instance($instance) {
-  if ($instance['field_name'] != OG_GROUP_FIELD) {
-    return;
+  if ($instance['field_name'] == OG_GROUP_FIELD) {
+    state_set('menu_rebuild_needed', TRUE);
   }
-
-  state_set('menu_rebuild_needed', TRUE);
+  elseif ($instance['field_name'] == OG_ACCESS_FIELD) {
+    node_access_rebuild(TRUE);
+  }
 }
 
 /**
@@ -304,11 +305,12 @@ function og_ui_field_create_instance($instance) {
  * @see og_ui_menu()
  */
 function og_ui_field_delete_instance($instance) {
-  if ($instance['field_name'] != OG_GROUP_FIELD) {
-    return;
+  if ($instance['field_name'] == OG_GROUP_FIELD) {
+    state_set('menu_rebuild_needed', TRUE);
   }
-
-  state_set('menu_rebuild_needed', TRUE);
+  elseif ($instance['field_name'] == OG_ACCESS_FIELD) {
+    node_access_rebuild(TRUE);
+  }
 }
 
 /**

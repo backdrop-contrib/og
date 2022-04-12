@@ -1,53 +1,66 @@
 <?php
+/**
+ * @file
+ * Functional tests for the Organic Groups User Interface.
+ */
 
-
+/**
+ * Permission checks.
+ */
 class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
+  protected $profile = 'testing';
 
-  function setUp() {
-    parent::setUp('og_ui', 'og_entity_test');
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp('og_ui');
 
     // Add OG group fields.
-    og_create_field(OG_GROUP_FIELD, 'og_entity_test', 'main');
+    $this->backdropCreateContentType(array('type' => 'page', 'name' => 'Page'));
+    og_create_field(OG_GROUP_FIELD, 'node', 'page');
   }
 
   /**
    * Change user permissions and check og_user_access().
    */
-  function testOgUiUserPermissionChanges() {
+  public function testOgUiUserPermissionChanges() {
     $permissions = array(
       'bypass node access',
       'administer content types',
       'administer group',
     );
     $admin_user = $this->backdropCreateUser($permissions);
-    $web_user = $this->backdropCreateUser();
+    $web_user = $this->backdropCreateUser(array('access content'));
     $this->backdropLogin($admin_user);
 
     // Create a group.
-    $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $admin_user->uid));
-    $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
-    $wrapper->{OG_GROUP_FIELD}->set(1);
-    $wrapper->save();
+    $entity1 = $this->backdropCreateNode(array(
+      'type' => 'page',
+      'title' => 'Test group',
+      OG_GROUP_FIELD => array(LANGUAGE_NONE => array(array('value' => 1))),
+    ));
 
-    $this->assertTrue(og_user_access('og_entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission.'));
+    $this->assertTrue(og_user_access('node', $entity1->nid, 'subscribe', $web_user), 'User has "subscribe" permission.');
 
+    $this->backdropGet('admin/config/group/permissions/node/page');
     // Remove a permission.
-    $this->backdropPost('admin/config/group/permissions/og_entity_test/main', array('1[subscribe]' => FALSE), t('Save permissions'));
-    $this->assertText(t('The changes have been saved.'), t('Successful save message displayed.'));
+    $this->backdropPost('admin/config/group/permissions/node/page', array('1[subscribe]' => FALSE), t('Save permissions'));
+    $this->assertText(t('The changes have been saved.'), 'Successful save message displayed.');
 
     // FIXME: There is an og_invalidate_cache() on permissions granting
     // and revoking, but somehow, we need to do it manually here.
     og_invalidate_cache();
 
-    $this->assertFalse(og_user_access('og_entity_test', $entity1->pid, 'subscribe', $web_user), t('User now does not have "subscribe" permission.'));
+    $this->assertFalse(og_user_access('node', $entity1->nid, 'subscribe', $web_user), 'User now does not have "subscribe" permission.');
 
     // Re-add permission.
-    $this->backdropPost('admin/config/group/permissions/og_entity_test/main', array('1[subscribe]' => TRUE), t('Save permissions'));
+    $this->backdropPost('admin/config/group/permissions/node/page', array('1[subscribe]' => TRUE), t('Save permissions'));
 
     // FIXME: There is an og_invalidate_cache() on permissions granting
     // and revoking, but somehow, we need to do it manually here.
     og_invalidate_cache();
-    $this->assertTrue(og_user_access('og_entity_test', $entity1->pid, 'subscribe', $web_user), t('User has "subscribe" permission again.'));
+    $this->assertTrue(og_user_access('node', $entity1->nid, 'subscribe', $web_user), 'User has "subscribe" permission again.');
   }
 }
 

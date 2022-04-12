@@ -585,15 +585,9 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
       if (!empty($entity->uid) && ($entity->uid == $account->uid)) {
         // User is the group manager.
         $element[0] = array(
-          '#type' => 'html_tag',
-          '#tag' => 'span',
-          '#attributes' => array(
-            'title' => t('You are the group manager'),
-            'class' => 'group manager',
-          ),
-          '#value' => t('You are the group manager'),
+          '#type' => 'markup',
+          '#markup' => '<span class="group manager">' . t('You are the group manager') . '</span>',
         );
-
         return $element;
       }
 
@@ -633,14 +627,10 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
         }
 
         if (!og_check_field_cardinality('user', $account, $settings['field_name'])) {
+          $message = format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups');
           $element[0] = array(
-            '#type' => 'html_tag',
-            '#tag' => 'span',
-            '#attributes' => array(
-              'title' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'),
-              'class' => 'group other',
-            ),
-            '#value' => format_plural($field_info['cardinality'], 'You are already registered to another group', 'You are already registered to @count groups'),
+            '#type' => 'markup',
+            '#markup' => '<span class="group other">' . $message . '</span>',
           );
           return $element;
         }
@@ -674,15 +664,9 @@ function og_ui_field_formatter_view($entity_type, $entity, $field, $instance, $l
         }
         else {
           $element[0] = array(
-            '#type' => 'html_tag',
-            '#tag' => 'span',
-            '#attributes' => array(
-              'title' => t('This is a closed group. Only a group administrator can add you.'),
-              'class' => 'group closed',
-            ),
-            '#value' => t('This is a closed group. Only a group administrator can add you.'),
+            '#type' => 'markup',
+            '#markup' => '<span class="group closed">' . t('This is a closed group. Only a group administrator can add you.') . '</span>',
           );
-
           return $element;
         }
       }

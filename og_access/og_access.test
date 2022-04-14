@@ -379,7 +379,7 @@ class OgAccessUseGroupDefaultsTestCase extends BackdropWebTestCase {
       $this->backdropCreateNode($settings);
       $this->fail("Can set node visibility  when access field is missing from the group.");
     }
-    catch (OgException $e) {
+    catch (OgException | EntityStorageException $e) {
       $this->pass("Cannot set node visibility when access field is missing from the group.");
     }
 

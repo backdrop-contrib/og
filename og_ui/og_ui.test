@@ -291,6 +291,13 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
     $user1 = $this->backdropCreateUser();
     $this->backdropLogin($user1);
 
+    // The field og_user_og_entity_test was added automatically to the user 
+    // entities by og_field_create_instance() when field 
+    // group_group was attached to og_entity_test in setUp().
+    // It must be deleted in order for upcoming tests to pass.
+    // See the equivalente line in the most recent D7 og_ui.test.
+    field_delete_field('og_user_og_entity_test');
+
     // Create three group audience fields and corresponding instances on users:
     // - Two for the two bundles on the 'entity_test' entity type.
     // - One for the 'entity_test2' entity type.
@@ -380,7 +387,7 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
 
     // Change the third field to apply to this entity type. In this case the
     // select box should be shown, as well.
-    $field['group_audience_entity_test2']['settings']['target_type'] = 'entity_test';
+    $field['group_audience_entity_test2']['settings']['target_type'] = 'og_entity_test';
     field_update_field($field['group_audience_entity_test2']);
     $this->backdropGet('group/og_entity_test/' . $entity->pid . '/admin/people/add-user');
     $this->assertField('edit-field-name');

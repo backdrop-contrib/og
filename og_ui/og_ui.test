@@ -23,7 +23,11 @@ class OgUiUserPermissionsTestCase extends BackdropWebTestCase {
     $web_user = $this->backdropCreateUser();
     $this->backdropLogin($admin_user);
 
-    // Create a group.
+    // Create the 'main' og_entity_test_type bundle definition.
+    $entity_type = entity_create('og_entity_test_type', array('name' => 'main'));
+    $entity_type->save();
+
+    // Create a group of bundle 'main'.
     $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $admin_user->uid));
     $wrapper = entity_metadata_wrapper('og_entity_test', $entity1);
     $wrapper->{OG_GROUP_FIELD}->set(1);

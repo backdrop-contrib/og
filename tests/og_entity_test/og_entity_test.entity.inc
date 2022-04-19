@@ -86,7 +86,7 @@ class EntityClassType extends Entity {
    * Implements EntityInterface::entityType().
    */
   public function entityType() {
-    return 'og_entity_test';
+    return 'og_entity_test_type';
   }
 
   /**

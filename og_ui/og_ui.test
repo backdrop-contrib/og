@@ -295,7 +295,7 @@ class OgUiManagePeopleTestCase extends BackdropWebTestCase {
     // entities by og_field_create_instance() when field 
     // group_group was attached to og_entity_test in setUp().
     // It must be deleted in order for upcoming tests to pass.
-    // See the equivalente line in the most recent D7 og_ui.test.
+    // See the equivalent line in the most recent D7 og_ui.test.
     field_delete_field('og_user_og_entity_test');
 
     // Create three group audience fields and corresponding instances on users:

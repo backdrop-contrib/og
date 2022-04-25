@@ -2124,6 +2124,8 @@ function og_group($group_type, $gid, $values = array(), $save_created = TRUE) {
     $og_membership->save();
     // If the entity is a node, rebuild its access grant after creating the new
     // membership.
+    // @todo Remove these lines if/when this core issue is solved:
+    // https://github.com/backdrop/backdrop-issues/issues/5591
     if ($entity_type == 'node') {
       node_access_acquire_grants($entity);
     }

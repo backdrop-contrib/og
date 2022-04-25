@@ -1863,9 +1863,7 @@ class OgNonMembersPublishingContentTestCase extends OgTestBase {
 
   public function setUp($modules = array()) {
     $modules[] = 'og_test';
-    // No port for this module yet.
-    // @see https://github.com/backdrop-ops/contrib/issues/632
-    // $modules[] = 'entityreference_prepopulate';
+    $modules[] = 'entityreference_prepopulate';
     parent::setUp($modules);
 
     // Creating a user.
@@ -1940,6 +1938,7 @@ class OgNonMembersPublishingContentTestCase extends OgTestBase {
     $this->assertText($this->group->title, 'The node is still referenced to the group.');
   }
 }
+
 
 /**
  * Verify that users only with OG permissions can post only inside a group

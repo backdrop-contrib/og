@@ -125,7 +125,7 @@ function og_entity_info() {
     'metadata controller class' => 'EntityDefaultMetadataController',
     'views controller class' => 'EntityPlusDefaultViewsController',
     'access callback' => 'og_membership_type_access',
-    'entity cache' => module_exists('entitycache'),
+    'entity cache' => TRUE,
   );
 
   if (class_exists('OgMembershipTypeUIController')) {
@@ -161,7 +161,7 @@ function og_entity_info() {
     'metadata controller class' => 'OgMembershipMetadataController',
     'views controller class' => 'OgMembershipViewsController',
     'access callback' => 'og_membership_access',
-    'entity cache' => module_exists('entitycache'),
+    'entity cache' => TRUE,
   );
 
   // Add bundle info but bypass entity_load() as we cannot use it here.
@@ -995,11 +995,23 @@ function og_entity_delete($entity, $entity_type) {
     og_membership_delete_by_group($entity_type, $entity);
   }
   if (og_is_group_content_type($entity_type, $bundle)) {
-    // As the field attachers are called after hook_entity_presave() we
-    // can't delete the OG memberships here. So we just mark the entity
-    // as being deleted, and we will do the actual delete in
-    // OgBehaviorHandler::delete().
+    // While in Backdrop OgBehaviorHandler::delete() is actually called before
+    // hook_entity_delete(), this line, which is a legacy from D7, is
+    // technically not needed anymore. However it does no harm and can be left
+    // here in case this order ever changes.
     $entity->delete_og_membership = TRUE;
+
+    // Since in Backdrop hook_entity_delete() is called after the
+    // OgBehaviorHandler field handler, we need to delete the membership
+    // here. If this order ever changes in Backdrop, the lines below will need
+    // to be removed. See https://github.com/backdrop-contrib/og/issues/63
+    $og_memberships = array();
+    foreach (og_get_entity_groups($entity_type, $entity) as $group_type => $ids) {
+      $og_memberships = array_merge($og_memberships, array_keys($ids));
+    }
+    if ($og_memberships) {
+      og_membership_delete_multiple($og_memberships);
+    }
   }
 }
 

@@ -60,29 +60,21 @@ function og_test_entity_delete($entity, $type) {
   $result = $query
     ->entityCondition('entity_type', 'node')
     ->propertyCondition('nid', $entity->nid, '<>')
+    ->fieldCondition(OG_GROUP_FIELD, 'value', 1)
     ->execute();
 
   if (empty($result['node'])) {
     return;
   }
 
-  $gid = NULL;
-  $nids = array_keys($result['node']);
-  foreach ($nids as $nid) {
-    if (og_is_group('node', $nid)) {
-      $gid = $nid;
-      break;
-    }
-  }
- 
-  if ($gid) {
-    $entity->og_orphans = array(
-      'move' => array(
-        'group_type' => 'node',
-        'gid' => $gid,
-      ),
-    );
-  }
+  $gid = key($result['node']);
+  $entity->og_orphans = array(
+    'move' => array(
+      'group_type' => 'node',
+      'gid' => $gid,
+    ),
+  );
+
 }
 
 /**

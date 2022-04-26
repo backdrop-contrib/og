@@ -5,7 +5,7 @@ class OgTestBase extends BackdropWebTestCase {
   public $og_entity_types;
 
   function setUp($modules = array()) {
-    $modules = array('entity_plus', 'entity_ui', 'entityreference', 'og', 'og_entity_test') + $modules;
+    $modules = array_merge(array('entity_plus', 'entity_ui', 'entityreference', 'og', 'og_entity_test'), $modules);
     parent::setUp($modules);
 
     $types['main'] = entity_create('og_entity_test_type', array(

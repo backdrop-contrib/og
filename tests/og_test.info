@@ -3,4 +3,5 @@ description = Functionality to assist OG testing.
 backdrop = 1.x
 type = module
 dependencies[] = og
+dependencies[] = entityreference_prepopulate
 hidden = TRUE

@@ -1777,10 +1777,6 @@ class OgDeleteOrphansTestCase extends OgTestBase {
    * Testing the moving of the node to another group when deleting a group.
    */
   function testMoveOrphans() {
-    // For this test, we need to delete Backdrop's out-of-the-box default nodes 
-    // (IDs 1 and 2).
-    node_delete_multiple(array(1, 2));
-
     // Creating two groups.
     $first_group = $this->backdropCreateNode(array('type' => $this->group_type, 'title' => 'move'));
     $second_group = $this->backdropCreateNode(array('type' => $this->group_type));

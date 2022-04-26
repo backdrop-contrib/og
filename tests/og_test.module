@@ -66,15 +66,23 @@ function og_test_entity_delete($entity, $type) {
     return;
   }
 
+  $gid = NULL;
   $nids = array_keys($result['node']);
-  $nid = reset($nids);
-
-  $entity->og_orphans = array(
-    'move' => array(
-      'group_type' => 'node',
-      'gid' => $nid,
-    ),
-  );
+  foreach ($nids as $nid) {
+    if (og_is_group('node', $nid)) {
+      $gid = $nid;
+      break;
+    }
+  }
+ 
+  if ($gid) {
+    $entity->og_orphans = array(
+      'move' => array(
+        'group_type' => 'node',
+        'gid' => $gid,
+      ),
+    );
+  }
 }
 
 /**

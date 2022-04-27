@@ -2,5 +2,4 @@ name = OG test module
 description = Functionality to assist OG testing.
 backdrop = 1.x
 type = module
-dependencies[] = og
 hidden = TRUE

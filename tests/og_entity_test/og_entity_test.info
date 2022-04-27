@@ -1,5 +1,4 @@
 name = OG Entity CRUD test module
 description = Provides entity types based upon the CRUD API for OG tests
-dependencies[] = og
 backdrop = 1.x
 hidden = TRUE

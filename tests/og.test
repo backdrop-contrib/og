@@ -1578,6 +1578,7 @@ class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
 class OgBehaviorHandlerTestCase extends OgTestBase {
 
   function setUp($modules = array()) {
+    $modules[] = 'og_test';
     parent::setUp($modules);
 
     // Add OG group field to the og_entity_test's "main" bundle.
@@ -1660,7 +1661,6 @@ class OgBehaviorHandlerTestCase extends OgTestBase {
    * a new group-content to a group.
    */
   function testSetStateOnInsert() {
-    module_enable(array('og_test'));
     $permissions = array(
       'access content',
       "create $this->group_content content",
@@ -1669,6 +1669,10 @@ class OgBehaviorHandlerTestCase extends OgTestBase {
     $user1 = $this->backdropCreateUser();
     $user2 = $this->backdropCreateUser($permissions);
     $user3 = $this->backdropCreateUser($permissions);
+
+    // Save the 'main' entity type to allow entityreference to 
+    // access the field in the 'og_entity_test' entity.
+    $this->og_entity_types['main']->save();
 
     // Create a group.
     $entity1 = entity_create('og_entity_test', array('name' => 'main', 'uid' => $user1->uid));
@@ -1688,18 +1692,28 @@ class OgBehaviorHandlerTestCase extends OgTestBase {
 
     $this->backdropLogin($user2);
     $this->backdropPost('node/add/' . $type, $edit, t('Save'));
-
-    $gids = og_get_entity_groups('node', 1);
+    // Get the nid of the node just saved.
+    $query = new EntityFieldQuery();
+    $result = $query->entityCondition('entity_type', 'node')
+          ->propertyCondition('title', 'state-active')
+          ->execute();
+    $nid1 = key($result['node']);
+    $gids = og_get_entity_groups('node', $nid1);
     $id = key($gids['og_entity_test']);
     $og_membership = og_membership_load($id);
-    $this->assertEqual($og_membership->state, OG_STATE_ACTIVE, 'Memebership status is Active');
-
+    $this->assertEqual($og_membership->state, OG_STATE_ACTIVE, 'Membership status is Active');
 
     // Post a node, state should be pending.
     $this->backdropLogin($user3);
     $edit['title'] = 'state-pending';
     $this->backdropPost('node/add/' . $type, $edit, t('Save'));
-    $gids = og_get_entity_groups('node', 2, array(OG_STATE_PENDING));
+    // Get the nid of the node just saved.
+    $query = new EntityFieldQuery();
+    $result = $query->entityCondition('entity_type', 'node')
+          ->propertyCondition('title', 'state-pending')
+          ->execute();
+    $nid2 = key($result['node']);
+    $gids = og_get_entity_groups('node', $nid2, array(OG_STATE_PENDING));
     $id = key($gids['og_entity_test']);
     $og_membership = og_membership_load($id);
     $this->assertEqual($og_membership->state, OG_STATE_PENDING, 'Memebership status is Active');

@@ -402,7 +402,7 @@ function og_field_schema($field) {
  * Implements hook_update_last_removed().
  */
 function og_update_last_removed() {
-  return 7206;
+  return 7205;
 }
 
 /**
@@ -456,4 +456,9 @@ function og_update_1000() {
     update_variable_del($name);
   }
   $config->save();
+
+  if (db_index_exists('og_role', 'lookup')) {
+    db_drop_index('og_role', 'lookup');
+  }
+  db_add_index('og_role', 'lookup', array('group_type', 'group_bundle', 'gid'));
 }

@@ -50,7 +50,7 @@ jobs:
           repository: backdrop-contrib/entityreference
           path: modules/entityreference
 
-      - name: Checkout Entity Reference
+      - name: Checkout Entity Reference Prepopulate
         uses: actions/checkout@v2
         with:
           repository: backdrop-contrib/entityreference_prepopulate

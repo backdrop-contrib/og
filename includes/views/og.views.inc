@@ -105,6 +105,17 @@ class OgMembershipViewsController extends EntityPlusDefaultViewsController {
       ),
     );
 
+  $data['og_membership']['og_membership_bulk_form'] = array(
+    'title' => t('Bulk operations'),
+    'help' => t('Provides a checkbox on each row and a form for executing bulk actions on membership.'),
+    'real field' => 'id',
+    'field' => array(
+      'handler' => 'og_handler_field_bulk_form',
+      'click sortable' => FALSE,
+      'real field' => 'id',
+    ),
+  );
+
     return $data;
   }
 }

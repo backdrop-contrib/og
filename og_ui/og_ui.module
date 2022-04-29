@@ -80,6 +80,42 @@ function og_ui_menu() {
     'file' => 'og_ui.admin.inc',
   );
 
+  // Action configuration form for deleting memberships in bulk.
+  $items['group/%/%/admin/people/delete-membership/action'] = array(
+    'title' => 'Confirm bulk membership removal',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('og_ui_delete_membership_bulk_form'),
+    'access callback' => 'og_ui_user_access_group',
+    'access arguments' => array('manage members', 1, 2),
+    'file' => 'membership_delete.action.inc',
+    'file path' => backdrop_get_path('module', 'og') . '/includes/actions',
+  );
+
+  // Action configuration form for modifying membership status in bulk.
+  $items['group/%/%/admin/people/membership-set-state/action'] = array(
+    'title' => 'Modify membership status',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('og_set_state_action_form'),
+    'access callback' => 'og_ui_user_access_group',
+    'access arguments' => array('manage members', 1, 2),
+    'file' => 'set_state.action.inc',
+    'file path' => backdrop_get_path('module', 'og') . '/includes/actions',
+  );
+
+  // Action configuration form for setting OG user roles in bulk.
+  $items['group/%/%/admin/people/membership-user-role/action'] = array(
+    'title' => 'Modify membership status',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'backdrop_get_form',
+    'page arguments' => array('og_user_roles_action_form', 1, 2),
+    'access callback' => 'og_ui_user_access_group',
+    'access arguments' => array('manage members', 1, 2),
+    'file' => 'user_roles.action.inc',
+    'file path' => backdrop_get_path('module', 'og') . '/includes/actions',
+  );
+
   // Permission administration pages.
   $items['group/%/%/admin/roles'] = array(
     'title callback' => 'og_ui_menu_title_callback',

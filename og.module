@@ -3871,6 +3871,7 @@ function og_autoload_info() {
     'og_handler_filter_user_roles' => 'includes/views/handlers/og_handler_filter_user_roles.inc',
     'og_handler_relationship' => 'includes/views/handlers/og_handler_relationship.inc',
     'og_handler_relationship_membership_roles' => 'includes/views/handlers/og_handler_relationship_membership_roles.inc',
+    'og_handler_field_bulk_form' => 'includes/views/handlers/og_handler_field_bulk_form.inc',
     'og_users_roles_join' => 'includes/views/handlers/og_handler_relationship_membership_roles.inc',
     'og_plugin_argument_default_user_groups' => 'includes/views/handlers/og_plugin_argument_default_user_groups.inc',
     'og_plugin_argument_validate_group' => 'includes/views/handlers/og_plugin_argument_validate_group.inc',

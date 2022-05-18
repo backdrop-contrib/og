@@ -74,6 +74,7 @@ Of course, make sure that you've already installed the Backdrop versions of Orga
 ## Current Maintainers
 
  - [Laryn Kragt Bakker](https://github.com/laryn) - [CEDC.org](https://cedc.org)
+ - [Alejandro Cremaschi](https://github.com/argiepiano)
  - Co-maintainers and collaborators are welcome.
 
 ## Credits

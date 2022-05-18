@@ -83,14 +83,14 @@ function og_menu() {
   // Add our own autocomplete callback to pass also the group and
   // vocabulary info.
   $items['og/autocomplete/single/%/%/%/%'] = array(
-    'title' => 'Entity Reference Autocomplete',
+    'title' => t('Entity Reference Autocomplete'),
     'page callback' => 'og_entityreference_autocomplete_callback',
     'page arguments' => array(2, 3, 4, 5, 6),
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
   $items['og/autocomplete/tags/%/%/%/%'] = array(
-    'title' => 'Entity Reference Autocomplete',
+    'title' => t('Entity Reference Autocomplete'),
     'page callback' => 'og_entityreference_autocomplete_callback',
     'page arguments' => array(2, 3, 4, 5, 6),
     'access callback' => TRUE,
@@ -1071,8 +1071,8 @@ function og_og_fields_info() {
       'cardinality' => 1,
       'settings' => array(
         'allowed_values' => array(
-          0 => 'Not a group',
-          1 => 'Group',
+          0 => t('Not a group'),
+          1 => t('Group'),
         ),
         'allowed_values_function' => '',
       ),
@@ -1114,8 +1114,8 @@ function og_og_fields_info() {
       'cardinality' => 1,
       'settings' => array(
         'allowed_values' => array(
-          0 => 'Use default roles and permissions',
-          1 => 'Override default roles and permissions',
+          0 => t('Use default roles and permissions'),
+          1 => t('Override default roles and permissions'),
         ),
         'allowed_values_function' => '',
       ),

@@ -36,14 +36,14 @@ class OgMigrateContent extends Migration {
       'nid' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'Node ID of the group-content.',
+        'description' => t('Node ID of the group-content.'),
         // Prevent nid to be ambiguous in MigrateSourceSQL::performRewind().
         'alias' => 'n',
       ),
       'group_nid' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'Node ID of the group.',
+        'description' => t('Node ID of the group.'),
       ),
     );
 

@@ -151,8 +151,8 @@ function og_access_node_access_records($node) {
  */
 function og_access_og_fields_info() {
   $allowed_values = array(
-    0 => 'Public - accessible to all site users',
-    1 => 'Private - accessible only to group members',
+    0 => t('Public - accessible to all site users'),
+    1 => t('Private - accessible only to group members'),
   );
   $items[OG_ACCESS_FIELD] = array(
     'type' => array('group'),
@@ -189,9 +189,9 @@ function og_access_og_fields_info() {
   );
 
   $allowed_values = array(
-    0 => 'Use group defaults',
-    1 => 'Public - accessible to all site users',
-    2 => 'Private - accessible only to group members',
+    0 => t('Use group defaults'),
+    1 => t('Public - accessible to all site users'),
+    2 => t('Private - accessible only to group members'),
   );
   $items[OG_CONTENT_ACCESS_FIELD] = array(
     'type' => array('group content'),

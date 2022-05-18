@@ -20,7 +20,7 @@ function og_ui_menu() {
     // possible to give authenticated group members the "subscribe" permissions.
     'access callback' => 'user_is_logged_in',
     // We don't add the group name, as it might be private.
-    'title' => 'Join group',
+    'title' => t('Join group'),
   );
 
   $items['group/%/%/unsubscribe'] = array(
@@ -30,12 +30,12 @@ function og_ui_menu() {
     'page arguments' => array(1, 2),
     'access callback' => 'og_ui_user_access_group',
     'access arguments' => array('unsubscribe', 1, 2),
-    'title' => 'Leave group',
+    'title' => t('Leave group'),
   );
 
   $items['group/%/%/admin/people/add-user'] = array(
     'page callback' => 'backdrop_get_form',
-    'title' => 'Add members',
+    'title' => t('Add members'),
     'page arguments' => array('og_ui_add_users', 1, 2),
     'type' => MENU_LOCAL_TASK,
     'file' => 'og_ui.admin.inc',
@@ -48,7 +48,7 @@ function og_ui_menu() {
   $items['group/%/%/admin/people'] = array(
     'title callback' => 'og_ui_menu_title_callback',
     'title arguments' => array('People in group @group', 1, 2),
-    'description' => 'Find and manage group members.',
+    'description' => t('Find and manage group members.'),
     'page callback' => 'og_ui_admin_account',
     'page arguments' => array(1, 2),
     'access callback' => 'og_ui_user_access_group',
@@ -71,7 +71,7 @@ function og_ui_menu() {
 
   // Delete a single membership.
   $items['group/%/%/admin/people/delete-membership/%og_membership'] = array(
-    'title' => 'Delete',
+    'title' => t('Delete'),
     'type' => MENU_CALLBACK,
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_delete_membership', 1, 2, 6),
@@ -82,7 +82,7 @@ function og_ui_menu() {
 
   // Action configuration form for deleting memberships in bulk.
   $items['group/%/%/admin/people/delete-membership/action'] = array(
-    'title' => 'Confirm bulk membership removal',
+    'title' => t('Confirm bulk membership removal'),
     'type' => MENU_CALLBACK,
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_delete_membership_bulk_form'),
@@ -94,7 +94,7 @@ function og_ui_menu() {
 
   // Action configuration form for modifying membership status in bulk.
   $items['group/%/%/admin/people/membership-set-state/action'] = array(
-    'title' => 'Modify membership status',
+    'title' => t('Modify membership status'),
     'type' => MENU_CALLBACK,
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_set_state_action_form'),
@@ -106,7 +106,7 @@ function og_ui_menu() {
 
   // Action configuration form for setting OG user roles in bulk.
   $items['group/%/%/admin/people/membership-user-role/action'] = array(
-    'title' => 'Modify membership status',
+    'title' => t('Modify membership status'),
     'type' => MENU_CALLBACK,
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_user_roles_action_form', 1, 2),
@@ -120,7 +120,7 @@ function og_ui_menu() {
   $items['group/%/%/admin/roles'] = array(
     'title callback' => 'og_ui_menu_title_callback',
     'title arguments' => array('Roles for group @group', 1, 2),
-    'description' => 'List, edit, or add user roles.',
+    'description' => t('List, edit, or add user roles.'),
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_new_role', 1, 2),
     'access callback' => 'og_ui_user_access_group',
@@ -132,8 +132,8 @@ function og_ui_menu() {
   // Node specific role edit
   // group/[1: Group type]/[2: Group ID]/admin/role/[5: Role ID]/edit
   $items['group/%/%/admin/role/%/edit'] = array(
-    'title' => 'Edit role',
-    'description' => 'List, edit, or add user roles.',
+    'title' => t('Edit role'),
+    'description' => t('List, edit, or add user roles.'),
     'page callback' => 'backdrop_get_form',
     // Passing empty bundle name to og_ui_admin_roles. The bundle will be
     // loaded from the role.
@@ -148,7 +148,7 @@ function og_ui_menu() {
   $items['group/%/%/admin/permissions'] = array(
     'title callback' => 'og_ui_menu_title_callback',
     'title arguments' => array('Permissions for group @group', 1, 2),
-    'description' => 'Determine access to features by selecting permissions for roles.',
+    'description' => t('Determine access to features by selecting permissions for roles.'),
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_permissions', 1, 2),
     'access callback' => 'og_ui_user_access_group',
@@ -161,7 +161,7 @@ function og_ui_menu() {
   // group/[1: Group type]/[2: Group ID]/admin/permission/[5: Role ID]/edit
   $items['group/%/%/admin/permission/%/edit'] = array(
     'title' => "Edit role's permissions",
-    'description' => 'Determine access to features by selecting permissions for role.',
+    'description' => t('Determine access to features by selecting permissions for role.'),
     'page callback' => 'backdrop_get_form',
     // Passing empty bundle name to og_ui_admin_permissions. The bundle will be
     // loaded from the role.
@@ -183,7 +183,7 @@ function og_ui_menu() {
     }
 
     $items[$path] = array(
-      'title' => 'Group',
+      'title' => t('Group'),
       'page callback' => 'og_ui_group_admin_overview',
       'page arguments' => array($entity_type, $argument),
       'access callback' => 'og_ui_get_group_admin',
@@ -195,8 +195,8 @@ function og_ui_menu() {
   }
 
   $items['admin/config/group'] = array(
-    'title' => 'Organic groups',
-    'description' => 'Administer the suite of Organic groups modules.',
+    'title' => t('Organic groups'),
+    'description' => t('Administer the suite of Organic groups modules.'),
     'position' => 'right',
     'weight' => -5,
     'page callback' => 'system_admin_menu_block_page',
@@ -206,8 +206,8 @@ function og_ui_menu() {
   );
 
   $items['admin/config/group/settings'] = array(
-    'title' => 'OG settings',
-    'description' => 'Administer OG settings.',
+    'title' => t('OG settings'),
+    'description' => t('Administer OG settings.'),
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_admin_settings'),
     'access arguments' => array('administer group'),
@@ -217,9 +217,9 @@ function og_ui_menu() {
   $items['admin/config/group/permissions'] = array(
     'page callback' => 'og_ui_group_types_overview',
     'page arguments' => array('permissions'),
-    'title' => 'OG permissions overview',
+    'title' => t('OG permissions overview'),
     'access arguments' => array('administer group'),
-    'description' => 'Overview of Organic groups permissions.',
+    'description' => t('Overview of Organic groups permissions.'),
     'file' => 'og_ui.admin.inc',
   );
 
@@ -235,7 +235,7 @@ function og_ui_menu() {
         'title arguments' => array('OG @type - @bundle permissions', $entity_type, $bundle_name),
         'access callback' => 'og_ui_access_group_permissions',
         'access arguments' => array($entity_type, $bundle_name),
-        'description' => 'Configure Organic groups group type permissions.',
+        'description' => t('Configure Organic groups group type permissions.'),
         'file' => 'og_ui.admin.inc',
       );
     }
@@ -248,16 +248,16 @@ function og_ui_menu() {
     'title arguments' => array('OG @type - @bundle - @role permissions', '', '', 4),
     'access callback' => 'og_ui_access_bundle_role',
     'access arguments' => array(4),
-    'description' => 'Configure Organic groups group type permissions.',
+    'description' => t('Configure Organic groups group type permissions.'),
     'file' => 'og_ui.admin.inc',
   );
 
   $items['admin/config/group/roles'] = array(
     'page callback' => 'og_ui_group_types_overview',
     'page arguments' => array('roles'),
-    'title' => 'OG roles overview',
+    'title' => t('OG roles overview'),
     'access arguments' => array('administer group'),
-    'description' => 'Overview of organic groups roles.',
+    'description' => t('Overview of organic groups roles.'),
     'file' => 'og_ui.admin.inc',
   );
 
@@ -273,7 +273,7 @@ function og_ui_menu() {
         'title arguments' => array('OG @type - @bundle roles', $entity_type, $bundle_name),
         'access callback' => 'og_ui_access_bundle',
         'access arguments' => array($entity_type, $bundle_name),
-        'description' => 'Configure Organic groups group type roles.',
+        'description' => t('Configure Organic groups group type roles.'),
         'file' => 'og_ui.admin.inc',
       );
     }
@@ -286,16 +286,16 @@ function og_ui_menu() {
     'title arguments' => array('OG @type - @bundle - @role', '', '', 4),
     'access callback' => 'og_ui_access_bundle_role',
     'access arguments' => array(4),
-    'description' => 'Configure Organic groups group type roles.',
+    'description' => t('Configure Organic groups group type roles.'),
     'file' => 'og_ui.admin.inc',
   );
 
   $items['admin/config/group/fields'] = array(
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_field_settings'),
-    'title' => 'OG field settings',
+    'title' => t('OG field settings'),
     'access arguments' => array('administer group'),
-    'description' => 'Configure Organic groups fields in bundles.',
+    'description' => t('Configure Organic groups fields in bundles.'),
     'file' => 'og_ui.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
@@ -304,9 +304,9 @@ function og_ui_menu() {
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_field_delete_form', 6),
     'load arguments' => array(4, 5, 5, '%map'),
-    'title' => 'Delete',
+    'title' => t('Delete'),
     'access arguments' => array('administer group'),
-    'description' => 'Delete an OG field from a bundle.',
+    'description' => t('Delete an OG field from a bundle.'),
     'file' => 'og_ui.admin.inc',
     'type' => MENU_LOCAL_TASK,
   );

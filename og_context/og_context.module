@@ -12,8 +12,8 @@
  */
 function og_context_menu() {
   $items['admin/config/group/context'] = array(
-    'title' => 'OG context',
-    'description' => 'OG context detection and selection',
+    'title' => t('OG context'),
+    'description' => t('OG context detection and selection'),
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_context_configure_form'),
     'access arguments' => array('administer group'),

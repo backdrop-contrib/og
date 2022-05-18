@@ -27,12 +27,12 @@ class OgMigrateUser extends Migration {
       'nid' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'node ID of group.',
+        'description' => t('node ID of group.'),
       ),
       'uid' => array(
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'User ID of member.',
+        'description' => t('User ID of member.'),
       ),
     );
 

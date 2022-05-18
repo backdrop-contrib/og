@@ -30,19 +30,19 @@ class OgMigrateOgur extends Migration {
         'alias' => 'ogur',
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'node ID of group.',
+        'description' => t('node ID of group.'),
       ),
       'uid' => array(
         'alias' => 'ogur',
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'User ID of member.',
+        'description' => t('User ID of member.'),
       ),
       'rid' => array(
         'alias' => 'ogr',
         'type' => 'int',
         'not null' => TRUE,
-        'description' => 'Role ID of role.',
+        'description' => t('Role ID of role.'),
       ),
     );
 

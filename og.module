@@ -1071,8 +1071,8 @@ function og_og_fields_info() {
       'cardinality' => 1,
       'settings' => array(
         'allowed_values' => array(
-          0 => t('Not a group'),
-          1 => t('Group'),
+          0 => 'Not a group',
+          1 => 'Group',
         ),
         'allowed_values_function' => '',
       ),

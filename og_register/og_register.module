@@ -138,8 +138,8 @@ function og_register_og_membership_state_validate($element, &$form_state) {
  */
 function og_register_og_fields_info() {
   $allowed_values = array(
-    0 => t('Do not show on registration page'),
-    1 => t('Show on registration page'),
+    0 => 'Do not show on registration page',
+    1 => 'Show on registration page',
   );
   $items[OG_REGISTER_FIELD] = array(
     'type' => array('group'),

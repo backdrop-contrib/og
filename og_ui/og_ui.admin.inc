@@ -1015,6 +1015,7 @@ function og_ui_field_settings($form, &$form_state) {
 
   $form['bundle'] = array(
     '#title' => t('Bundles'),
+    '#description' => t('Select the entity and bundle to which you wish to add an OG field.'),
     '#type' => 'select',
     '#options' => $options,
   );
@@ -1090,9 +1091,13 @@ function og_ui_field_settings($form, &$form_state) {
   }
 
   if ($field_enabled) {
+    $form['group_fields_title'] = array(
+      '#markup' => t('<h4>OG fields already added to entities and bundles</h4>'),
+      '#weight' => 998,
+    );
     $form['group_fields'] = array(
       '#type' => 'vertical_tabs',
-      '#weight' => 99,
+      '#weight' => 999,
     );
 
     // Show all the group fields of each bundle.
@@ -1125,6 +1130,7 @@ function og_ui_field_settings($form, &$form_state) {
   else {
     $form['group_fields'] = array(
       '#markup' => t('There are no Group fields attached to any bundle yet.'),
+      '#weight' => 999,
     );
   }
 

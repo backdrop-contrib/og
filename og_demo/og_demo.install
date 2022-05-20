@@ -1,0 +1,42 @@
+ <?php
+
+  function og_demo_install() {
+
+    $groups = array(
+      'Red' => array(
+        'title' => st('Red Group'),
+        'body' => st('<p>Backdrop CMS includes three pre-defined types of content: Pages, Posts, and Cards. Custom content types can also be added.</p><p><a href="https://docs.backdropcms.org/documentation/content-types">Learn more about content types</a></p>'),
+      ),
+      'Green' => array(
+        'title' => st('Green Group'),
+        'body' => st('<p>A Card can only be seen as part of another page. Place them individually as "Existing content" Blocks, or grouped as in a View.</p><p><a href="https://docs.backdropcms.org/documentation/creating-and-editing-content">Learn more about Cards</a></p>'),
+      ),
+      'Blue' => array(
+        'title' => st('Blue Group'),
+        'body' => st('<p>Use the home page layout to specifically customize this page. These Cards only appear on this layout.</p><p><a href="https://docs.backdropcms.org/documentation/the-home-page">Learn more about the Home page</a></p>'),
+      ),
+    );
+
+    foreach ($groups as $group => $info) {
+      $group = new Node(
+        array(
+          'title' => $info['title'],
+          'body' => array(
+            LANGUAGE_NONE => array(
+              array(
+                'value' => $info['body'],
+                'format' => 'filtered_html',
+              ),
+            ),
+          ),
+          'uid' => 1,
+          'status' => 1,
+          'promote' => 1,
+          'type' => 'group',
+        )
+      );
+      $group->save();
+    }
+  }
+
+  

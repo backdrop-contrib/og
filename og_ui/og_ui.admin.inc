@@ -998,8 +998,26 @@ function theme_og_ui_admin_permissions($variables) {
  * Allow site admin to add or remove group fields from fieldable entities.
  */
 function og_ui_field_settings($form, &$form_state) {
+
+
+
   $form = array();
   $options = array();
+
+  $help = '<p>' . t('Organic Groups provides a number of fields that can be added to bundles (such as nodes or entities). Examples:') . '</p>';
+  $help .= '<li>' . t('Add a "group" field to a content type to configure it as a group.') . '</li>';
+  $help .= '<li>' . t('Add a "group audience" field a content type to assign content to a group.') . '</li>';
+  $help .= '<li>' . t('Add a "group visibilty" field to your "group" bundle to set visibly conditions per group (requires <em>Organic groups access control</em> sub-module).') . '</li>';
+  $help .= '<li>' . t('Add a "group content visibilty" field to your "group content" bundle to set visibly conditions for group content (requires <em>Organic groups access control</em> sub-module).') . '</li>';
+  $form['help'] = array(
+    '#type' => 'details',
+    '#summary' => t('Help with OG Field Settings'),
+    '#details' => $help,
+    '#attributes' => array(
+      'class' => array('description'),
+    ),
+    '#weight' => -1,
+  );
 
   $options = array();
   foreach (entity_get_info() as $entity_type => $entity_info) {
@@ -1012,9 +1030,12 @@ function og_ui_field_settings($form, &$form_state) {
       $options[$entity_name][$entity_type . ':' . $bundle_name] = filter_xss($bundle['label']);
     }
   }
+  
+
 
   $form['bundle'] = array(
-    '#title' => t('Bundles'),
+    '#title' => t('Select one'),
+    '#description' => t('Select the entity and bundle to which you wish to add an OG field.'),
     '#type' => 'select',
     '#options' => $options,
   );
@@ -1038,7 +1059,7 @@ function og_ui_field_settings($form, &$form_state) {
   );
 
   $form['field_info_wrapper']['field_type'] = array(
-    '#title' => t('Fields'),
+    '#title' => t('OG Fields'),
     '#type' => 'select',
     '#options' => $options,
     '#required' => TRUE,
@@ -1056,7 +1077,7 @@ function og_ui_field_settings($form, &$form_state) {
   if (!empty($selected_og_info['multiple'])) {
     $form['field_info_wrapper']['field_name'] = array(
       '#type' => 'textfield',
-      '#title' => t('Field name'),
+      '#title' => t('OG Field name'),
       '#description' => t('This field type supports adding multiple instances on the same bundle (i.e. the field name is not hardcoded).'),
       '#required' => TRUE,
       '#maxlength' => 32,
@@ -1090,9 +1111,13 @@ function og_ui_field_settings($form, &$form_state) {
   }
 
   if ($field_enabled) {
+    $form['group_fields_title'] = array(
+      '#markup' => t('<h4>OG fields already added to entities and bundles</h4>'),
+      '#weight' => 998,
+    );
     $form['group_fields'] = array(
       '#type' => 'vertical_tabs',
-      '#weight' => 99,
+      '#weight' => 999,
     );
 
     // Show all the group fields of each bundle.
@@ -1125,6 +1150,7 @@ function og_ui_field_settings($form, &$form_state) {
   else {
     $form['group_fields'] = array(
       '#markup' => t('There are no Group fields attached to any bundle yet.'),
+      '#weight' => 999,
     );
   }
 

@@ -300,11 +300,6 @@ function og_ui_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
-  // $items['admin/config/group/fields/add'] = array(
-  //   'title' => 'OG field settings',
-  //   'type' => MENU_DEFAULT_LOCAL_TASK,
-  // );
-
   $items['admin/config/group/fields/%/%/%field_ui_menu/delete'] = array(
     'page callback' => 'backdrop_get_form',
     'page arguments' => array('og_ui_field_delete_form', 6),

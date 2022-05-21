@@ -6,16 +6,16 @@
 
     $groups = array(
       'Red' => array(
-        'title' => st('Red Group'),
-        'body' => st('<p>This is a group for folks who love red things.</p>'),
+        'title' => st('Theme Developers'),
+        'body' => st('<p>This group is for folks working on new themes for Backdrop CMS.</p>'),
       ),
       'Green' => array(
-        'title' => st('Green Group'),
-        'body' => st('<p>This is a group for folks who love green things.</p>'),
+        'title' => st('Documentation'),
+        'body' => st('<p>A place for folks to coordinate efforts at improving Backdrop CMS documentation.</p>'),
       ),
       'Blue' => array(
-        'title' => st('Blue Group'),
-        'body' => st('<p>This is a group for folks who love blue things.</p>'),
+        'title' => st('Core Development'),
+        'body' => st('<p>Join this group for the latest information about core development priorities.</p>'),
       ),
     );
 
@@ -41,35 +41,35 @@
     }
   
     $group_content = array(
-      'Hearts' => array(
-        'title' => st('Hearts'),
-        'body' => st('<p>Bleeding hearts belong in the Red group.</p><p>Red is the color at the long wavelength end of the visible spectrum of light, next to orange and opposite violet. It has a dominant wavelength of approximately 625–740 nanometres. It is a primary color in the RGB color model and a secondary color (made from magenta and yellow) in the CMYK color model, and is the complementary color of cyan. Reds range from the brilliant yellow-tinged scarlet and vermillion to bluish-red crimson, and vary in shade from the pale red pink to the dark red burgundy.</p>'),
-        'group' => st('Red Group'),
+      'One' => array(
+        'title' => st('Refence Module in Core'),
+        'body' => st('<p>Move the Entity Reference contrib module into core. It has been refactored to remove any external dependencies. Entity Reference is the most obvious candidate based on the following advantages: <ol><li>It has the highest install count.</li></li>It has the most flexible API and number of extending modules.</li><li>It is a proven solution and includes an upgrade path for D7 Entity Reference users.</li></p>'),
+        'group' => st('Core Development'),
       ),
-      'Blood' => array(
-        'title' => st('Blood'),
-        'body' => st('<p>They say that blood is thicker than water. It is also red and belongs in the red group.</p><p>The blood moon prophecies were a series of prophecies by Christian preachers John Hagee and Mark Biltz, related to a series of four full moons in 2014 and 2015. The prophecies stated that a tetrad (a series of four consecutive lunar eclipses—all total and coinciding on Jewish holidays—with six full moons in between, and no intervening partial lunar eclipses) which began with the April 2014 lunar eclipse was the beginning of the end times as described in the Bible in the Book of Joel, Acts 2:20, and Revelation 6:12. The tetrad ended with the lunar eclipse on September 27–28, 2015.</p>'),
-        'group' => st('Red Group'),
+      'Two' => array(
+        'title' => st('What is a theme?'),
+        'body' => st('<p>A theme is a collection of files which define the presentation layer of a Backdrop site. The theme determines the appearance of a site. You can also create one or more "sub-themes" or variations on a theme. Only the .info file is required, but most themes and sub-themes will use other files as well.</p><p>On the surface, sub-themes behave just like any other theme. The only difference is that they inherit the resources from their parent themes. To create one, a "base theme" entry inside the .info file is needed. From there it will inherit the resources from its parent theme. There can be multiple levels of inheritance; i.e., a sub-theme can declare another sub-theme as its base. There are no hard set limits to this.</p>'),
+        'group' => st('Theme Developers'),
       ),
-      'Grass' => array(
-        'title' => st('Grass'),
-        'body' => st('<p>Grass is always green, sometimes it greener when on the other side of the fence.</p><p>Green is the color between cyan and yellow on the visible spectrum. It is evoked by light which has a dominant wavelength of roughly 495–570 nm. In subtractive color systems, used in painting and color printing, it is created by a combination of yellow and cyan; in the RGB color model, used on television and computer screens, it is one of the additive primary colors, along with red and blue, which are mixed in different combinations to create all other colors. By far the largest contributor to green in nature is chlorophyll, the chemical by which plants photosynthesize and convert sunlight into chemical energy. Many creatures have adapted to their green environments by taking on a green hue themselves as camouflage. Several minerals have a green color, including the emerald, which is colored green by its chromium content.</p>'),
-        'group' => st('Green Group'),
+      'Three' => array(
+        'title' => st('Contribute to Documentation'),
+        'body' => st('<p>You can help the Backdrop community by contributing to the documentation on this site. Documentation of code is created by the API module from docblock comments within the code, so changes to code documentation are made by submitting a pull request as you would make for any other code change.</p>'),
+        'group' => st('Documentation'),
       ),
-      'Shamrocks' => array(
-        'title' => st('Shamrocks'),
-        'body' => st('<p>The luck of the Irish is green.</p><p>A shamrock is a young sprig, used as a symbol of Ireland. Saint Patrick, Ireland patron saint, is said to have used it as a metaphor for the Christian Holy Trinity. The name shamrock comes from Irish seamróg ([ˈʃamˠɾˠoːɡ]), which is the diminutive of the Irish word seamair and simply means young clover.</p>'),
-        'group' => st('Green Group'),
+      'Four' => array(
+        'title' => st('The Backdrop CMS User Guide'),
+        'body' => st('<p>The User Guide is a detailed "How-To" for practically everything you need to know to create, customize, and manage a Backdrop website and is intended for people who may be new to content management systems in general and to the Backdrop CMS in particular.</p>'),
+        'group' => st('Documentation'),
       ),
-      'Sky' => array(
-        'title' => st('Sky'),
-        'body' => st('<p>The sky is blue and the clouds are gray. Yes, I can see for miles and miles.</p><p>Blue is one of the three primary colours in the RYB colour model (traditional color theory), as well as in the RGB (additive) colour model. It lies between violet and cyan on the spectrum of visible light. The eye perceives blue when observing light with a dominant wavelength between approximately 450 and 495 nanometres. Most blues contain a slight mixture of other colours; azure contains some green, while ultramarine contains some violet. The clear daytime sky and the deep sea appear blue because of an optical effect known as Rayleigh scattering. An optical effect called Tyndall effect explains blue eyes. Distant objects appear more blue because of another optical effect called aerial perspective.</p>'),
-        'group' => st('Blue Group'),
+      'Five' => array(
+        'title' => st('Core Developers'),
+        'body' => st('<p>Core developers should fight the urge to refactor, because small changes in core may result in large changes for contrib. Each major change will be weighed carefully against the principles of the project to determine if the improvements it offers are worth the cost of that change. If a decision is not immediately clear, the issue should be escalated to the Project Management Committee.</p>'),
+        'group' => st('Core Development'),
       ),
-      'Water' => array(
+      'Six' => array(
         'title' => st('Water'),
-        'body' => st('<p>The sea is also blue, except in the middle of garbage island.</p><p>The Great Pacific garbage patch (also Pacific trash vortex) is a garbage patch, a gyre of marine debris particles, in the central North Pacific Ocean. It is located roughly from 135°W to 155°W and 35°N to 42°N.[1] The collection of plastic and floating trash originates from the Pacific Rim, including countries in Asia, North America, and South America.[2] The gyre is divided into two areas, the "Eastern Garbage Patch" from California to Hawaii, and the "Western Garbage Patch" extending from Hawaii to Japan.</p>'),
-        'group' => st('Blue Group'),
+        'body' => st('<p>The most important consideration when converting themes to Backdrop is the concept that your theme is no longer responsible for the layout of a site. This is because of the introduction of Layout module, Backdrop drag and drop page layout builder.</p><p>Layout module now provides ten responsive layout templates including a multi-region stacked layout similar to what was provided in the Bartik theme for Drupal 7.</p><p>In the Layouts interface, blocks are provided to place the site header, main navigation, search box, and so on. All these elements can be rearranged by dragging and dropping these blocks into the regions provided by the layout template.</p><p>Porting a theme mainly now consists of the application of the old themes style to the new theme. Once this is understood, the conversion itself should be reasonably straightforward.</p>'),
+        'group' => st('Theme Developers'),
       ),
     );
 

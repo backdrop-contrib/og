@@ -295,15 +295,10 @@ function og_ui_menu() {
     'page arguments' => array('og_ui_field_settings'),
     'title' => 'OG field settings',
     'access arguments' => array('administer group'),
-    'description' => 'Mange Organic groups fields.',
+    'description' => 'Configure Organic groups fields in bundles.',
     'file' => 'og_ui.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );
-
-  // $items['admin/config/group/fields/add'] = array(
-  //   'title' => 'OG field settings',
-  //   'type' => MENU_DEFAULT_LOCAL_TASK,
-  // );
 
   $items['admin/config/group/fields/%/%/%field_ui_menu/delete'] = array(
     'page callback' => 'backdrop_get_form',

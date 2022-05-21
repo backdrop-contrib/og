@@ -1,11 +1,11 @@
 {
-    "_config_name": "node.type.group",
-    "type": "group",
-    "name": "Group",
+    "_config_name": "node.type.group_content",
+    "type": "group_content",
+    "name": "Group Content",
     "base": "node_content",
     "module": "node",
     "node_preview": "1",
-    "description": "",
+    "description": "Use for content you would like connected to groups. ",
     "help": "",
     "modified": true,
     "disabled": false,
@@ -39,12 +39,12 @@
         "revision_enabled": 1,
         "revision_default": 0,
         "node_preview": "1",
-        "node_submitted": 1,
+        "node_submitted": 0,
         "node_submitted_format": "[node:created:medium] by [node:author]",
         "node_user_picture": true,
         "hidden_path": 0,
         "language": 0,
         "node_permissions": true
     },
-    "orig_type": "group"
+    "orig_type": "group_content"
 }

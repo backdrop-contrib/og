@@ -3,7 +3,6 @@
     "name": "og_groups",
     "description": "All groups (nodes)",
     "module": "og",
-    "storage": 2,
     "tag": "og",
     "disabled": false,
     "base_table": "node",

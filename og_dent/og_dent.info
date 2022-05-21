@@ -1,4 +1,4 @@
-name = Organic groups demo
+name = Organic groups dent
 description = "Creates some demo content for Oganic groups module."
 package = "Organic groups"
 dependencies[] = og

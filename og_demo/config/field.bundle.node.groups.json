@@ -1,0 +1,14 @@
+{
+    "_config_name": "field.bundle.node.groups",
+    "bundle": "groups",
+    "entity_type": "node",
+    "view_modes": [],
+    "extra_fields": {
+        "form": {
+            "title": {
+                "weight": "-5"
+            }
+        },
+        "display": []
+    }
+}

@@ -295,7 +295,7 @@ function og_ui_menu() {
     'page arguments' => array('og_ui_field_settings'),
     'title' => 'OG field settings',
     'access arguments' => array('administer group'),
-    'description' => 'Mange Organic groups fields.',
+    'description' => 'Manage Organic groups fields.',
     'file' => 'og_ui.admin.inc',
     'type' => MENU_NORMAL_ITEM,
   );

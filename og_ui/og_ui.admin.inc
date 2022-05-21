@@ -1005,10 +1005,12 @@ function og_ui_field_settings($form, &$form_state) {
   $options = array();
 
   $help = '<p>' . t('Organic Groups provides a number of fields that can be added to bundles (such as nodes or entities). Examples:') . '</p>';
+  $help .= '<ul>';
   $help .= '<li>' . t('Add a "group" field to a content type to configure it as a group.') . '</li>';
   $help .= '<li>' . t('Add a "group audience" field a content type to assign content to a group.') . '</li>';
-  $help .= '<li>' . t('Add a "group visibilty" field to your "group" bundle to set visibly conditions per group (requires <em>Organic groups access control</em> sub-module).') . '</li>';
-  $help .= '<li>' . t('Add a "group content visibilty" field to your "group content" bundle to set visibly conditions for group content (requires <em>Organic groups access control</em> sub-module).') . '</li>';
+  $help .= '<li>' . t('Add a "group visibility" field to your "group" bundle to set visibility conditions per group (requires <em>Organic groups access control</em> sub-module).') . '</li>';
+  $help .= '<li>' . t('Add a "group content visibility" field to your "group content" bundle to set visibility conditions for group content (requires <em>Organic groups access control</em> sub-module).') . '</li>';
+  $help .= '</ul>';
   $form['help'] = array(
     '#type' => 'details',
     '#summary' => t('Help with OG Field Settings'),
@@ -1030,7 +1032,7 @@ function og_ui_field_settings($form, &$form_state) {
       $options[$entity_name][$entity_type . ':' . $bundle_name] = filter_xss($bundle['label']);
     }
   }
-  
+
 
 
   $form['bundle'] = array(

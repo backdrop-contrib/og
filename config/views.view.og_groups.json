@@ -1,12 +1,13 @@
 {
     "_config_name": "views.view.og_groups",
     "name": "og_groups",
-    "module": "og",
     "description": "All groups (nodes)",
+    "module": "og",
+    "storage": 2,
     "tag": "og",
     "disabled": false,
     "base_table": "node",
-    "human_name": "OG Groups",
+    "human_name": "OG groups",
     "core": "1",
     "display": {
         "default": {
@@ -34,7 +35,7 @@
                         "offset": "0"
                     }
                 },
-                "style_plugin": "table",
+                "style_plugin": "default",
                 "row_plugin": "fields",
                 "fields": {
                     "title": {
@@ -120,7 +121,7 @@
                         "order": "DESC"
                     }
                 },
-                "title": "All Groups",
+                "title": "",
                 "filter_groups": {
                     "operator": "AND",
                     "groups": {
@@ -131,25 +132,7 @@
                     "grouping": [],
                     "row_class": "",
                     "default_row_class": 1,
-                    "row_class_special": 1,
-                    "override": 1,
-                    "sticky": 0,
-                    "caption": "",
-                    "summary": "",
-                    "columns": {
-                        "title": "title"
-                    },
-                    "info": {
-                        "title": {
-                            "sortable": 0,
-                            "default_sort_order": "asc",
-                            "align": "",
-                            "separator": "",
-                            "empty_column": 0
-                        }
-                    },
-                    "default": "-1",
-                    "empty_table": 0
+                    "row_class_special": 1
                 }
             }
         },

@@ -2,7 +2,6 @@
 
   function og_demo_install() {
 
-
     // Force Entity Plus to create the appropriate metadata for the new fields.  
     entity_property_info_cache_clear();
 
@@ -71,7 +70,7 @@
         'group' => st('Core Development'),
       ),
       'Six' => array(
-        'title' => st('Water'),
+        'title' => st('Layouts'),
         'body' => st('<p>The most important consideration when converting themes to Backdrop is the concept that your theme is no longer responsible for the layout of a site. This is because of the introduction of Layout module, Backdrop drag and drop page layout builder.</p><p>Layout module now provides ten responsive layout templates including a multi-region stacked layout similar to what was provided in the Bartik theme for Drupal 7.</p><p>In the Layouts interface, blocks are provided to place the site header, main navigation, search box, and so on. All these elements can be rearranged by dragging and dropping these blocks into the regions provided by the layout template.</p><p>Porting a theme mainly now consists of the application of the old themes style to the new theme. Once this is understood, the conversion itself should be reasonably straightforward.</p>'),
         'group' => st('Theme Developers'),
       ),
@@ -123,6 +122,3 @@
     return $temp;
   }
 
-
-
- 

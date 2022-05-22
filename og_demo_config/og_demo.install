@@ -1,8 +1,12 @@
  <?php
 
-  function og_demo_content_install() {
+  function og_demo_install() {
 
-   // Create three groups
+
+    // Force Entity Plus to create the appropriate metadata for the new fields.  
+    entity_property_info_cache_clear();
+
+    // Create three groups
 
     $groups = array(
       'Red' => array(
@@ -74,7 +78,7 @@
     );
 
     foreach ($group_content as $content => $info) {
-      og_demo_content_get_title($info);
+      og_demo_get_title($info);
 
       $content = new Node(
         array(
@@ -104,7 +108,7 @@
     }
   }
 
-  function og_demo_content_get_title(&$temp) {
+  function og_demo_get_title(&$temp) {
     //  Gets a list of all groups that are nodes
     $mygroups = og_get_all_group('node');
 
@@ -118,6 +122,7 @@
     }
     return $temp;
   }
+
 
 
  

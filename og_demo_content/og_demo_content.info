@@ -1,9 +1,0 @@
-name = Organic groups demo content
-description = "Creates some demo content for Oganic groups module."
-package = "Organic groups"
-dependencies[] = og
-backdrop = 1.x
-type = module
-
-dependencies[] = og
-dependencies[] = og_demo_config

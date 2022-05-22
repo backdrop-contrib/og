@@ -1,8 +1,0 @@
-name = Organic groups demo config
-description = "Add some demo configuration for content types to get started."
-package = "Organic groups"
-dependencies[] = og
-backdrop = 1.x
-type = module
-
-dependencies[] = og

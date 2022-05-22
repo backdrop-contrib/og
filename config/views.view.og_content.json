@@ -3,7 +3,6 @@
     "name": "og_content",
     "description": "Show all content (nodes) of a group.",
     "module": "og",
-    "storage": 2,
     "tag": "og",
     "disabled": false,
     "base_table": "node",

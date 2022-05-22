@@ -105,6 +105,12 @@
       );
       node_save($content); 
     }
+
+    dpm('install complete');
+
+    // Update the menu router information.
+    menu_rebuild();
+
   }
 
   function og_demo_get_title(&$temp) {

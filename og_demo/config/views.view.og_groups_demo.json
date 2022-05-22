@@ -1,8 +1,9 @@
 {
     "_config_name": "views.view.og_groups_demo",
     "name": "og_groups_demo",
-    "description": "All groups (nodes) - Demo",
+    "description": "All groups (nodes)",
     "module": "og",
+    "storage": 2,
     "tag": "og",
     "disabled": false,
     "base_table": "node",
@@ -149,6 +150,26 @@
                     }
                 },
                 "display_description": ""
+            }
+        },
+        "page_1": {
+            "display_title": "Page",
+            "display_plugin": "page",
+            "display_options": {
+                "query": {
+                    "type": "views_query",
+                    "options": []
+                },
+                "path": "groups",
+                "menu": {
+                    "type": "normal",
+                    "title": "Groups",
+                    "description": "",
+                    "name": "main-menu",
+                    "weight": "0",
+                    "context": 0,
+                    "context_only_inline": 0
+                }
             }
         }
     }

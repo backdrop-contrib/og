@@ -911,6 +911,9 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
     '#collapsible' => TRUE,
     '#group' => 'additional_settings',
     '#description' => t('Specify how OG should treat content of this type. Content may behave as a group, as group content, or may not participate in OG at all.'),
+    '#attached' => array(
+      'js' => array(backdrop_get_path('module', 'og_ui') . '/js/og_ui.js'),
+    ),
   );
 
   // Group settings.

@@ -1,7 +1,7 @@
 {
-    "_config_name": "views.view.og_groups",
-    "name": "og_groups",
-    "description": "All groups (nodes)",
+    "_config_name": "views.view.og_groups_demo",
+    "name": "og_groups_demo",
+    "description": "All groups (nodes) - Demo",
     "module": "og",
     "tag": "og",
     "disabled": false,

@@ -8,6 +8,9 @@ function og_demo_install() {
   // Create the field group_group for the content type group and set roles.
   og_create_field(OG_GROUP_FIELD, 'node', 'group');
 
+  // Create the field group_access to set public/private access on groups.
+  og_create_field(OG_ACCESS_FIELD, 'node', 'group');
+
   // Create the field og_group_ref for the content type group_content and set
   // default roles.
   $og_field = og_fields_info(OG_AUDIENCE_FIELD);
@@ -21,14 +24,17 @@ function og_demo_install() {
     'theme_developers' => array(
       'title' => st('Theme Developers'),
       'body' => st('<p>This group is for folks working on new themes for Backdrop CMS.</p>'),
+      'private' => '0',
     ),
     'documentation' => array(
       'title' => st('Documentation'),
       'body' => st('<p>A place for folks to coordinate efforts at improving Backdrop CMS documentation.</p>'),
+      'private' => '0',
     ),
     'core_development' => array(
       'title' => st('Core Development'),
       'body' => st('<p>Join this group for the latest information about core development priorities.</p>'),
+      'private' => '1',
     ),
   );
 
@@ -41,6 +47,13 @@ function og_demo_install() {
             array(
               'value' => $info['body'],
               'format' => 'filtered_html',
+            ),
+          ),
+        ),
+        'group_access' => array(
+          LANGUAGE_NONE => array(
+            array(
+              'value' => $info['private'],
             ),
           ),
         ),
@@ -118,4 +131,6 @@ function og_demo_install() {
   // Update the menu router information.
   menu_rebuild();
 
+  // Rebuild permissions
+  node_access_rebuild();
 }

@@ -1,0 +1,9 @@
+name = Organic groups demo 
+description = "Add some demo content to get started."
+package = "Organic groups"
+backdrop = 1.x
+type = module
+
+dependencies[] = og
+dependencies[] = og_context
+dependencies[] = og_ui

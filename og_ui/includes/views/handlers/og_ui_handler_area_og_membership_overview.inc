@@ -36,7 +36,7 @@ class og_ui_handler_area_og_membership_overview extends views_handler_area {
       $form["total_members_$state"] = array(
         '#type' => 'checkbox',
         '#title' => t('Show total @label members', array('@label' => strtolower($label))),
-        '#default_value' => $this->options["total_members_$state"],
+        '#default_value' => $this->options["total_$state"],
       );
     }
 

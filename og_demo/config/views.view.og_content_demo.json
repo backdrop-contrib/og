@@ -1,12 +1,11 @@
 {
-    "_config_name": "views.view.og_content",
-    "name": "og_content",
+    "_config_name": "views.view.og_content_demo",
+    "name": "og_content_demo",
     "description": "Show all content (nodes) of a group.",
-    "module": "og",
     "tag": "og",
     "disabled": false,
     "base_table": "node",
-    "human_name": "OG content",
+    "human_name": "OG content (demo)",
     "core": "1",
     "display": {
         "default": {

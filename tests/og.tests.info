@@ -78,7 +78,7 @@ file = og.test
 
 [OgNonMembersPublishingContentTestCase]
 name = OG non members publishing
-description = Grant access to non members users publishing content with the group passed in the query string. <a href="https://backdropcms.org/project/entityreference_prepopulate/">Entity reference prepopulate module</a> is required!
+description = Grant access to non members users publishing content with the group passed in the query string.
 group = Organic groups
 file = og.test
 

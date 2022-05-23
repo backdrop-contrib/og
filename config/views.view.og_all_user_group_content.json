@@ -161,7 +161,7 @@
                             "fail": "not found"
                         },
                         "validate_options": [],
-                        "break_phrase": 1,
+                        "break_phrase": 0,
                         "not": 0
                     }
                 },
@@ -262,16 +262,6 @@
                     }
                 },
                 "title": ""
-            }
-        },
-        "block_1": {
-            "display_title": "Block",
-            "display_plugin": "block",
-            "display_options": {
-                "query": {
-                    "type": "views_query",
-                    "options": []
-                }
             }
         }
     }

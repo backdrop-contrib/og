@@ -26,9 +26,11 @@
         ],
         "content": [
             "59ffb3af-86a4-4444-8202-2ccab27e10bf",
-            "481722ad-fbd2-4ded-a14b-755c0252cbbb"
+            "5d2958ef-a8ac-4bd1-a805-5d8b8d4b4780"
         ],
-        "sidebar": [],
+        "sidebar": [
+            "f3d44959-abc1-4a31-8000-f939cefedfa1"
+        ],
         "bottom": [],
         "footer": [
             "1c6d1805-0528-48f8-bd07-7d9efdedf1b4"
@@ -171,12 +173,12 @@
                 }
             }
         },
-        "481722ad-fbd2-4ded-a14b-755c0252cbbb": {
-            "plugin": "views:og_content-block_1",
+        "5d2958ef-a8ac-4bd1-a805-5d8b8d4b4780": {
+            "plugin": "views:og_content_demo-block_1",
             "data": {
                 "status": 1,
                 "module": "views",
-                "delta": "og_content-block_1",
+                "delta": "og_content_demo-block_1",
                 "settings": {
                     "link_to_view": 0,
                     "more_link": false,
@@ -186,8 +188,8 @@
                     "offset": 0,
                     "path": null,
                     "fields_override": null,
-                    "title_display": "custom",
-                    "title": "This groups content",
+                    "title_display": "default",
+                    "title": "",
                     "style": "default",
                     "block_settings": [],
                     "contexts": [],
@@ -197,7 +199,44 @@
                     "admin_label": "",
                     "admin_description": ""
                 },
-                "uuid": "481722ad-fbd2-4ded-a14b-755c0252cbbb",
+                "uuid": "5d2958ef-a8ac-4bd1-a805-5d8b8d4b4780",
+                "style": {
+                    "plugin": "default",
+                    "data": {
+                        "settings": {
+                            "classes": ""
+                        }
+                    }
+                }
+            }
+        },
+        "f3d44959-abc1-4a31-8000-f939cefedfa1": {
+            "plugin": "views:og_groups_demo-block",
+            "data": {
+                "status": 1,
+                "module": "views",
+                "delta": "og_groups_demo-block",
+                "settings": {
+                    "link_to_view": 0,
+                    "more_link": false,
+                    "use_pager": false,
+                    "pager_id": 0,
+                    "items_per_page": "10",
+                    "offset": 0,
+                    "path": "groups",
+                    "fields_override": null,
+                    "title_display": "custom",
+                    "title": "All Groups",
+                    "style": "default",
+                    "block_settings": [],
+                    "contexts": [],
+                    "allowed": [],
+                    "path_override": false,
+                    "exposed": [],
+                    "admin_label": "",
+                    "admin_description": ""
+                },
+                "uuid": "f3d44959-abc1-4a31-8000-f939cefedfa1",
                 "style": {
                     "plugin": "default",
                     "data": {

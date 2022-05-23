@@ -131,4 +131,7 @@ function og_demo_install() {
   // Update the menu router information.
   menu_rebuild();
 
+  // Rebuild permissions
+  node_access_rebuild();
+
 }

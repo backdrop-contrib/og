@@ -5,7 +5,7 @@
     "title": "Groups",
     "description": null,
     "renderer_name": "standard",
-    "module": null,
+    "module": "og_demo",
     "weight": 0,
     "storage": 1,
     "layout_template": "moscone_flipped",

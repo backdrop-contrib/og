@@ -1,4 +1,4 @@
-# Organic Groups Demo Content
+# Organic Groups Example Content
 
 This is an optional module that will provide some default content to help you get 
 started or to help you evaluate Organic Groups.

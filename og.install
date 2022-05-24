@@ -11,7 +11,8 @@
 function og_install() {
   // Add "User request" to the default group membership type.
   $field_name = OG_MEMBERSHIP_REQUEST_FIELD;
-  if (!field_info_field($field_name)) {
+  $field_info = field_info_field($field_name);
+  if (empty($field_info) || !empty($field_info['deleted']))  {
     $field = array(
       'field_name' => $field_name,
       'type' => 'text_long',
@@ -41,13 +42,23 @@ function og_install() {
  * Implements hook_uninstall().
  */
 function og_uninstall() {
-  // Delete OG-core fields.
+
+  // Take care of deleting field instances attached to bundles of og_membership.
+  // Query the database, since field_info_instances() will not include bundles
+  // of og_membership at this point.
+  $query = db_select('og_membership_type', 'ogt');
+  $query->addField('ogt', 'name');
+  $bundles = $query->execute()->fetchCol(0);
+  foreach ($bundles as $bundle) {
+    // Instruct field.module to remove fields attached to these bundles.
+    field_attach_delete_bundle('og_membership', $bundle);
+  }
+
+  // Remove all instances attached to core entities.
   $og_fields = array(
     'group_group',
     'og_description',
-    'og_membership_request',
   );
-
   foreach (field_info_instances() as $bundles) {
     foreach ($bundles as $instances) {
       foreach ($instances as $instance) {
@@ -64,8 +75,8 @@ function og_uninstall() {
       }
     }
   }
+  field_purge_batch(100);
 }
-
 
 /**
  * Implements hook_schema().

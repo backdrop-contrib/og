@@ -3448,7 +3448,7 @@ function og_create_field($field_name, $entity_type, $bundle, $og_field = array()
   $field = field_info_field($field_name);
   // Allow overriding the field name.
   $og_field['field']['field_name'] = $field_name;
-  if (empty($field)) {
+  if (empty($field) || !empty($field['deleted'])) {
     $field = field_create_field($og_field['field']);
   }
 

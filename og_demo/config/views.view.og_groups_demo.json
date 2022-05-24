@@ -121,7 +121,7 @@
                         "order": "DESC"
                     }
                 },
-                "title": "",
+                "title": "Groups",
                 "filter_groups": {
                     "operator": "AND",
                     "groups": {

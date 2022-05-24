@@ -2,12 +2,12 @@
     "_config_name": "views.view.og_groups_demo",
     "name": "og_groups_demo",
     "description": "All groups (nodes)",
-    "module": "og",
+    "module": "og_demo",
     "storage": 2,
     "tag": "og",
     "disabled": false,
     "base_table": "node",
-    "human_name": "OG groups",
+    "human_name": "OG groups (example)",
     "core": "1",
     "display": {
         "default": {

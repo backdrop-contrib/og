@@ -7,3 +7,4 @@ type = module
 dependencies[] = og
 dependencies[] = og_context
 dependencies[] = og_ui
+dependencies[] = og_access

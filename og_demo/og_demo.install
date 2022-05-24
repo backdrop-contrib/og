@@ -1,5 +1,13 @@
  <?php
 
+/**
+ * @file
+ * Install sample group and group content for Organic Groups.
+ */
+
+/**
+ * Implements hook_install().
+ */
 function og_demo_install() {
 
   // Force Entity Plus to create the appropriate metadata for the new fields.  

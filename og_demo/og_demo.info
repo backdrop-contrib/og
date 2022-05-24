@@ -1,5 +1,5 @@
-name = Organic groups demo 
-description = "Add some demo content to get started."
+name = Organic groups example
+description = "Organic Groups example groups and group content to get started."
 package = "Organic groups"
 backdrop = 1.x
 type = module

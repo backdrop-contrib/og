@@ -39,7 +39,7 @@ If you are upgrading an existing Organic Groups installation from Drupal 7 (or u
 
 #### Stub Modules
 
-NOTE: These stub module below are **not needed anymore** if you are using Backdrop 1.22.0 or higher. Starting with that version, Entity Plus and Entity UI will automatically be enabled when upgrading to Backdrop. However, it is important that the latest versions of both Entity Plus and Entity UI are present in the `modules` folder of your Backdrop installation.
+NOTE: These stub modules below are **not needed anymore** if you are using Backdrop 1.22.0 or higher. Starting with that version, Entity Plus and Entity UI will automatically be enabled when upgrading to Backdrop. However, it is important that the latest versions of both Entity Plus and Entity UI are present in the `modules` folder of your Backdrop installation.
 
 Backdrop Organic Groups relies on two modules that don't exist in Drupal:
 

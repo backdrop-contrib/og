@@ -39,7 +39,7 @@ If you are upgrading an existing Organic Groups installation from Drupal 7 (or u
 
 #### Stub Modules
 
-NOTE: These stub modules below are **not needed anymore** if you are using Backdrop 1.22.0 or higher. Starting with that version, Entity Plus and Entity UI will automatically be enabled when upgrading to Backdrop. However, it is important that the latest versions of both Entity Plus and Entity UI are present in the `modules` folder of your Backdrop installation.
+NOTE: The stub modules listed below are **still needed** in the Drupal 7 version when upgrading OG to Backdrop, even in Backdrop 1.22.0 and higher.
 
 Backdrop Organic Groups relies on two modules that don't exist in Drupal:
 
@@ -54,13 +54,13 @@ So the solution is to install "stub" modules in the Drupal installation prior to
 
 Assuming you are following [the official upgrade instructions](https://backdropcms.org/upgrade-from-drupal) or something similar [like this](https://packweb.eu/blog/migrating-drupal-7-backdrop-cms), do the following:
 
-1. Download and unzip these two modules, which are Drupal "stub" modules (NOTE: step not needed if using Backdrop 1.22.0 or higher):
+1. Download and unzip these two modules, which are Drupal 7 "stub" module needed during the upgrade process:
     - [entity_plus.zip](https://github.com/backdrop-contrib/rules/wiki/files/entity_plus.zip)
     - [entity_ui.zip](https://github.com/backdrop-contrib/rules/wiki/files/entity_ui.zip)
 
-2. In Step 2, "Prepare your Drupal site for upgrade", prior to substep 9 ("Make a second backup...calling it backdrop-ready.sql") (NOTE: step not needed if using Backdrop 1.22.0 or higher):
+2. In Step 2, "Prepare your Drupal site for upgrade", prior to substep 9 ("Make a second backup...calling it backdrop-ready.sql"):
 
-    - Install those two modules into `sites/all/modules` of your Drupal installation;
+    - Install those two stub modules into `sites/all/modules` of your Drupal installation;
     - Enable those two modules. (They don't do anything. This just makes your database know that they exist, or rather, that they will be forthcoming.)
 
 3. Continue with substep 9: make your second backup of the database to be used for Backdrop, e.g., backdrop-ready.sql.

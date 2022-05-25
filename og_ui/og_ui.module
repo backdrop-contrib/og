@@ -911,17 +911,19 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
     '#collapsible' => TRUE,
     '#group' => 'additional_settings',
     '#description' => t('Specify how OG should treat content of this type. Content may behave as a group, as group content, or may not participate in OG at all.'),
+    '#attached' => array(
+      'js' => array(backdrop_get_path('module', 'og_ui') . '/js/og_ui.js'),
+    ),
   );
 
   // Group settings.
-  $url = array('!url' => l(t('Manage fields'), 'admin/structure/types/manage/' . str_replace('_', '-', $node_type) . '/fields'));
+  $url = '/admin/structure/types/manage/' . str_replace('_', '-', $node_type) . '/fields';
   $is_group = og_is_group_type('node', $node_type);
 
   $description = t('Set the content type to be a group, that content will be associated with, and will have group members.');
   if ($is_group) {
-    $description .= '<br/>' . t('To unset the group definition you should delete the "Group type" field via !url.', $url);
+    $description .= '<br/>' . t('To unset the group definition you should delete the "Group type" field via <a href="!url">Manage fields</a>.', array('!url' => $url));
   }
-
 
   $form['og']['og_group_type'] = array(
     '#type' => 'checkbox',
@@ -936,7 +938,9 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
 
   $description = t('Set the content type to be a group content, that can be associated with groups.');
   if ($is_group_content) {
-    $description .= '<br/>' . t('To unset the group content definition or change the settings you should delete the "Groups audience" field via !url.', $url);
+    $description .= '<br/>' . t('To unset the group content definition or change the settings you should delete the "Groups audience" field via <a href="!url">Manage fields</a>.', array('!url' => $url));
+  } else {
+    $description .= '<br/>' . t('Checking this box will add a default "Group audience" field to this content type.');
   }
   $group_content_options = og_get_all_group_entity();
   if (!$group_content_options) {
@@ -952,14 +956,23 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
   );
 
   if ($group_content_options) {
-    // Don't show the settings, as there might be multiple OG audience fields
-    // in the same bundle.
+    $target_type_default_value = key($group_content_options);
+    $description = t('The entity type that can be referenced thru this field.');
+
+    // Check if this the audience field has already been set up. If so, set the
+    // form default value and disable this select box.
+    $audience_field_info = field_info_field(OG_AUDIENCE_FIELD);
+    if ($audience_field_info) {
+      $target_type_default_value = $audience_field_info['settings']['target_type'];
+      $description .= '<br/>' . t('The target type has already been set for the default "Group audience" field. To change it, edit the "Groups audience" field via <a href="!url">Manage fields</a>, or add a new "Group audience" field in <a href="!url_settings">OG field settings</a>.', array('!url' => $url, '!url_settings' => '/admin/config/group/fields'));
+    }
+
     $form['og']['target_type'] = array(
       '#type' => 'select',
       '#title' => t('Target type'),
       '#options' => $group_content_options,
-      '#default_value' => key($group_content_options),
-      '#description' => t('The entity type that can be referenced thru this field.'),
+      '#default_value' => $target_type_default_value,
+      '#description' => $description,
       '#ajax' => array(
         'callback' => 'og_node_type_form_settings',
         'wrapper' => 'og-settings-wrapper',
@@ -969,6 +982,11 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
           ':input[name="og_group_content_type"]' => array('checked' => TRUE),
         ),
       ),
+
+      // If the default group audience field has already been set up there is
+      // no point in allowing the user access to this select box. The value
+      // can't be changed from here anyway.
+      '#disabled' => !empty($audience_field_info),
     );
 
     $target_type = !empty($form_state['values']['target_type']) ? $form_state['values']['target_type'] : key($group_content_options);
@@ -980,6 +998,13 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
       }
     }
 
+    $default_value = array();
+    if ($audience_field_info) {
+      if (!empty($audience_field_info['settings']['handler_settings']['target_bundles'])) {
+        $default_value = $audience_field_info['settings']['handler_settings']['target_bundles'];
+      }
+    };
+
     // Get the bundles that are acting as group.
     $form['og']['target_bundles'] = array(
       '#prefix' => '<div id="og-settings-wrapper">',
@@ -987,7 +1012,7 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
       '#type' => 'select',
       '#title' => t('Target bundles'),
       '#options' => $bundles,
-      '#default_value' => array(),
+      '#default_value' => $default_value,
       '#size' => 6,
       '#multiple' => TRUE,
       '#description' => t('The bundles of the entity type that can be referenced. Optional, leave empty for all bundles.'),
@@ -996,6 +1021,11 @@ function og_ui_form_node_type_form_alter(&$form, &$form_state) {
           ':input[name="og_group_content_type"]' => array('checked' => TRUE),
         ),
       ),
+
+      // If the default group audience field has already been set up there is
+      // no point in allowing the user access to this select box. The value
+      // can't be changed from here anyway.
+      '#disabled' => !empty($audience_field_info),
     );
   }
   array_unshift($form['#submit'], 'og_ui_form_node_type_form_submit');
@@ -1057,7 +1087,7 @@ function og_ui_node_type_save($bundle_name) {
 
   if ($config->get('og_group_content_type_' . $bundle_name) && !og_is_group_content_type('node', $bundle_name)) {
     $og_field = og_fields_info(OG_AUDIENCE_FIELD);
-    $og_field['field']['target_type'] = $config->get('target_type_' . $bundle_name);
+    $og_field['field']['settings']['target_type'] = $config->get('target_type_' . $bundle_name);
     $og_field['field']['settings']['handler_settings']['target_bundles'] = $config->get('target_bundles_' . $bundle_name);
     og_create_field(OG_AUDIENCE_FIELD, 'node', $bundle_name, $og_field);
   }

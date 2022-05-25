@@ -999,8 +999,6 @@ function theme_og_ui_admin_permissions($variables) {
  */
 function og_ui_field_settings($form, &$form_state) {
 
-
-
   $form = array();
   $options = array();
 
@@ -1033,13 +1031,12 @@ function og_ui_field_settings($form, &$form_state) {
     }
   }
 
-
-
   $form['bundle'] = array(
-    '#title' => t('Select one'),
+    '#title' => t('Entities'),
     '#description' => t('Select the entity and bundle to which you wish to add an OG field.'),
     '#type' => 'select',
     '#options' => $options,
+    '#required' => TRUE,
   );
 
   $options = array();

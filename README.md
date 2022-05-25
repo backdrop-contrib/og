@@ -15,7 +15,6 @@ or moderated.
 - Entity Reference
 - _Core: Entity_
 - _Core Field: Text_
-- _Core Field: Text_
 - _Core Field: List_
 - _Core Field: Options_
 
@@ -30,11 +29,17 @@ or moderated.
  - [Organic Groups Terms, Definitions](https://github.com/backdrop-contrib/og/wiki/2.-Organic-Groups-Terms,-Definitions)
  - [For Developers and Site Builders](https://github.com/backdrop-contrib/og/wiki/3.-For-Developers-and-Site-Builders)
 
+## Example OG module
+
+An example module called "Organic groups example" is included in this project inside the folder og_demo. For information on that module, read the README file in that folder.
+
 ## Upgrading Organic Groups from Drupal 7
 
 If you are upgrading an existing Organic Groups installation from Drupal 7 (or upgrading a Drupal 7 module that requires Organic Groups), there are some steps you can (should) take to ensure that your upgraded installation is fully enabled at the end of the process.
 
 #### Stub Modules
+
+NOTE: These stub module below are **not needed anymore** if you are using Backdrop 1.22.0 or higher. Starting with that version, Entity Plus and Entity UI will automatically be enabled when upgrading to Backdrop. However, it is important that the latest versions of both Entity Plus and Entity UI are present in the `modules` folder of your Backdrop installation.
 
 Backdrop Organic Groups relies on two modules that don't exist in Drupal:
 
@@ -49,11 +54,11 @@ So the solution is to install "stub" modules in the Drupal installation prior to
 
 Assuming you are following [the official upgrade instructions](https://backdropcms.org/upgrade-from-drupal) or something similar [like this](https://packweb.eu/blog/migrating-drupal-7-backdrop-cms), do the following:
 
-1. Download and unzip these two modules, which are Drupal "stub" modules:
+1. Download and unzip these two modules, which are Drupal "stub" modules (NOTE: step not needed if using Backdrop 1.22.0 or higher):
     - [entity_plus.zip](https://github.com/backdrop-contrib/rules/wiki/files/entity_plus.zip)
     - [entity_ui.zip](https://github.com/backdrop-contrib/rules/wiki/files/entity_ui.zip)
 
-2. In Step 2, "Prepare your Drupal site for upgrade", prior to substep 9 ("Make a second backup...calling it backdrop-ready.sql"),
+2. In Step 2, "Prepare your Drupal site for upgrade", prior to substep 9 ("Make a second backup...calling it backdrop-ready.sql") (NOTE: step not needed if using Backdrop 1.22.0 or higher):
 
     - Install those two modules into `sites/all/modules` of your Drupal installation;
     - Enable those two modules. (They don't do anything. This just makes your database know that they exist, or rather, that they will be forthcoming.)

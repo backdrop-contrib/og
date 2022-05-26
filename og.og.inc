@@ -4,6 +4,9 @@
  * @file
  * Organic Groups plugins declarations.
  *
+ * NOTE: This file is never called in Backdrop. It's here to provide a place to
+ * store old ctools plugins that are not yet incorporated in Backdrop OG.
+ * At the moment, the last one to be ported is og_membership_from_group_and_user
  */
 
 /**
@@ -28,21 +31,5 @@ function og_og_info() {
     ),
   );
 
-  if (module_exists('entityreference_prepopulate')) {
-    $info['content_types'] = array(
-      'node_create_links' => array(
-        'title' => t('Content create links'),
-        'description' => t('Crafted links to create content (nodes) for a given group.'),
-        'required context' => new og_context_required(t('Node'), 'node'),
-        'category' => t('Organic groups'),
-        'defaults' => array(
-          'types' => array(),
-          'field_name' => OG_AUDIENCE_FIELD,
-        ),
-        'file' => 'plugins/content_types/node_create_links.inc',
-      ),
-    );
-  }
-  
   return $info;
 }

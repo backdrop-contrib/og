@@ -7,7 +7,6 @@
 /** 
  * Implements hook_layout_access_info().
  */
-
 function og_layout_access_info() {
   $info['og_node_group'] = array(
     'title' => t("OG: Node is an OG group"),
@@ -46,5 +45,18 @@ function og_layout_access_info() {
     ),
   );
 
+  return $info;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function og_block_info() {
+  $info['node_create_links'] = array(
+    'info' => t('Content create links'),
+    'description' => t('Crafted links to create content (nodes) for a given group. REQUIRES the module Entity Reference Prepopulate to work.'),
+    'required contexts' => array('node' => 'node'),
+    'class' => 'OgNodeCreateLinks',
+  );
   return $info;
 }

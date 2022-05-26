@@ -13,50 +13,6 @@
 
 function og_og_info() {
   $info = array(
-    'access' => array(
-      'og_is_node_group_content' => array(
-        'title' => t("OG: Node is an OG group content"),
-        'description' => t('Control access by whether or not a node is of type "Group content".'),
-        'callback' => 'og_is_node_group_content_check',
-        'summary' => 'og_is_node_group_content_summary',
-        'required context' => new og_context_required(t('Node'), 'node'),
-        'file' => 'plugins/access/og_is_node_group_content.inc',
-      ),
-      'og_is_node_group' => array(
-        'title' => t("OG: Node is an OG group"),
-        'description' => t('Control access by whether or not a node is of type "Group".'),
-        'callback' => 'og_is_node_group_check',
-        'summary' => 'og_is_node_group_summary',
-        'required context' => new og_context_required(t('Node'), 'node'),
-        'file' => 'plugins/access/og_is_node_group.inc',
-      ),
-      'og_member' => array(
-        'title' => t("OG: user membership in group"),
-        'description' => t('Control access by group membership.'),
-        'callback' => 'og_member_access_check',
-        'default' => array('state' => OG_STATE_ACTIVE),
-        'settings form' => 'og_member_access_settings',
-        'summary' => 'og_member_access_summary',
-        'required context' => array(
-          new og_context_required(t('User'), 'user'),
-          new og_context_required(t('Node'), 'node'),
-        ),
-        'file' => 'plugins/access/og_member.inc',
-      ),
-      'og_perm' => array(
-        'title' => t("OG: user permission in group"),
-        'description' => t('Control access by group permission string.'),
-        'callback' => 'og_perm_access_check',
-        'default' => array('perm' => ''),
-        'settings form' => 'og_perm_access_settings',
-        'summary' => 'og_perm_access_summary',
-        'required context' => array(
-          new og_context_required(t('User'), 'user'),
-          new og_context_required(t('Node'), 'node'),
-        ),
-        'file' => 'plugins/access/og_perm.inc',
-      ),
-    ),
     'relationships' => array(
       'og_membership_from_group_and_user' => array(
         'title' => t('OG membership from a group node and user'),

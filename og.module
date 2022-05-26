@@ -3880,9 +3880,22 @@ function og_autoload_info() {
     'OgBehaviorHandler' => 'plugins/entityreference/behavior/OgBehaviorHandler.class.php',
     'OgWidgetHandler' => 'plugins/entityreference/behavior/OgWidgetHandler.class.php',
     'OgSelectionHandler' => 'plugins/entityreference/selection/OgSelectionHandler.class.php',
+    'OgNodeGroupLayoutAccess' => 'plugins/access/OgNodeGroupLayoutAccess.class.php',
+    'OgMemberLayoutAccess' => 'plugins/access/OgMemberLayoutAccess.class.php',
+    'OgPermLayoutAccess' => 'plugins/access/OgPermLayoutAccess.class.php',
+    'OgNodeGroupContentLayoutAccess' => 'plugins/access/OgNodeGroupContentLayoutAccess.class.php',
     'og_context' => 'includes/og_context.inc',
     'og_context_required' => 'includes/og_context.inc',
     'og_context_optional' => 'includes/og_context.inc',
     'OgTestBase' => 'tests/og.test',
+  );
+}
+
+/**
+ * Implements hook_layout_api().
+ */
+function og_layout_api() {
+  return array(
+    'file' => 'includes/og.layout.inc',
   );
 }

@@ -3880,9 +3880,36 @@ function og_autoload_info() {
     'OgBehaviorHandler' => 'plugins/entityreference/behavior/OgBehaviorHandler.class.php',
     'OgWidgetHandler' => 'plugins/entityreference/behavior/OgWidgetHandler.class.php',
     'OgSelectionHandler' => 'plugins/entityreference/selection/OgSelectionHandler.class.php',
+    'OgNodeGroupLayoutAccess' => 'plugins/access/OgNodeGroupLayoutAccess.class.php',
+    'OgMemberLayoutAccess' => 'plugins/access/OgMemberLayoutAccess.class.php',
+    'OgPermLayoutAccess' => 'plugins/access/OgPermLayoutAccess.class.php',
+    'OgNodeGroupContentLayoutAccess' => 'plugins/access/OgNodeGroupContentLayoutAccess.class.php',
+    'OgNodeCreateLinks' => 'plugins/blocks/OgNodeCreateLinks.class.php',
     'og_context' => 'includes/og_context.inc',
     'og_context_required' => 'includes/og_context.inc',
     'og_context_optional' => 'includes/og_context.inc',
     'OgTestBase' => 'tests/og.test',
   );
+}
+
+/**
+ * Implements hook_layout_api().
+ */
+function og_layout_api() {
+  return array(
+    'file' => 'includes/og.layout.inc',
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function og_block_info() {
+  $info['node_create_links'] = array(
+    'info' => t('Content create links'),
+    'description' => t('Crafted links to create content (nodes) for a given group. REQUIRES the module Entity Reference Prepopulate to work.'),
+    'required contexts' => array('node' => 'node'),
+    'class' => 'OgNodeCreateLinks',
+  );
+  return $info;
 }

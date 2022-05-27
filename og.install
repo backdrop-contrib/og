@@ -409,6 +409,7 @@ function og_update_last_removed() {
  * Implements hook_update_N().
  */
 function og_update_1000() {
+  // Save the settings coming from the D7 database.
   $config = config('og.settings');
   $config->set('og_7000_add_field', update_variable_get('og_7000_add_field', 'FALSE'));
   $config->set('og_7200_ogur_roles', update_variable_get('og_7200_ogur_roles', 'FALSE'));
@@ -461,4 +462,9 @@ function og_update_1000() {
     db_drop_index('og_role', 'lookup');
   }
   db_add_index('og_role', 'lookup', array('group_type', 'group_bundle', 'gid'));
+
+  // Install the default OG views. This will NOT overwrite any views previously
+  // installed by views_update_1000(), nor will it overwrite the settings config
+  // created above.
+  config_install_default_config('og');
 }

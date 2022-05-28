@@ -3,6 +3,9 @@
 /**
  * @file
  * Parent class to OG migration.
+ *
+ * While Migrate has not been ported to Backdrop, we will leave all the API
+ * code here for the future.
  */
 
 abstract class OgEntityMigration extends Migration {

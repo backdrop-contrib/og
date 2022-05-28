@@ -1289,6 +1289,7 @@ function og_ui_autoload_info() {
     'OgUiPopulateField' => 'includes/migrate/7000/populate_field.inc',
     'OgUiSetRoles' => 'includes/migrate/7000/set_roles.inc',
     'og_ui_handler_area_og_membership_overview' => 'includes/views/handlers/og_ui_handler_area_og_membership_overview.inc',
+    'OgUiMembershipLinks' => 'plugins/blocks/OgUiMembershipLinks.class.php',
   );
 }
 
@@ -1301,4 +1302,17 @@ function og_ui_config_info() {
     'group' => t('Configuration'),
   );
   return $prefixes;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function og_ui_block_info() {
+  $info['membership_links'] = array(
+    'info' => t('OG: membership links'),
+    'description' => t('Show membership unsubscribe and subscribe link(s) to a given group. This block is only available for node groups.'),
+    'required contexts' => array('node' => 'node'),
+    'class' => 'OgUiMembershipLinks',
+  );
+  return $info;
 }

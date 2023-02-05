@@ -3875,7 +3875,7 @@ function og_autoload_info() {
     'og_users_roles_join' => 'includes/views/handlers/og_handler_relationship_membership_roles.inc',
     'og_plugin_argument_default_user_groups' => 'includes/views/handlers/og_plugin_argument_default_user_groups.inc',
     'og_plugin_argument_validate_group' => 'includes/views/handlers/og_plugin_argument_validate_group.inc',
-    'OgMembershipViewsController' => 'includes/views/og.views.inc',
+    'OgMembershipViewsController' => 'includes/OgMembershipViewsController.inc',
     'OgMembershipMetadataController' => 'og.info.inc',
     'OgBehaviorHandler' => 'plugins/entityreference/behavior/OgBehaviorHandler.class.php',
     'OgWidgetHandler' => 'plugins/entityreference/behavior/OgWidgetHandler.class.php',

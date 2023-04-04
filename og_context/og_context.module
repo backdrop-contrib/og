@@ -494,7 +494,7 @@ function og_context_handler_url() {
     return;
   }
   $item = menu_get_item();
-  if (strpos(!$item || $item['path'], 'node/add/') !== 0) {
+  if (strpos($item['path'], 'node/add/') !== 0) {
     return;
   }
   if (empty($item['map'][2])) {

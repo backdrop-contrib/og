@@ -11,6 +11,8 @@ dependencies[] = entityreference
 backdrop = 1.x
 type = module
 
+stylesheets[all][] = css/og.css
+
 ; Entity API controllers
 ; Test files
 ; Views plugins

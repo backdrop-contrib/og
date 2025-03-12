@@ -9,6 +9,73 @@
  * empty functions.
  */
 class OgMembership extends Entity {
+
+  /**
+   * The membership ID.
+   *
+   * @var integer
+   */
+  public $id;
+
+  /**
+   * The membership type.
+   *
+   * @var string
+   */
+  public $type;
+
+  /**
+   * The entity ID.
+   * 
+   * @var integer
+   */
+  public $etid;
+
+  /**
+   * The entity type.
+   * 
+   * @var string
+   */
+  public $entity_type;
+
+  /**
+   * The group's unique ID.
+   * 
+   * @var integer
+   */
+  public $gid;
+
+  /**
+   * The group's entity type (e.g. node, comment, etc).
+   * 
+   * @var string
+   */
+  public $group_type;
+
+  /**
+   * The state of the group content.
+   * 
+   * @var string
+   */
+  public $state;
+
+  /**
+   * The name of the field holding the group ID.
+   * 
+   * The name of the field holding the group ID, the OG memebership is
+   * associated with., the OG memebership is associated with.
+   * 
+   * @var string
+   */
+  public $field_name;
+  
+  /**
+   * The language of this membership.
+   * 
+   * @var string
+   */
+  public $language;
+
   /**
    * Implements EntityInterface::id().
    */

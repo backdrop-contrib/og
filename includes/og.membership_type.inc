@@ -6,8 +6,47 @@
  */
 class OgMembershipType extends Entity {
 
+  /**
+   * Primary Key: Numeric group membership type ID.
+   * 
+   * @var integer
+   */
+  public $id;
+
+  /**
+   * The unified identifier for a group membership type.
+   * 
+   * @var $string
+   */
   public $name;
+
+  /**
+   * Description for this group membership type.
+   * 
+   * @var string
+   */
   public $description = '';
+
+  /**
+   * The name of the providing module if the entity has been defined in code.
+   * 
+   * @var string
+   */
+  public $module;
+
+  /**
+   * The language of this membership type.
+   * 
+   * @var string
+   */
+  public $language;
+
+  /**
+   * The exportable status of the entity.
+   * 
+   * @var bool
+   */
+  public $status;
 
   public function id() {
     return isset($this->id) ? $this->id : NULL;

@@ -1190,6 +1190,11 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
    */
   protected $group2;
 
+  /**
+   * @var Node
+   */
+  protected $node;
+
 
   function setUp($modules = array()) {
     parent::setUp($modules);

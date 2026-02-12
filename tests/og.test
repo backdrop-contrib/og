@@ -136,6 +136,36 @@ class OgAccess extends OgTestBase {
  */
 class OgNodeAccess extends OgTestBase {
 
+  /**
+   * @var User
+   */
+  protected $editor_user;
+
+  /**
+   * @var User
+   */
+  protected $group_manager;
+
+  /**
+   * @var User
+   */
+  protected $group_editor_user;
+
+  /**
+   * @var Node
+   */
+  protected $group1;
+
+  /**
+   * @var Node
+   */
+  protected $group2;
+
+  /**
+   * @var Node
+   */
+  protected $group_content; 
+
   function setUp($modules = array()) {
     parent::setUp($modules);
 
@@ -1135,6 +1165,32 @@ class OgRoleRevoke extends OgTestBase {
  */
 class OgEntityFieldQueryTestCase extends OgTestBase {
 
+  /**
+   * @var User
+   */
+  protected $user1;
+
+  /**
+   * @var User
+   */
+  protected $user2;
+
+  /**
+   * @var Entity
+   */
+  protected $og_entity_test;
+
+  /**
+   * @var Node
+   */
+  protected $group1;
+
+  /**
+   * @var Node
+   */
+  protected $group2;
+
+
   function setUp($modules = array()) {
     parent::setUp($modules);
 
@@ -1387,6 +1443,26 @@ class OgEntityFieldQueryTestCase extends OgTestBase {
  */
 class OgEntityFieldQueryFieldConditionTestCase extends OgTestBase {
 
+  /**
+   * @var stdClass
+   */
+  protected $group_type;
+
+  /**
+   * @var string
+   */
+  protected $group_content_type;
+
+  /**
+   * @var Node
+   */
+  protected $group1;
+
+  /**
+   * @var Node
+   */
+  protected $group2;
+
   function setUp($modules = array()) {
     parent::setUp($modules);
 
@@ -1576,6 +1652,11 @@ class OgAudienceFieldAutoCreateTestCase extends OgTestBase {
 }
 
 class OgBehaviorHandlerTestCase extends OgTestBase {
+
+  /**
+   * @var string
+   */
+  protected $group_content;
 
   function setUp($modules = array()) {
     $modules[] = 'og_test';
@@ -2193,6 +2274,26 @@ class OgAutoCompleteAccessibleGroupsValidation extends OgTestBase {
  */
 class OgSelectAccessibleGroupsValidation extends OgTestBase {
 
+  /**
+   * @var User
+   */
+  protected $group_owner;
+
+  /**
+   * @var User
+   */
+  protected $group_member;
+
+  /**
+   * @var Node
+   */
+  protected $group_node_1;
+
+  /**
+   * @var Node
+   */
+  protected $group_node_2;
+
   function setUp($modules = array()) {
     parent::setUp($modules);
 
@@ -2300,14 +2401,24 @@ class OgAudienceFieldAccessOverrideTestCase extends OgTestBase {
  */
 class OgAudienceFieldDeltaTestCase extends OgTestBase {
 
+  /**
+   * @var stdClass
+   */
+  protected $groupType;
+
+  /**
+   * @var stdClass
+   */
+  protected $groupContentType;
+
   function setUp($modules = array()) {
     parent::setUp($modules);
 
     $this->groupType = $this->backdropCreateContentType();
     og_create_field(OG_GROUP_FIELD, 'node', $this->groupType->type);
 
-    $this->groupConentType = $this->backdropCreateContentType();
-    og_create_field(OG_AUDIENCE_FIELD, 'node', $this->groupConentType->type);
+    $this->groupContentType = $this->backdropCreateContentType();
+    og_create_field(OG_AUDIENCE_FIELD, 'node', $this->groupContentType->type);
   }
 
   /**
@@ -2316,7 +2427,7 @@ class OgAudienceFieldDeltaTestCase extends OgTestBase {
    */
   function testEntityMetadataWrapperForOgAudienceField() {
     $group = $this->backdropCreateNode(array('type' => $this->groupType->type));
-    $node = $this->backdropCreateNode(array('type' => $this->groupConentType->type));
+    $node = $this->backdropCreateNode(array('type' => $this->groupContentType->type));
 
     $wrapper = entity_metadata_wrapper('node', $node);
     $wrapper->{OG_AUDIENCE_FIELD}->set(array($group));

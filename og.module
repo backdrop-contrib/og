@@ -1472,9 +1472,11 @@ function og_query_og_membership_alter(QueryAlterableInterface $query) {
 
   foreach ($aliases as $alias => $field_name) {
     foreach ($tables as $key => $values) {
-      $condition = str_replace("$alias.entity_type", 'ogm.entity_type', $values['condition']);
-      $condition = str_replace("$alias.entity_id", 'ogm.etid', $condition);
-      $tables[$key]['condition'] = $condition;
+      if (!empty($values['condition'])) {
+        $condition = str_replace("$alias.entity_type", 'ogm.entity_type', $values['condition']);
+        $condition = str_replace("$alias.entity_id", 'ogm.etid', $condition);
+        $tables[$key]['condition'] = $condition;
+      }
     }
   }
 

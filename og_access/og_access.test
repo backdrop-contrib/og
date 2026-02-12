@@ -10,6 +10,32 @@
  */
 class OgAccessTestCase extends BackdropWebTestCase {
 
+
+  /**
+   * @var User
+   */
+  protected $user1;
+
+  /**
+   * @var User
+   */
+  protected $user2;
+
+  /**
+   * @var stdClass
+   */
+  protected $group_type;
+
+  /**
+   * @var Node
+   */
+  protected $group_node;
+  
+  /**
+   * @var stdClass
+   */
+  protected $group_content_type;
+
   function setUp() {
     parent::setUp('og_access');
     node_access_rebuild();
@@ -346,6 +372,21 @@ class OgAccessTestCase extends BackdropWebTestCase {
  */
 class OgAccessUseGroupDefaultsTestCase extends BackdropWebTestCase {
 
+  /**
+   * @var stdClass
+   */
+  protected $group_type;
+
+  /**
+   * @var Node
+   */
+  protected $group_node;
+  
+  /**
+   * @var stdClass
+   */
+  protected $group_content_type;
+
   function setUp() {
     parent::setUp('og_access');
     node_access_rebuild();
@@ -396,6 +437,16 @@ class OgAccessUseGroupDefaultsTestCase extends BackdropWebTestCase {
  * Tests moderated group memberships.
  */
 class OgAccessModeratedGroup extends BackdropWebTestCase {
+
+  /**
+   * @var Node
+   */
+  protected $group;
+
+  /**
+   * @var User
+   */
+  protected $user;
 
   public function setUp() {
     parent::setUp(array('og', 'og_access', 'og_ui'));

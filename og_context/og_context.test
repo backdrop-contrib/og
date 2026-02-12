@@ -10,6 +10,31 @@
  */
 class OgContextTestCase extends BackdropWebTestCase {
 
+  /**
+   * @var User
+   */
+  protected $user1;
+
+  /**
+   * @var User
+   */
+  protected $user2;
+
+  /**
+   * @var stdClass
+   */
+  protected $group_type;
+
+  /**
+   * @var Node
+   */
+  protected $group_node;
+  
+  /**
+   * @var stdClass
+   */
+  protected $group_content_type;
+
   function setUp() {
     parent::setUp('og_context', 'og_access');
     node_access_rebuild();

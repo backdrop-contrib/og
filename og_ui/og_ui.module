@@ -435,7 +435,7 @@ function og_ui_access_bundle_role($rid) {
   }
 
   $role = og_role_load($rid);
-  return (boolean) $role;
+  return (bool) $role;
 }
 
 /**
